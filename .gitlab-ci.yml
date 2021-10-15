@@ -13,6 +13,6 @@ cmake:
   stage: build
   script:
     - mkdir build && cd build
-    - apt-get install build-essential cmake
+    - apt-get install cmake
     - cmake ..
     - make
