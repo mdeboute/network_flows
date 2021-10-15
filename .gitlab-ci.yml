@@ -1,8 +1,17 @@
 image: gcc
 
-build:
+stages: 
+  - build
+
+init:
+  stage: .pre
+  script:
+    - echo "This is the initialization of the CI/CD"
+    - apt update && apt -y install make autoconf
+
+
+cmake:
   stage: build
-   - apt update && apt -y install make autoconf
   script:
     - mkdir build && cd build
     - cmake ..
