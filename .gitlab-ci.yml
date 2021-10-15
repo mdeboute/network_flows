@@ -13,7 +13,7 @@ cmake:
   stage: build
   script:
     - mkdir build && cd build
-    - apt-get update
-    - apt-get install cmake
+    - apt-get update --yes
+    - apt-get install --yes cmake
     - cmake ..
     - make
