@@ -5,12 +5,12 @@ init:
   stage: .pre
   script:
     - echo "This is the initialization of the CI/CD"
-    - apt update && apt -y install make autoconf cmake
 
 
 cmake:
   stage: build
   script:
     - mkdir build && cd build
+    - apt-get install build-essential cmake
     - cmake ..
     - make
