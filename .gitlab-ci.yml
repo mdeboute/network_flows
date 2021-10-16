@@ -3,17 +3,11 @@ image: gcc
 stages:
   - build
 
-init:
-  stage: .pre
-  script:
-    - echo "This is the initialization of the CI/CD"
-    - apt-get update --yes
-    - apt-get install --yes cmake
-
-
 cmake:
   stage: build
   script:
     - mkdir build && cd build
+    - apt-get update --yes
+    - apt-get install --yes cmake
     - cmake ..
     - make
