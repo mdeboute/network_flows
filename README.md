@@ -13,4 +13,7 @@ make
 
 ## Resources
 
-Netflow: [here](http://archive.dimacs.rutgers.edu/pub/netflow/)
+Netflow: [here](http://archive.dimacs.rutgers.edu/pub/netflow/generators/network/)
+
+This directory contains programs that generate networks and graphs.
+Most are in the DIMACS format: http://lpsolve.sourceforge.net/5.5/DIMACS_maxf.htm
