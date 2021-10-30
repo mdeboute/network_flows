@@ -1,1 +1,1 @@
-abstract class Graph
+class Graph represents a graph by adjacency list.
