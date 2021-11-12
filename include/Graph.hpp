@@ -37,6 +37,7 @@ class Graph
     Graph(Edge edges[], int n, int N);
     //Destructor
     ~Graph();
+    void printAdjList(AdjListNode* ptr, int i);
     //To print the graph
     void printGraph();
 };

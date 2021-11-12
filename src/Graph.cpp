@@ -5,7 +5,7 @@
 using namespace std;
 
 
-void display_AdjList(AdjListNode* ptr, int i)
+void Graph::printAdjList(AdjListNode* ptr, int i)
 {
     while (ptr != nullptr) {
         cout << "(" << i << ", " << ptr->val
@@ -28,7 +28,7 @@ Graph::Graph(Edge edges[], int n, int N)
         int end_ver = edges[i].end_ver;
         int weight = edges[i].weight;
         // insert in the beginning
-        AdjListNode* newNode = getAdjListNode(end_ver, weight, head[start_ver]);
+        AdjListNode* newNode = Graph::getAdjListNode(end_ver, weight, head[start_ver]);
         // point head pointer to new node
         head[start_ver] = newNode;
     }
@@ -39,5 +39,14 @@ Graph::Graph(Edge edges[], int n, int N)
     for (int i = 0; i < N; i++){
         delete[] head[i];
         delete[] head;
+    }
+}
+
+void Graph::printGraph()
+{
+    cout << "\nGraph adjacency list (start_vertex, end_vertex, weight):\n" << endl;
+    for (int i = 0; i < N; i++) {
+        cout << "Adjacency list of vertex " << i << ": ";
+        Graph::printAdjList(head[i], i);
     }
 }

@@ -1,8 +1,8 @@
 # network_flows
 
-Implementation of graph theory algorithms and data structures (*cf. Network Flows, Ahuja et al*)
+Implémentation d'algorithmes de théorie des graphes ainsi que la structure de données en C++ (*cf. Network Flows, Ahuja et al*)
 
-## How to compile and execute the program?
+## Comment compiler et exécuter le programme ?
 
 ```shell
 cd build
@@ -11,19 +11,20 @@ make
 ./src/app
 ```
 
-## Resources
+## Ressources
 
-Netflow directory: [here](http://archive.dimacs.rutgers.edu/pub/netflow/generators/network/)
+Netflow : [ici](http://archive.dimacs.rutgers.edu/pub/netflow/generators/network/)
 
-This directory contains programs that generate networks and graphs.
-Most are in the DIMACS format, [here](http://lpsolve.sourceforge.net/5.5/DIMACS_maxf.htm) is a website to learn about the format.
+Ce répertoire contient des programmes qui génèrent des réseaux et des graphes.
+La plupart sont au format DIMACS, [ceci](http://lpsolve.sourceforge.net/5.5/DIMACS_maxf.htm) est un site Web pour en savoir plus sur ce format.
 
-## Algorithmes à implémenter
+## Travail minimum requis : implémenter 3 algorithmes
 
-Comparaison de 2 algorithmes de flots max avec une complexité fortement polynomiale et une autre pseudo-polynomiale :
+### Deux de flots max
+- 1 avec chemins augmantants pour flot max : successive shortest path en O(n^2m) et/ou labeling algo en O(nmU), pseudo-polynomiale
+- 1 flot maximum avec pré-flots : FIFO pre-flow push algo en O(n^3)
 
-- 1 avec chemins augmanants
-- 1 pré-flots/push
-- 1 de coût min
+### Un de coup min
+- 1 flot de coût minimum : cycle cancelling en O(mCU), out-of-kilter en O(nu) (en priorité) et en complexité polynomiale on a le minimum mean-cycle cancelling algo en O(n^2m^3log(n)) (lui il est compliqué)
 
 # ON BOSSE SUR LA BRANCHE DEV
