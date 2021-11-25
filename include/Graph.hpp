@@ -41,6 +41,3 @@ class Graph
     //To print the graph
     void printGraph();
 };
-
-
-#endif

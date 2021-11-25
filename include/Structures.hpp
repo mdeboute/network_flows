@@ -1,7 +1,11 @@
 #include <vector>
+#ifndef structs
+#define structs
+
 
 
 class Edge;
+
 class Vertex
 {
   public:
@@ -12,7 +16,8 @@ class Vertex
     std::vector<Edge*> leavingEdges;
 
     Vertex(int id);
-    void print();
+    void printWithEdges();
+    void printWithNeighbors();
 };
 
 
@@ -26,6 +31,7 @@ class Edge
     int flow;
     Vertex* start;
     Vertex* end;
+    Edge* pairedEdge;
 
     Edge(int id,int weight,int capacity,Vertex* start,Vertex* end);
 };
@@ -42,4 +48,10 @@ class Graph
 
     Graph(int nbVertices,int nbEdges,int edgeArray[][4]);
     void print();
+    void addEdge(Edge edge);
+    Graph* getResidualGraph();
 };
+
+
+
+#endif

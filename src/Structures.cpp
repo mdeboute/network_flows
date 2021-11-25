@@ -36,27 +36,61 @@ Graph::Graph(int nbVertices,int nbEdges,int edgeArray[][4])
 
   //création des arêtes
   for(int id=0;id<nbEdges;id++){
-    int startId = edgeArray[id][0];
-    int endId = edgeArray[id][1];
 
-    Edge newEdge(id,edgeArray[id][2],edgeArray[id][3],&vertices[startId],&vertices[endId]);
+    int weight = edgeArray[id][2];
+    int capacity = edgeArray[id][3];
+    Vertex* start = &vertices[edgeArray[id][0]];
+    Vertex* end = &vertices[edgeArray[id][1]];
+
+    Edge newEdge(id,weight,capacity,start,end);
     edges.push_back(newEdge);
 
     //affectation des listes d'adjacences des sommets
-    vertices[startId].nbLeavingEdges += 1;
-    vertices[startId].leavingEdges.push_back(&edges[id]);
+    start->nbLeavingEdges += 1;
+    start->leavingEdges.push_back(&edges[id]);
 
-    vertices[endId].nbEnteringEdges += 1;
-    vertices[endId].enteringEdges.push_back(&edges[id]);
+    end->nbEnteringEdges += 1;
+    end->enteringEdges.push_back(&edges[id]);
   }
 }
 
 
 
-
-void Vertex::print()
+void Vertex::printWithNeighbors()
 {
   std::cout << "Vertex " << id << "\n";
+
+  std::cout << "Entering neighbors: ";
+  for(Edge* edge : enteringEdges){
+    std::cout << edge->start->id << " ";
+  }
+  std::cout << "\n";
+
+  std::cout << "Leaving neighbors: ";
+  for(Edge* edge : leavingEdges){
+    std::cout << edge->end->id << " ";
+  }
+  std::cout << "\n";
+}
+
+
+
+
+void Vertex::printWithEdges()
+{
+  std::cout << "Vertex " << id << "\n";
+
+  std::cout << "Entering edges: ";
+  for(Edge* edge : enteringEdges){
+    std::cout << edge->id << " ";
+  }
+  std::cout << "\n";
+
+  std::cout << "Leaving edges: ";
+  for(Edge* edge : leavingEdges){
+    std::cout << edge->id << " ";
+  }
+  std::cout << "\n";
 }
 
 
@@ -64,6 +98,6 @@ void Vertex::print()
 void Graph::print()
 {
   for(Vertex vertex : vertices){
-    vertex.print();
+    vertex.printWithNeighbors();
   }
 }
