@@ -5,3 +5,4 @@ install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/app
   RENAME ${CMAKE_PROJECT_NAME}-app)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
+add_compile_options(-std=c++11)
