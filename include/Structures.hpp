@@ -34,6 +34,8 @@ class Edge
     Edge* pairedEdge;
 
     Edge(int id,int weight,int capacity,Vertex* start,Vertex* end);
+    void setFlow(int newFlow); //to implement
+    void increaseFlow(int increase); //to implement
 };
 
 
@@ -48,6 +50,7 @@ class Graph
 
     Graph(int nbVertices,int nbEdges,int edgeArray[][4]);
     void print();
+    void addVertex(); //to implement
     void addEdge(Edge edge);
     Graph* getResidualGraph();
 };
