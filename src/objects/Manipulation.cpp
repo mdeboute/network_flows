@@ -15,7 +15,6 @@ void Graph::addEdge(Edge edge)
 }
 
 
-
 Graph* Graph::getResidualGraph()
 {
   int arrayOfEdges[nbEdges][4];

@@ -3,12 +3,10 @@
 #include "Structures.hpp"
 
 
-
 Vertex::Vertex(int id)
 {
   this->id = id;
 }
-
 
 
 Edge::Edge(int id,int weight,int capacity,Vertex* start,Vertex* end)
@@ -19,7 +17,6 @@ Edge::Edge(int id,int weight,int capacity,Vertex* start,Vertex* end)
   this->start = start;
   this->end = end;
 }
-
 
 
 Graph::Graph(int nbVertices,int nbEdges,int edgeArray[][4])
@@ -55,7 +52,6 @@ Graph::Graph(int nbVertices,int nbEdges,int edgeArray[][4])
 }
 
 
-
 void Vertex::printWithNeighbors()
 {
   std::cout << "Vertex " << id << "\n";
@@ -74,8 +70,6 @@ void Vertex::printWithNeighbors()
 }
 
 
-
-
 void Vertex::printWithEdges()
 {
   std::cout << "Vertex " << id << "\n";
@@ -92,7 +86,6 @@ void Vertex::printWithEdges()
   }
   std::cout << "\n";
 }
-
 
 
 void Graph::print()

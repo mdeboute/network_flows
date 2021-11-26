@@ -2,7 +2,6 @@
 #include "Manipulation.cpp"
 
 
-
 int main()
 {
   // {s,e,w,c} -> arête du sommet s vers e, avec pois w et capacité c
