@@ -1,7 +1,6 @@
 #include "Structures.hpp"
 
 
-
 void Graph::addEdge(Edge edge)
 {
   edges.push_back(edge);
@@ -19,7 +18,9 @@ void Graph::addEdge(Edge edge)
 
 Graph* Graph::getResidualGraph()
 {
-  Graph* residualGraph = new Graph(nbVertices,0,{});
+  int arrayOfEdges[nbEdges][NUMBER_OF_FLOW_INFORMATION];
+
+  Graph* residualGraph = new Graph(nbVertices,0,arrayOfEdges);
 
   for(Edge edge : edges){
 

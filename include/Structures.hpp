@@ -41,12 +41,13 @@ class Edge
 class Graph
 {
   public:
+    static const int NUMBER_OF_FLOW_INFORMATION = 4;
     int nbVertices;
     int nbEdges;
     std::vector<Vertex> vertices;
     std::vector<Edge> edges;
 
-    Graph(int nbVertices,int nbEdges,int edgeArray[][4]);
+    Graph(int nbVertices,int nbEdges,int edgeArray[][NUMBER_OF_FLOW_INFORMATION]);
     void print();
     void addEdge(Edge edge);
     Graph* getResidualGraph();
