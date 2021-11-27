@@ -5,18 +5,18 @@
 
 int main()
 {
-  // {s,e,w,c} -> arête du sommet s vers e, avec pois w et capacité c
-  int edgeArray[][4] = {{0,1,5,10},{1,2,6,8},{0,2,5,9},{3,1,4,11},{3,0,5,5}};
-  Graph graph(4,5,edgeArray);
-  graph.print();
+  // {cost,min,max,start,end} -> arête du sommet start vers end, avec coût cost, capacité minimum min et maximum max
+  int edgeArray[][5] = {{3,2,10,0,1},{1,0,4,1,2},{4,1,3,1,3},{2,0,5,2,3}};
+  Graph graph(4,4,edgeArray);
 
-  graph.edges[0].flow = 2;
-  graph.edges[1].flow = 2;
+  graph.edges[0].flow = 4;
+  graph.edges[1].flow = 1;
   graph.edges[2].flow = 3;
-  graph.edges[3].flow = 2;
-  graph.edges[4].flow = 5;
+  graph.edges[3].flow = 1;
 
+  graph.print();
   std::cout << "\n";
+
   Graph* residualGraph = graph.getResidualGraph();
   residualGraph->print();
 

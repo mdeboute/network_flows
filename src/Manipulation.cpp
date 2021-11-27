@@ -1,15 +1,16 @@
 #include "Structures.hpp"
 
 
+
 void Graph::addEdge(Edge edge)
 {
   edges.push_back(edge);
 
-  edge.start->nbLeavingEdges += 1;
-  edge.start->leavingEdges.push_back(&edges[nbEdges]);
+  vertices[edge.startId].nbLeavingEdges += 1;
+  vertices[edge.startId].leavingEdgesId.push_back(nbEdges);
 
-  edge.end->nbEnteringEdges += 1;
-  edge.end->enteringEdges.push_back(&edges[nbEdges]);
+  vertices[edge.endId].nbEnteringEdges += 1;
+  vertices[edge.endId].enteringEdgesId.push_back(nbEdges);
 
   nbEdges += 1;
 }
@@ -18,26 +19,27 @@ void Graph::addEdge(Edge edge)
 
 Graph* Graph::getResidualGraph()
 {
-  int arrayOfEdges[nbEdges][4];
-
-  Graph* residualGraph = new Graph(nbVertices,0,arrayOfEdges);
+  Graph* residualGraph = new Graph(nbVertices);
 
   for(Edge edge : edges){
 
-    int residualCapacity = edge.capacity - edge.flow;
+    int residualCapacity = edge.maxCapacity - edge.flow;
 
     if(residualCapacity > 0){
 
-      Vertex* start = &residualGraph->vertices[edge.end->id];
-      Vertex* end = &residualGraph->vertices[edge.start->id];
+      int id = residualGraph->nbEdges;
+      int cost = edge.cost;
+      int minCapacity = 0;
+      int maxCapacity = residualCapacity;
+      int startId = edge.endId;
+      int endId = edge.startId;
 
-      Edge residualEdge(nbEdges,0,residualCapacity,start,end);
+      Edge residualEdge(id,cost,minCapacity,maxCapacity,startId,endId);
 
-      residualEdge.pairedEdge = &edge;
+      residualEdge.pairedEdgeId = edge.id;
+      edge.pairedEdgeId = residualGraph->nbEdges;
 
       residualGraph->addEdge(residualEdge);
-
-      edge.pairedEdge = &edges[nbEdges-1];
     }
   }
   return residualGraph;

@@ -11,18 +11,20 @@ Vertex::Vertex(int id)
 
 
 
-Edge::Edge(int id,int weight,int capacity,Vertex* start,Vertex* end)
+Edge::Edge(int id,int cost,int minCapacity,int maxCapacity,int startId,int endId)
 {
   this->id = id;
-  this->weight = weight;
-  this->capacity = capacity;
-  this->start = start;
-  this->end = end;
+  this->cost = cost;
+  this->minCapacity = minCapacity;
+  this->maxCapacity = maxCapacity;
+  this->startId = startId;
+  this->endId = endId;
+  this->flow = 0; //normalement pas nécessaire mais c++ l'initialise à 1 sinon (??)
 }
 
 
 
-Graph::Graph(int nbVertices,int nbEdges,int edgeArray[][4])
+Graph::Graph(int nbVertices,int nbEdges,int edgeArray[][edgeInfoAmount])
 {
   this->nbVertices = nbVertices;
   this->nbEdges = nbEdges;
@@ -37,60 +39,50 @@ Graph::Graph(int nbVertices,int nbEdges,int edgeArray[][4])
   //création des arêtes
   for(int id=0;id<nbEdges;id++){
 
-    int weight = edgeArray[id][2];
-    int capacity = edgeArray[id][3];
-    Vertex* start = &vertices[edgeArray[id][0]];
-    Vertex* end = &vertices[edgeArray[id][1]];
+    int cost = edgeArray[id][0];
+    int minCapacity = edgeArray[id][1];
+    int maxCapacity = edgeArray[id][2];
+    int startId = edgeArray[id][3];
+    int endId = edgeArray[id][4];
 
-    Edge newEdge(id,weight,capacity,start,end);
+    Edge newEdge(id,cost,minCapacity,maxCapacity,startId,endId);
     edges.push_back(newEdge);
 
     //affectation des listes d'adjacences des sommets
-    start->nbLeavingEdges += 1;
-    start->leavingEdges.push_back(&edges[id]);
+    vertices[newEdge.startId].nbLeavingEdges += 1;
+    vertices[newEdge.startId].leavingEdgesId.push_back(id);
 
-    end->nbEnteringEdges += 1;
-    end->enteringEdges.push_back(&edges[id]);
+    vertices[newEdge.endId].nbEnteringEdges += 1;
+    vertices[newEdge.endId].enteringEdgesId.push_back(id);
   }
 }
 
 
 
-void Vertex::printWithNeighbors()
+Graph::Graph(int nbVertices) //même constructeur mais sans arêtes
 {
-  std::cout << "Vertex " << id << "\n";
-
-  std::cout << "Entering neighbors: ";
-  for(Edge* edge : enteringEdges){
-    std::cout << edge->start->id << " ";
+  this->nbVertices = nbVertices;
+  this->nbEdges = nbEdges;
+  for(int id=0;id<nbVertices;id++){
+    Vertex newVertice(id);
+    vertices.push_back(newVertice);
   }
-  std::cout << "\n";
+}
 
-  std::cout << "Leaving neighbors: ";
-  for(Edge* edge : leavingEdges){
-    std::cout << edge->end->id << " ";
-  }
-  std::cout << "\n";
+
+
+void Edge::print()
+{
+  std::cout << "Edge " << id << ": from V" << startId << " to V" << endId ;
+  std::cout << ", flow " << flow << ", minCap " << minCapacity << ", maxCap " << maxCapacity << ", cost " << cost << "\n";
 }
 
 
 
 
-void Vertex::printWithEdges()
+void Vertex::print()
 {
   std::cout << "Vertex " << id << "\n";
-
-  std::cout << "Entering edges: ";
-  for(Edge* edge : enteringEdges){
-    std::cout << edge->id << " ";
-  }
-  std::cout << "\n";
-
-  std::cout << "Leaving edges: ";
-  for(Edge* edge : leavingEdges){
-    std::cout << edge->id << " ";
-  }
-  std::cout << "\n";
 }
 
 
@@ -98,6 +90,10 @@ void Vertex::printWithEdges()
 void Graph::print()
 {
   for(Vertex vertex : vertices){
-    vertex.printWithNeighbors();
+    vertex.print();
+    for(int edgeID : vertex.leavingEdgesId){
+      Edge edge = edges[edgeID];
+      edge.print();
+    }
   }
 }

@@ -12,12 +12,11 @@ class Vertex
     int id;
     int nbEnteringEdges;
     int nbLeavingEdges;
-    std::vector<Edge*> enteringEdges;
-    std::vector<Edge*> leavingEdges;
+    std::vector<int> enteringEdgesId;
+    std::vector<int> leavingEdgesId;
 
     Vertex(int id);
-    void printWithEdges();
-    void printWithNeighbors();
+    void print();
 };
 
 
@@ -26,16 +25,18 @@ class Edge
 {
   public:
     int id;
-    int weight;
-    int capacity;
+    int cost;
+    int minCapacity;
+    int maxCapacity;
     int flow;
-    Vertex* start;
-    Vertex* end;
-    Edge* pairedEdge;
+    int startId;
+    int endId;
+    int pairedEdgeId;
 
-    Edge(int id,int weight,int capacity,Vertex* start,Vertex* end);
-    void setFlow(int newFlow); //to implement
-    void increaseFlow(int increase); //to implement
+    Edge(int id,int cost,int minCapacity,int maxCapacity,int startId,int endId);
+    void print();
+    void setFlow(int newFlow); //à  implémenter
+    void increaseFlow(int increase); //à  implémenter
 };
 
 
@@ -43,15 +44,16 @@ class Edge
 class Graph
 {
   public:
-    static const int NUMBER_OF_FLOW_INFORMATION = 4;
+    static const int edgeInfoAmount = 5;
     int nbVertices;
     int nbEdges;
     std::vector<Vertex> vertices;
     std::vector<Edge> edges;
 
-    Graph(int nbVertices,int nbEdges,int edgeArray[][NUMBER_OF_FLOW_INFORMATION]);
+    Graph(int nbVertices,int nbEdges,int edgeArray[][edgeInfoAmount]);
+    Graph(int nbVertices); //pour créer un graphe sans arêtes, utile lors de la création des graphes résiduels
     void print();
-    void addVertex(); //to implement
+    void addVertex(); //à  implémenter
     void addEdge(Edge edge);
     Graph* getResidualGraph();
 };
