@@ -3,6 +3,7 @@
 #define structs
 
 
+class Edge;
 class Vertex
 {
   public:
