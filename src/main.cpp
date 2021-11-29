@@ -10,10 +10,10 @@ int main()
   Graph graph(4,4,edgeArray);
   Graph* residualGraph = graph.getResidualGraph();
 
-  graph.edges[0].increaseFlow(*residualGraph,4);
-  graph.edges[1].increaseFlow(*residualGraph,1);
-  graph.edges[2].increaseFlow(*residualGraph,3);
-  graph.edges[3].increaseFlow(*residualGraph,1);
+  graph.increaseFlow(0,4);
+  graph.increaseFlow(1,1);
+  graph.increaseFlow(2,3);
+  graph.increaseFlow(3,1);
 
   graph.print();
   std::cout << "\n";

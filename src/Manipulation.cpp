@@ -17,6 +17,17 @@ Edge& Edge::getPairedEdge(Graph& pairedGraph){return pairedGraph.edges[pairedEdg
 
 
 
+//getters de la classe Graph
+Edge& Graph::getEnteringEdge(int vertexId,int edgeId){return vertices[vertexId].getEnteringEdge(*this,edgeId);}
+Edge& Graph::getLeavingEdge(int vertexId,int edgeId){return vertices[vertexId].getLeavingEdge(*this,edgeId);}
+Vertex& Graph::getEnteringNeighbour(int vertexId,int neighbourId){return vertices[vertexId].getEnteringNeighbour(*this,neighbourId);}
+Vertex& Graph::getLeavingNeighbour(int vertexId,int neighbourId){return vertices[vertexId].getLeavingNeighbour(*this,neighbourId);}
+Vertex& Graph::getStart(int edgeId){return edges[edgeId].getStart(*this);}
+Vertex& Graph::getEnd(int edgeId){return edges[edgeId].getEnd(*this);}
+Edge& Graph::getPairedEdge(int edgeId){return edges[edgeId].getPairedEdge(*pairedGraph);}
+
+
+
 //ces méthodes prennent en charge le changement de flot dans le graphe asscocié
 void Edge::increaseFlow(Graph& pairedGraph,int increase)
 {
@@ -26,11 +37,15 @@ void Edge::increaseFlow(Graph& pairedGraph,int increase)
   if(flow < minCapacity){std::cout << "Capacité minimale non respectée sur l'arc " << id << "\n";}
   if(flow > maxCapacity){std::cout << "Capacité maximale non respectée sur l'arc " << id << "\n";}
 }
+
 void Edge::setFlow(Graph& pairedGraph,int newFlow)
 {
   int increase = newFlow - flow;
   increaseFlow(pairedGraph,increase);
 }
+
+void Graph::increaseFlow(int edgeId,int increase){edges[edgeId].increaseFlow(*pairedGraph,increase);}
+void Graph::setFlow(int edgeId,int newFlow){edges[edgeId].setFlow(*pairedGraph,newFlow);}
 
 
 
