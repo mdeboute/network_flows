@@ -3,7 +3,6 @@
 #include "Structures.hpp"
 
 
-
 Vertex::Vertex(int id)
 {
   this->id = id;
@@ -62,7 +61,6 @@ Graph::Graph(int nbVertices,int nbEdges,int edgeArray[][edgeInfoAmount])
 Graph::Graph(int nbVertices) //même constructeur mais sans arêtes
 {
   this->nbVertices = nbVertices;
-  this->nbEdges = nbEdges;
   for(int id=0;id<nbVertices;id++){
     Vertex newVertice(id);
     vertices.push_back(newVertice);
@@ -79,12 +77,10 @@ void Edge::print()
 
 
 
-
 void Vertex::print()
 {
   std::cout << "Vertex " << id << "\n";
 }
-
 
 
 void Graph::print()

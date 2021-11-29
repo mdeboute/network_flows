@@ -2,7 +2,6 @@
 #include "Manipulation.cpp"
 
 
-
 int main()
 {
   // {cost,min,max,start,end} -> arête du sommet start vers end, avec coût cost, capacité minimum min et maximum max

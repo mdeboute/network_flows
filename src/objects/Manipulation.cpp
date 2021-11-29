@@ -16,7 +16,6 @@ void Graph::addEdge(Edge edge)
 }
 
 
-
 Graph* Graph::getResidualGraph()
 {
   Graph* residualGraph = new Graph(nbVertices);

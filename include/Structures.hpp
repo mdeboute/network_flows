@@ -3,9 +3,6 @@
 #define structs
 
 
-
-class Edge;
-
 class Vertex
 {
   public:
@@ -18,7 +15,6 @@ class Vertex
     Vertex(int id);
     void print();
 };
-
 
 
 class Edge
@@ -40,7 +36,6 @@ class Edge
 };
 
 
-
 class Graph
 {
   public:
@@ -57,7 +52,6 @@ class Graph
     void addEdge(Edge edge);
     Graph* getResidualGraph();
 };
-
 
 
 #endif
