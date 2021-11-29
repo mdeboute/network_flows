@@ -33,4 +33,4 @@ La plupart sont au format DIMACS, [ceci](http://lpsolve.sourceforge.net/5.5/DIMA
 
 #### Faire un checker/evaluator
 
-#### Modéliser les problèmes sous forme de PL avec Gurobi ou CPLEX
+#### Modéliser les problèmes sous forme de PL avec Gurobi ou CPLEX ou OR-Tools
