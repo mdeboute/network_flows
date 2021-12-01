@@ -44,11 +44,11 @@ class Edge
     //méthodes
     Edge(int id,int cost,int minCapacity,int maxCapacity,int startId,int endId);
     void print();
-    void increaseFlow(Graph& pairedGraph,int increase); //les négatifs sont tolérés, pairedGraph est le graphe asscocié
-    void setFlow(Graph& pairedGraph,int newFlow); //pairedGraph est le graphe asscocié
+    void increaseFlow(Graph& graph,int increase); //les négatifs sont tolérés
+    void setFlow(Graph& graph,int newFlow);
     Vertex& getStart(Graph& graph);
     Vertex& getEnd(Graph& graph);
-    Edge& getPairedEdge(Graph& pairedGraph); //pairedGraph est le graphe asscocié
+    Edge& getPairedEdge(Graph& graph);
 };
 
 
@@ -62,7 +62,6 @@ class Graph
     int nbEdges;
     std::vector<Vertex> vertices;
     std::vector<Edge> edges;
-    Graph* pairedGraph;
 
     //méthodes
     Graph(int nbVertices,int nbEdges,int edgeArray[][edgeInfoAmount]);

@@ -13,7 +13,7 @@ Vertex& Vertex::getLeavingNeighbour(Graph& graph,int id){return graph.vertices[g
 //getters de la classe Edge
 Vertex& Edge::getStart(Graph& graph){return graph.vertices[startId];}
 Vertex& Edge::getEnd(Graph& graph){return graph.vertices[endId];}
-Edge& Edge::getPairedEdge(Graph& pairedGraph){return pairedGraph.edges[pairedEdgeId];}
+Edge& Edge::getPairedEdge(Graph& graph){return graph.edges[pairedEdgeId];}
 
 
 
@@ -24,28 +24,27 @@ Vertex& Graph::getEnteringNeighbour(int vertexId,int neighbourId){return vertice
 Vertex& Graph::getLeavingNeighbour(int vertexId,int neighbourId){return vertices[vertexId].getLeavingNeighbour(*this,neighbourId);}
 Vertex& Graph::getStart(int edgeId){return edges[edgeId].getStart(*this);}
 Vertex& Graph::getEnd(int edgeId){return edges[edgeId].getEnd(*this);}
-Edge& Graph::getPairedEdge(int edgeId){return edges[edgeId].getPairedEdge(*pairedGraph);}
+Edge& Graph::getPairedEdge(int edgeId){return edges[edgeId].getPairedEdge(*this);}
 
 
 
-//ces méthodes prennent en charge le changement de flot dans le graphe asscocié
-void Edge::increaseFlow(Graph& pairedGraph,int increase)
+//ces méthodes ne prennent pas (encore) en charge le changement de flot/capacité sur l'arc asscocié
+void Edge::increaseFlow(Graph& graph,int increase)
 {
   flow += increase;
-  getPairedEdge(pairedGraph).maxCapacity += -increase;
 
   if(flow < minCapacity){std::cout << "Capacité minimale non respectée sur l'arc " << id << "\n";}
   if(flow > maxCapacity){std::cout << "Capacité maximale non respectée sur l'arc " << id << "\n";}
 }
 
-void Edge::setFlow(Graph& pairedGraph,int newFlow)
+void Edge::setFlow(Graph& graph,int newFlow)
 {
   int increase = newFlow - flow;
-  increaseFlow(pairedGraph,increase);
+  increaseFlow(graph,increase);
 }
 
-void Graph::increaseFlow(int edgeId,int increase){edges[edgeId].increaseFlow(*pairedGraph,increase);}
-void Graph::setFlow(int edgeId,int newFlow){edges[edgeId].setFlow(*pairedGraph,newFlow);}
+void Graph::increaseFlow(int edgeId,int increase){edges[edgeId].increaseFlow(*this,increase);}
+void Graph::setFlow(int edgeId,int newFlow){edges[edgeId].setFlow(*this,newFlow);}
 
 
 
@@ -62,7 +61,6 @@ void Graph::addEdge(Edge edge)
 {
   edges.push_back(edge);
 
-
   vertices[edge.startId].nbLeavingEdges += 1;
   vertices[edge.startId].leavingEdgesId.push_back(nbEdges);
 
@@ -74,6 +72,7 @@ void Graph::addEdge(Edge edge)
 
 
 
+//à ajouter le booléen qui indique la fusion des arcs parallèles
 Graph* Graph::getResidualGraph()
 {
   Graph* residualGraph = new Graph(nbVertices);
@@ -82,24 +81,31 @@ Graph* Graph::getResidualGraph()
 
     int residualCapacity = edge.maxCapacity - edge.flow;
 
-    if(residualCapacity > 0){
+    //arc résiduel
+    int id = residualGraph->nbEdges;
+    int cost = edge.cost;
+    int minCapacity = 0;
+    int maxCapacity = residualCapacity;
+    int startId = edge.startId;
+    int endId = edge.endId;
 
-      int id = residualGraph->nbEdges;
-      int cost = edge.cost;
-      int minCapacity = 0;
-      int maxCapacity = residualCapacity;
-      int startId = edge.endId;
-      int endId = edge.startId;
+    Edge residualEdge(id,cost,minCapacity,maxCapacity,startId,endId);
+    residualEdge.pairedEdgeId = id+1;
 
-      Edge residualEdge(id,cost,minCapacity,maxCapacity,startId,endId);
-      residualEdge.pairedEdgeId = edge.id;
-      edge.pairedEdgeId = residualGraph->nbEdges;
+    //arc inverse
+    int invId = id+1;
+    int invCost = edge.cost;
+    int invMinCapacity = 0;
+    int invMaxCapacity = edge.flow;
+    int invStartId = edge.endId;
+    int invEndId = edge.startId;
 
-      residualGraph->addEdge(residualEdge);
-    }
+    Edge inverseEdge(invId,invCost,invMinCapacity,invMaxCapacity,invStartId,invEndId);
+    inverseEdge.pairedEdgeId = id;
+
+    residualGraph->addEdge(residualEdge);
+    residualGraph->addEdge(inverseEdge);
   }
-
-  pairedGraph = residualGraph;
-  residualGraph->pairedGraph = this;
+  
   return residualGraph;
 }
