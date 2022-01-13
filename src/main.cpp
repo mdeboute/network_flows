@@ -1,5 +1,6 @@
 #include "Structures.cpp"
 #include "Manipulation.cpp"
+#include "MinCostParser.cpp"
 
 
 
@@ -18,6 +19,9 @@ int main()
   graph.print();
   std::cout << "\n";
   residualGraph->print();
+
+  Graph g parse("../data/mincost/gte_bad.20");
+  g.print();
 
   return 0;
 }
