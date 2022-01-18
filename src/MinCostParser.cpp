@@ -28,7 +28,7 @@ void openFile(ifstream& file, string filePath)
     }
     else
     {
-        cerr << "File open failed" << endl;
+        cerr << "File open failed\n" << endl;
         exit(-1);
     }
 }
@@ -48,6 +48,7 @@ Graph processFile(ifstream& file)
     int nodeId, nodeFlow;
     int sourceNodeId, destinationNodeId, minFlow, maxFlow, cost;
     vector<vector<int>> edgesArray;
+    vector<vector<int>> flowsArray;
 
     // for all the line of the file parse the line and store the data to create the graph
     while (getline(file, line))
@@ -82,6 +83,8 @@ Graph processFile(ifstream& file)
             nodeId = stoi(token);
             getline(ss, token, delimiter);
             nodeFlow = stoi(token);
+            vector<int> flows{nodeId, nodeFlow};
+            flowsArray.push_back(flows);
         }
         else if (line[0] == 'a')
         {
@@ -119,5 +122,14 @@ Graph processFile(ifstream& file)
 
     // create the graph
     Graph graph(nbNodes, nbEdges, infos);
+
+    cout << "Graph created!\n" << endl;
+
+    // set the flows
+    for (int i = 0; i < flowsArray.size(); i++)
+    {
+        graph.setFlow(flowsArray[i][0], flowsArray[i][1]);
+    }
+
     return graph;
 }
