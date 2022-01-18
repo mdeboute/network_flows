@@ -1,10 +1,11 @@
 #include "Structures.hpp"
 #include <fstream>
 #include <sstream>
+#include <vector>
 using namespace std;
 
 void openFile(ifstream&, string);
-void processFile(ifstream&);
+Graph processFile(ifstream&);
 
 // this function parse an input file and return a network graph
 // parameters: filepath
@@ -13,7 +14,7 @@ Graph parse(std::string filePath)
 {
     ifstream file;
     openFile(file, filePath);
-    Graph graph processFile(file);
+    Graph graph = processFile(file);
     file.close();
     return graph;
 }
@@ -46,23 +47,28 @@ Graph processFile(ifstream& file)
     int nbNodes, nbEdges;
     int nodeId, nodeFlow;
     int sourceNodeId, destinationNodeId, minFlow, maxFlow, cost;
+    vector<vector<int>> edgesArray;
 
     //for all the line of the file parse the line and store the data to create the graph
     while (getline(file, line))
     {
+        if(file.eof()) break;
+
         if (line[0] == 'c')
         {
             // comment line, skip
         }
         else if (line[0] == 'p')
         {
-            // problem line, get the number of nodes and the number of edges
+            //problem line, get the number of nodes and the number of edges
             stringstream ss(line);
             string token;
-            getline(ss, token, ' ');
-            getline(ss, token, ' ');
+            char delimiter = ' ';
+            getline(ss, token, delimiter);
+            getline(ss, token, delimiter);
+            getline(ss, token, delimiter);
             nbNodes = stoi(token);
-            getline(ss, token, ' ');
+            getline(ss, token, delimiter);
             nbEdges = stoi(token);
         }
         else if (line[0] == 'n')
@@ -70,10 +76,11 @@ Graph processFile(ifstream& file)
             // nodes line, get the node id and the node flow
             stringstream ss(line);
             string token;
-            getline(ss, token, ' ');
-            getline(ss, token, ' ');
+            char delimiter = ' ';
+            getline(ss, token, delimiter);
+            getline(ss, token, delimiter);
             nodeId = stoi(token);
-            getline(ss, token, ' ');
+            getline(ss, token, delimiter);
             nodeFlow = stoi(token);
         }
         else if (line[0] == 'a')
@@ -82,20 +89,33 @@ Graph processFile(ifstream& file)
             // the cost of the edge
             stringstream ss(line);
             string token;
-            getline(ss, token, ' ');
-            getline(ss, token, ' ');
+            char delimiter = ' ';
+            getline(ss, token, delimiter);
+            getline(ss, token, delimiter);
             sourceNodeId = stoi(token);
-            getline(ss, token, ' ');
+            getline(ss, token, delimiter);
             destinationNodeId = stoi(token);
-            getline(ss, token, ' ');
+            getline(ss, token, delimiter);
             minFlow = stoi(token);
-            getline(ss, token, ' ');
+            getline(ss, token, delimiter);
             maxFlow = stoi(token);
-            getline(ss, token, ' ');
+            getline(ss, token, delimiter);
             cost = stoi(token);
+
+            vector<int> edges{cost, minFlow, maxFlow, sourceNodeId, destinationNodeId};
+            edgesArray.push_back(edges);
         }
     }
-    // create the graph
-    int edgeArray[nbEdges][5] = {
-        {sourceNodeId, destinationNodeId, minFlow, maxFlow, cost}};
+    //convert the vector to an array
+    int infos[nbEdges][5];
+    for (int i = 0; i < nbEdges; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            infos[i][j] = edgesArray[i][j];
+        }
+    }
+    //create the graph
+    Graph graph(nbNodes, nbEdges, infos);
+    return graph;
 }

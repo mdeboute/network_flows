@@ -21,7 +21,7 @@ int main()
   std::cout << "\n";
   residualGraph->print();
 
-  Graph g parse("../data/mincost/gte_bad.20");
+  Graph g = parse("../data/mincost/gte_bad.20");
   g.print();
 
   return 0;
