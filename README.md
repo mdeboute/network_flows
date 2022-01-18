@@ -8,7 +8,9 @@ Implémentation d'algorithmes de théorie des graphes ainsi que la structure de 
 cd build
 cmake ..
 make
-./src/app
+cd ..
+cd exec
+./a.out
 ```
 
 ## Ressources

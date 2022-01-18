@@ -22,7 +22,7 @@ int main()
   residualGraph->print();
 
   Graph g = parse("../data/mincost/gte_bad.20");
-  g.print();
+  //g.print();
 
   return 0;
 }

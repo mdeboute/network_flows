@@ -49,7 +49,7 @@ Graph processFile(ifstream& file)
     int sourceNodeId, destinationNodeId, minFlow, maxFlow, cost;
     vector<vector<int>> edgesArray;
 
-    //for all the line of the file parse the line and store the data to create the graph
+    // for all the line of the file parse the line and store the data to create the graph
     while (getline(file, line))
     {
         if(file.eof()) break;
@@ -60,7 +60,7 @@ Graph processFile(ifstream& file)
         }
         else if (line[0] == 'p')
         {
-            //problem line, get the number of nodes and the number of edges
+            // problem line, get the number of nodes and the number of edges
             stringstream ss(line);
             string token;
             char delimiter = ' ';
@@ -106,7 +106,8 @@ Graph processFile(ifstream& file)
             edgesArray.push_back(edges);
         }
     }
-    //convert the vector to an array
+
+    // convert the vector to an array
     int infos[nbEdges][5];
     for (int i = 0; i < nbEdges; i++)
     {
@@ -115,7 +116,8 @@ Graph processFile(ifstream& file)
             infos[i][j] = edgesArray[i][j];
         }
     }
-    //create the graph
+
+    // create the graph
     Graph graph(nbNodes, nbEdges, infos);
     return graph;
 }
