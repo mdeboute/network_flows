@@ -1,6 +1,7 @@
 #include "Structures.cpp"
 #include "Manipulation.cpp"
 #include "MinCostParser.cpp"
+#include "MaxFlowParser.cpp"
 
 
 int main()
@@ -11,5 +12,10 @@ int main()
   std::cout << "Residual graph:\n" << std::endl;
   Graph* rGraph = graph.getResidualGraph();
   rGraph->print();
+
+  std::cout << std::endl;
+  Graph graph2 = maxFlowParser("../data/maxflow/instance_1.max");
+  graph2.print();
+
   return 0;
 }
