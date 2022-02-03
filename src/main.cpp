@@ -6,7 +6,7 @@
 
 int main()
 {
-  Graph graph = parse("../data/test.txt");
+  Graph graph = parse("../data/mincost/test.txt");
   graph.print();
   std::cout << std::endl;
   std::cout << "Residual graph:\n" << std::endl;
