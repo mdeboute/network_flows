@@ -17,5 +17,9 @@ int main()
   Graph graph2 = maxFlowParser("../data/maxflow/instance_1.max");
   graph2.print();
 
+  //TODO:
+  //inclure les headers (en créer si besoin) et non les fichiers .cpp
+  //les protéger avec des #ifndef et #define
+
   return 0;
 }
