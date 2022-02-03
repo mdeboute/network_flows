@@ -15,7 +15,7 @@ int main()
 
   std::cout << std::endl;
   Graph graph2 = maxFlowParser("../data/maxflow/instance_1.max");
-  graph2.print();
+  //graph2.print();
 
   //TODO:
   //inclure les headers (en créer si besoin) et non les fichiers .cpp
