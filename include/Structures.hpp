@@ -12,12 +12,14 @@ class Vertex
   public:
     //attributs
     int id;
+    int exceedingFlow;
     int nbEnteringEdges;
     int nbLeavingEdges;
     std::vector<int> enteringEdgesId;
     std::vector<int> leavingEdgesId;
 
     //méthodes
+    Vertex(int id,int exceedingFlow);
     Vertex(int id);
     void print();
     Edge& getEnteringEdge(Graph& graph,int id); //retourne la n-ième arête entrante (n=id)
@@ -64,7 +66,9 @@ class Graph
     std::vector<Edge> edges;
 
     //méthodes
-    Graph(int nbVertices,int nbEdges,int edgeArray[][edgeInfoAmount]);
+
+    Graph(int nbVertices,int nbEdges,int verticeArray[],int edgeArray[][edgeInfoAmount]);
+    Graph(int nbVertices,int nbEdges,int edgeArray[][edgeInfoAmount]); //ancien constructeur toujours fonctionel mais il vaut mieux utiliser la nouvelle
     Graph(int nbVertices); //pour créer un graphe sans arêtes, utile lors de la création des graphes résiduels
     void print();
     void addVertex();
