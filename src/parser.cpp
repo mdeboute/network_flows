@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <algorithm>
 
 namespace mincost
 {
@@ -207,7 +208,7 @@ namespace maxflow
                     outputArray.push_back(val);
                 }
 
-                outputArray.erase(remove_if(outputArray.begin(), outputArray.end(), isEmptyOrBlank), outputArray.end());
+                outputArray.erase(std::remove_if(outputArray.begin(), outputArray.end(), isEmptyOrBlank), outputArray.end());
 
                 nbNodes = stoi(outputArray[2]);
                 nbEdges = stoi(outputArray[3]);
@@ -226,7 +227,7 @@ namespace maxflow
                 {
                     outputArray.push_back(val);
                 }
-                outputArray.erase(remove_if(outputArray.begin(), outputArray.end(), isEmptyOrBlank), outputArray.end());
+                outputArray.erase(std::remove_if(outputArray.begin(), outputArray.end(), isEmptyOrBlank), outputArray.end());
 
                 sourceNodeId = stoi(outputArray[1]);
                 destinationNodeId = stoi(outputArray[2]);
