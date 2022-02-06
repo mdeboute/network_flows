@@ -16,7 +16,7 @@ namespace mincost
         else
         {
             std::cerr << "File open failed\n"
-                 << std::endl;
+                      << std::endl;
             exit(-1);
         }
     }
@@ -149,7 +149,7 @@ namespace maxflow
         else
         {
             std::cerr << "File open failed\n"
-                 << std::endl;
+                      << std::endl;
             exit(-1);
         }
     }

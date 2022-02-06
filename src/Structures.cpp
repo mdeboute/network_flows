@@ -8,7 +8,7 @@ Vertex::Vertex(int id)
   exceedingFlow = 0;
 }
 
-Vertex::Vertex(int id,int exceedingFlow)
+Vertex::Vertex(int id, int exceedingFlow)
 {
   this->id = id;
   this->exceedingFlow = exceedingFlow;
@@ -25,22 +25,22 @@ Edge::Edge(int id, int cost, int minCapacity, int maxCapacity, int startId, int 
   this->flow = 0; // normalement pas nécessaire mais c++ l'initialise à 1 sinon (??)
 }
 
-
-
-Graph::Graph(int nbVertices,int nbEdges,int verticeArray[],int edgeArray[][edgeInfoAmount])
+Graph::Graph(int nbVertices, int nbEdges, int verticeArray[], int edgeArray[][edgeInfoAmount])
 {
   this->nbVertices = nbVertices;
   this->nbEdges = nbEdges;
 
-  //création des sommets
-  //les listes d'adjacences ne sont pas directement affectées
-  for(int id=0;id<nbVertices;id++){
-    Vertex newVertice(id,verticeArray[id]);
+  // création des sommets
+  // les listes d'adjacences ne sont pas directement affectées
+  for (int id = 0; id < nbVertices; id++)
+  {
+    Vertex newVertice(id, verticeArray[id]);
     vertices.push_back(newVertice);
   }
 
-  //création des arêtes
-  for(int id=0;id<nbEdges;id++){
+  // création des arêtes
+  for (int id = 0; id < nbEdges; id++)
+  {
 
     int cost = edgeArray[id][0];
     int minCapacity = edgeArray[id][1];
@@ -48,10 +48,10 @@ Graph::Graph(int nbVertices,int nbEdges,int verticeArray[],int edgeArray[][edgeI
     int startId = edgeArray[id][3];
     int endId = edgeArray[id][4];
 
-    Edge newEdge(id,cost,minCapacity,maxCapacity,startId,endId);
+    Edge newEdge(id, cost, minCapacity, maxCapacity, startId, endId);
     edges.push_back(newEdge);
 
-    //affectation des listes d'adjacences des sommets
+    // affectation des listes d'adjacences des sommets
     vertices[newEdge.startId].nbLeavingEdges += 1;
     vertices[newEdge.startId].leavingEdgesId.push_back(id);
 
@@ -60,7 +60,7 @@ Graph::Graph(int nbVertices,int nbEdges,int verticeArray[],int edgeArray[][edgeI
   }
 }
 
-Graph::Graph(int nbVertices,int nbEdges,int edgeArray[][edgeInfoAmount])
+Graph::Graph(int nbVertices, int nbEdges, int edgeArray[][edgeInfoAmount])
 {
   this->nbVertices = nbVertices;
   this->nbEdges = nbEdges;
@@ -113,9 +113,12 @@ void Edge::print()
 
 void Vertex::print()
 {
-  std::cout << "Vertex " << id ;
-  if(exceedingFlow != 0){std::cout << ", casting " << exceedingFlow << " units of flow" ;}
-  std::cout << "\n" ;
+  std::cout << "Vertex " << id;
+  if (exceedingFlow != 0)
+  {
+    std::cout << ", casting " << exceedingFlow << " units of flow";
+  }
+  std::cout << "\n";
 }
 
 void Graph::print()
