@@ -5,11 +5,10 @@ Implémentation d'algorithmes de théorie des graphes ainsi que la structure de 
 ## Comment compiler et exécuter le programme ?
 
 ```shell
+mkdir build
 cd build
 cmake ..
 make
-cd ..
-cd exec
 ./a.out
 ```
 
