@@ -39,6 +39,7 @@ namespace mincost
         int sourceNodeId, destinationNodeId, minFlow, maxFlow, cost;
         std::vector<std::vector<int>> edgesArray;
         std::vector<std::vector<int>> flowsArray;
+        const char delimiter = ' ';
 
         // for all the line of the file parse the line and store the data to create the graph
         while (getline(file, line))
@@ -55,7 +56,6 @@ namespace mincost
                 // problem line, get the number of nodes and the number of edges
                 std::stringstream ss(line);
                 std::string token;
-                char delimiter = ' ';
                 getline(ss, token, delimiter);
                 getline(ss, token, delimiter);
                 getline(ss, token, delimiter);
@@ -68,10 +68,9 @@ namespace mincost
                 // nodes line, get the node id and the node flow
                 std::stringstream ss(line);
                 std::string token;
-                char delimiter = ' ';
                 getline(ss, token, delimiter);
                 getline(ss, token, delimiter);
-                nodeId = stoi(token);
+                nodeId = stoi(token) - 1; // node id starts at 1
                 getline(ss, token, delimiter);
                 nodeFlow = stoi(token);
                 std::vector<int> flows{nodeId, nodeFlow};
@@ -83,12 +82,11 @@ namespace mincost
                 // the cost of the edge
                 std::stringstream ss(line);
                 std::string token;
-                char delimiter = ' ';
                 getline(ss, token, delimiter);
                 getline(ss, token, delimiter);
-                sourceNodeId = stoi(token);
+                sourceNodeId = stoi(token) - 1; // -1 to fit our data structure
                 getline(ss, token, delimiter);
-                destinationNodeId = stoi(token);
+                destinationNodeId = stoi(token) - 1; // -1 to fit our data structure
                 getline(ss, token, delimiter);
                 minFlow = stoi(token);
                 getline(ss, token, delimiter);
@@ -229,8 +227,8 @@ namespace maxflow
                 }
                 outputArray.erase(std::remove_if(outputArray.begin(), outputArray.end(), isEmptyOrBlank), outputArray.end());
 
-                sourceNodeId = stoi(outputArray[1]);
-                destinationNodeId = stoi(outputArray[2]);
+                sourceNodeId = stoi(outputArray[1]) - 1;      // -1 to fit our data structure
+                destinationNodeId = stoi(outputArray[2]) - 1; // -1 to fit our data structure
                 maxFlow = stoi(outputArray[3]);
 
                 std::vector<int> edges{0, 0, maxFlow, sourceNodeId, destinationNodeId};

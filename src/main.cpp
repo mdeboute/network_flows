@@ -5,17 +5,14 @@ using namespace std;
 
 int main()
 {
-  Graph graph = mincost::parse("../data/mincost/test.txt");
+  Graph graph = maxflow::parse("../data/maxflow/instance_1.max"); // undefined reference to `Graph::setFlow(int, int)'
   graph.print();
-  // cout << endl;
-  // cout << "Residual graph:\n"
-  //      << endl;
-  // Graph *rGraph = graph.getResidualGraph(); //undefined reference to `Graph::getResidualGraph()' ?
-  // rGraph->print();
-
   cout << endl;
-  Graph graph2 = maxflow::parse("../data/maxflow/instance_1.max");
-  // graph2.print();
+  cout << "Residual graph:\n"
+       << endl;
+  Graph *rGraph = graph.getResidualGraph();
+  rGraph->print();
 
+  // TODO: régler le problème de la fonction setFlow et getResidualGraph
   return 0;
 }
