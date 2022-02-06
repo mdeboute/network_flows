@@ -1,11 +1,12 @@
 #include <iostream>
 #include "Structures.hpp"
 #include "parser.hpp"
+#include "algorithms.hpp"
 using namespace std;
 
 int main()
 {
-  Graph graph = maxflow::parse("../data/maxflow/instance_1.max"); // undefined reference to `Graph::setFlow(int, int)'
+  Graph graph = maxflow::parse("../data/negative_weight_cycle.txt");
   graph.print();
   cout << endl;
   cout << "Residual graph:\n"
@@ -13,6 +14,9 @@ int main()
   Graph *rGraph = graph.getResidualGraph();
   rGraph->print();
 
-  // TODO: régler le problème de la fonction setFlow et getResidualGraph
+  cout << endl;
+  BellmanFord(graph, 0);
+
+  // TODO: régler le problème de la fonction setFlow et getResidualGraph ('undefined reference to')
   return 0;
 }

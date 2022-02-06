@@ -8,5 +8,6 @@ file(GLOB SRC
     src/parser.cpp
     src/manipulation.cpp
     src/Structures.cpp
+    src/algorithms.cpp
 )
 add_executable(a.out ${SRC})
