@@ -1,7 +1,0 @@
-c Test pour la fonction BellmanFord
-p max 4 5
-a 1 2 3
-a 2 3 1
-a 3 4 2
-a 4 1 7
-a 4 2 -4

@@ -6,7 +6,7 @@ using namespace std;
 
 int main()
 {
-  Graph graph = maxflow::parse("../data/negative_weight_cycle.txt");
+  Graph graph = mincost::parse("../data/negative_weight_cycle.min");
   graph.print();
   cout << endl;
   cout << "Residual graph:\n"

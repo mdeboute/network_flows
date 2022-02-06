@@ -35,7 +35,7 @@ void BellmanFord(Graph graph, int src)
         {
             int u = graph.edges[j].startId;
             int v = graph.edges[j].endId;
-            int weight = graph.edges[j].maxCapacity;
+            int weight = graph.edges[j].cost;
             if (dist[u] != INT_MAX && dist[u] + weight < dist[v])
                 dist[v] = dist[u] + weight;
         }
@@ -49,7 +49,7 @@ void BellmanFord(Graph graph, int src)
     {
         int u = graph.edges[i].startId;
         int v = graph.edges[i].endId;
-        int weight = graph.edges[i].maxCapacity;
+        int weight = graph.edges[i].cost;
         if (dist[u] != INT_MAX && dist[u] + weight < dist[v])
         {
             printf("Graph contains negative weight cycle!\n");

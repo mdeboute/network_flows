@@ -1,0 +1,7 @@
+c Test pour la fonction BellmanFord
+p min 4 5
+a 1 2 0 10 3
+a 2 3 0 10 1
+a 3 4 0 10 2
+a 4 1 0 10 7
+a 4 2 0 10 -4
