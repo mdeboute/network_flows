@@ -1,5 +1,6 @@
 #include "parser.hpp"
 #include "Structures.hpp"
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -206,7 +207,7 @@ namespace maxflow
                     outputArray.push_back(val);
                 }
 
-                outputArray.erase(std::remove_if(outputArray.begin(), outputArray.end(), isEmptyOrBlank), outputArray.end());
+                outputArray.erase(remove_if(outputArray.begin(), outputArray.end(), isEmptyOrBlank), outputArray.end());
 
                 nbNodes = stoi(outputArray[2]);
                 nbEdges = stoi(outputArray[3]);
@@ -225,7 +226,7 @@ namespace maxflow
                 {
                     outputArray.push_back(val);
                 }
-                outputArray.erase(std::remove_if(outputArray.begin(), outputArray.end(), isEmptyOrBlank), outputArray.end());
+                outputArray.erase(remove_if(outputArray.begin(), outputArray.end(), isEmptyOrBlank), outputArray.end());
 
                 sourceNodeId = stoi(outputArray[1]);
                 destinationNodeId = stoi(outputArray[2]);
