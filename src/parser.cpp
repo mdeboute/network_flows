@@ -165,6 +165,7 @@ namespace maxflow
 
         std::string line;
         int nbNodes, nbEdges;
+        int src, sink;
         int sourceNodeId, destinationNodeId, maxFlow;
         std::vector<std::vector<int>> edgesArray;
         const char delimiter = ' ';
@@ -213,7 +214,30 @@ namespace maxflow
             }
             else if (line[0] == 'n')
             {
-                // skip
+                if (line[line.length() - 1] == 's')
+                {
+                    std::vector<std::string> outputArray;
+                    std::stringstream streamData(line);
+                    std::string val;
+                    while (getline(streamData, val, delimiter))
+                    {
+                        outputArray.push_back(val);
+                    }
+                    outputArray.erase(std::remove_if(outputArray.begin(), outputArray.end(), isEmptyOrBlank), outputArray.end());
+                    src = stoi(outputArray[1]) - 1; // -1 to fit our data structure
+                }
+                else if (line[line.length() - 1] == 't')
+                {
+                    std::vector<std::string> outputArray;
+                    std::stringstream streamData(line);
+                    std::string val;
+                    while (getline(streamData, val, delimiter))
+                    {
+                        outputArray.push_back(val);
+                    }
+                    outputArray.erase(std::remove_if(outputArray.begin(), outputArray.end(), isEmptyOrBlank), outputArray.end());
+                    sink = stoi(outputArray[1]) - 1; // -1 to fit our data structure
+                }
             }
             else if (line[0] == 'a')
             {
@@ -231,13 +255,13 @@ namespace maxflow
                 destinationNodeId = stoi(outputArray[2]) - 1; // -1 to fit our data structure
                 maxFlow = stoi(outputArray[3]);
 
-                std::vector<int> edges{0, 0, maxFlow, sourceNodeId, destinationNodeId};
+                std::vector<int> edges{sourceNodeId, destinationNodeId, maxFlow};
                 edgesArray.push_back(edges);
             }
         }
 
         // convert the vector to an array
-        int infos[nbEdges][5];
+        int infos[nbEdges][3];
         for (int i = 0; i < nbEdges; i++)
         {
             for (int j = 0; j < 5; j++)
@@ -247,7 +271,7 @@ namespace maxflow
         }
 
         // create the graph
-        Graph graph(nbNodes, nbEdges, infos);
+        Graph graph(nbNodes, nbEdges, src, sink, infos);
 
         std::cout << "Graph created!\n"
                   << std::endl;

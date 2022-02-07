@@ -41,6 +41,7 @@ public:
 
   // méthodes
   Edge(int id, int cost, int minCapacity, int maxCapacity, int startId, int endId);
+  Edge(int id, int startId, int endId, int maxCapacity);
   void print();
   void increaseFlow(Graph &graph, int increase); // les négatifs sont tolérés
   void setFlow(Graph &graph, int newFlow);
@@ -53,16 +54,17 @@ class Graph
 {
 public:
   // attributs
-  static const int edgeInfoAmount = 5;
   int nbVertices;
   int nbEdges;
   std::vector<Vertex> vertices;
   std::vector<Edge> edges;
+  int src;
+  int sink;
 
   // méthodes
-
-  Graph(int nbVertices, int nbEdges, int verticeArray[], int edgeArray[][edgeInfoAmount]);
-  Graph(int nbVertices, int nbEdges, int edgeArray[][edgeInfoAmount]); // ancien constructeur toujours fonctionel mais il vaut mieux utiliser la nouvelle
+  Graph(int nbVertices, int nbEdges, int src, int sink, int edgeArray[][3]);
+  Graph(int nbVertices, int nbEdges, int verticeArray[], int edgeArray[][5]);
+  Graph(int nbVertices, int nbEdges, int edgeArray[][5]); // ancien constructeur toujours fonctionel mais il vaut mieux utiliser la nouvelle
   Graph(int nbVertices);                                               // pour créer un graphe sans arêtes, utile lors de la création des graphes résiduels
   void print();
   void addVertex();
