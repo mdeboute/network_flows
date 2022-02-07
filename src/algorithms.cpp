@@ -2,6 +2,10 @@
 #include "algorithms.hpp"
 #include "Structures.hpp"
 #include <cstdio>
+#include <limits.h>
+#include <climits> // for INT_MAX
+#include <queue>
+#include <string.h>
 
 // A utility function used to print the solution
 void printArr(int dist[], int n)
