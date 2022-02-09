@@ -65,6 +65,17 @@ void Graph::addEdge(Edge edge)
   nbEdges += 1;
 }
 
+Edge &Graph::getEdgeFromVerticesId(int vertexId1, int vertexId2){
+  Edge edge;
+  for(int i = 0; i < this->vertices[vertexId1].leavingEdgesId.size(); i++){
+    if(this->Edges[this->vertices[vertexId1].leavingEdgesId[i]].endId == vertexId2){
+      edge = Edges[this->vertices[vertexId1].leavingEdgesId[i]];
+      break;
+    }
+  }
+  return edge;
+}
+
 //à ajouter le booléen qui indique la fusion des arcs parallèles
 Graph *Graph::getResidualGraph()
 {

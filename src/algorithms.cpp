@@ -68,3 +68,87 @@ void BellmanFord(Graph graph, int src)
 
     return;
 }
+
+void retreat(Graph graph, int i, int dist[]){
+    int min = INT_MAX;
+    for(int j = 0; j < graph.vertices[i].leavingEdgesId.size(); j++){
+        if(graph.edges[graph.vertices[i].leavingEdgesId[j]].residualCapacity > 0 && min > dist[graph.vertices[i].getLeavingNeighbour(graph, j).id] + 1){
+            min = dist[graph.vertices[i].getLeavingNeighbour(graph, j).id] + 1;
+        }
+    }
+    dist[i] = min;
+}
+
+void augment(Graph graph, int pred[]){
+    int vertexId = graph.sink;
+    int min = graph.getEdgeFromVerticesId(vertexId, pred[vertexId]).residualCapacity;
+    while(vertexId != graph.src){
+        vertexId = pred[vertexId];
+        if(min > graph.getEdgeFromVerticesId(vertexId, pred[vertexId]).residualCapacity){
+            min = graph.getEdgeFromVerticesId(vertexId, pred[vertexId]).residualCapacity;
+        }
+    }
+    vertexId = graph.sink;
+    while(vertexId != graph.src){
+        graph.getEdgeFromVerticesId(vertexId, pred[vertexId]).increaseResidualCapacity(min);
+        vertexId = pred[vertexId];
+    }
+}
+
+int[] distanceLabelling(Graph graph){
+    bool marks[graph.nbVertices];
+    for(int i = 0; i < graph.nbVertices; ++){
+        marks[i] = false;
+    }
+    marks[graph.sink] = true;
+    queue<int> List;
+    List.push_back(graph.sink);
+    while(List.size() > 0){
+        bool hasAdmissibleArc = false;
+        for(int i = 0; i < graph.vertices[List.front()].leavingEdgesId.size(); i++){
+            if(marks[List.front().leavingEdgesId[j].endId] == false){
+                hasAdmissibleArc = true;
+                marks[List.front().leavingEdgesId[j].endId] = true;
+                dist[List.front().leavingEdgesId[j].endId] = dist[List.front()] + 1;
+                List.push_back(List.front().leavingEdgesId[j].endId);
+            }
+        }
+        queue.pop();
+    }
+    return dist;
+}
+
+void shortestAugmentingPath(Graph graph){
+    int dist[graph.nbVertices];
+    
+    bool marks[graph.nbEdges];
+    int pred[graph.nbVertices];
+    for(int i = 0; i < graph.nbVertices; i++){
+        pred[i] = -1;
+    }
+    for(int i = 0; i < graph.nbEdges; i++){
+        marks[i] = false;
+    }
+
+    int i = graph.src;
+    while(dist[graph.src] < graph.nbVertices){
+        bool hasAdmissibleArc = false;
+        for(int j = 0; j < graph.vertices[i].leavingEdgesId.size(); j++){
+            if(marks[graph.vertices[i].leavingEdgesId[j]] == false){
+                hasAdmissibleArc = true;
+                pred[graph.vertices[i].leavingEdgesId[j]] = j;  //advance(i) cf. pdf
+                i = j;
+                if(i == graph.sink){
+                    augment(graph, pred);
+                    i = graph.src;
+                }
+            }
+        }
+        if(hasAdmissibleArc == false){
+            retreat(graph, i, dist);
+            if(i != graph.src){
+                i = pred[i];
+            }
+        }
+    }
+}

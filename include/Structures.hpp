@@ -79,6 +79,7 @@ public:
   Vertex &getStart(int edgeId);                                // retourne le sommet de départ de l'arête n (n=edgeId)
   Vertex &getEnd(int edgeId);                                  // retourne le sommet de d'arrivée de l'arête n (n=edgeId)
   Edge &getPairedEdge(int edgeId);                             // retourne l'arc associé de l'arête n (n=edgeId)
+  Edge &getEdgeFromVerticesId(int vertexId1, int vertexId2);
 };
 
 #endif
