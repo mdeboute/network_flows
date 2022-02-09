@@ -43,8 +43,10 @@ public:
   Edge(int id, int cost, int minCapacity, int maxCapacity, int startId, int endId);
   Edge(int id, int startId, int endId, int maxCapacity);
   void print();
-  void increaseFlow(Graph &graph, int increase); // les négatifs sont tolérés
-  void setFlow(Graph &graph, int newFlow);
+  void increaseFlow(int increase); // les négatifs sont tolérés
+  void setFlow(int newFlow);
+  void increaseResidualCapacity(Graph &graph,int increase); //la capacité résiduelle de l'arc inverse est changée automatiquement, les négatifs sont tolérés
+  void setResidualCapacity(Graph &graph,int newCap); //la capacité résiduelle de l'arc inverse est changée automatiquement
   Vertex &getStart(Graph &graph);
   Vertex &getEnd(Graph &graph);
   Edge &getPairedEdge(Graph &graph);
@@ -63,9 +65,8 @@ public:
 
   // méthodes
   Graph(int nbVertices, int nbEdges, int src, int sink, int edgeArray[][3]);
-  Graph(int nbVertices, int nbEdges, int verticeArray[], int edgeArray[][5]);
-  Graph(int nbVertices, int nbEdges, int edgeArray[][5]); // ancien constructeur toujours fonctionel mais il vaut mieux utiliser la nouvelle
-  Graph(int nbVertices);                                               // pour créer un graphe sans arêtes, utile lors de la création des graphes résiduels
+  Graph(int nbVertices, int nbEdges, int edgeArray[][5]);      // ancien constructeur
+  Graph(int nbVertices);                                       // pour créer un graphe sans arêtes, utile lors de la création des graphes résiduels
   void print();
   void addVertex();
   void addEdge(Edge edge);
