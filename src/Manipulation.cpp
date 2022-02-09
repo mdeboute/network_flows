@@ -21,8 +21,64 @@ Vertex &Graph::getStart(int edgeId) { return edges[edgeId].getStart(*this); }
 Vertex &Graph::getEnd(int edgeId) { return edges[edgeId].getEnd(*this); }
 Edge &Graph::getPairedEdge(int edgeId) { return edges[edgeId].getPairedEdge(*this); }
 
-// ces méthodes ne prennent pas (encore) en charge le changement de flot/capacité sur l'arc asscocié
-void Edge::increaseFlow(Graph &graph, int increase)
+//à ajouter le booléen qui indique la fusion des arcs parallèles
+Graph *Graph::getResidualGraph()
+{
+  Graph *residualGraph = new Graph(nbVertices);
+  residualGraph->src = src;
+  residualGraph->sink = sink;
+
+  for (Edge &edge : edges)
+  { // usage d'une référence sinon on itère sur des copies
+
+    // arc résiduel
+    int id = residualGraph->nbEdges;
+    int cost = edge.cost;
+    int startId = edge.startId;
+    int endId = edge.endId;
+
+    Edge residualEdge(id, cost, 0, 0, startId, endId);
+    residualEdge.residualCapacity = edge.maxCapacity - edge.flow;
+    residualEdge.pairedEdgeId = id + 1;
+
+    // arc résiduel inverse
+    int invId = id + 1;
+    int invCost = -edge.cost;
+    int invStartId = edge.endId;
+    int invEndId = edge.startId;
+
+    Edge inverseEdge(invId, invCost, 0, 0, invStartId, invEndId);
+    inverseEdge.residualCapacity = edge.flow;
+    inverseEdge.pairedEdgeId = id;
+
+    residualGraph->addEdge(residualEdge);
+    residualGraph->addEdge(inverseEdge);
+  }
+  return residualGraph;
+}
+
+// la capacité résiduelle de l'arc inverse est changée automatiquement
+void Edge::increaseResidualCapacity(Graph &graph,int increase)
+{
+  residualCapacity += increase;
+
+  Edge &pairedEdge = getPairedEdge(graph);
+  pairedEdge.residualCapacity += -increase;
+
+  if (residualCapacity < 0 or pairedEdge.residualCapacity < 0)
+  {
+    std::cout << "Changement de capacité résiduelle impossible, arc " << id << "\n";
+  }
+}
+
+// la capacité résiduelle de l'arc inverse est changée automatiquement
+void Edge::setResidualCapacity(Graph &graph,int newCap){
+  int increase = newCap - residualCapacity;
+  this->increaseResidualCapacity(graph,increase);
+}
+
+// ces méthodes ne prennent pas en charge le changement dans le graphe résiduel
+void Edge::increaseFlow(int increase)
 {
   flow += increase;
 
@@ -36,14 +92,14 @@ void Edge::increaseFlow(Graph &graph, int increase)
   }
 }
 
-void Edge::setFlow(Graph &graph, int newFlow)
+void Edge::setFlow(int newFlow)
 {
   int increase = newFlow - flow;
-  increaseFlow(graph, increase);
+  increaseFlow(increase);
 }
 
-void Graph::increaseFlow(int edgeId, int increase) { edges[edgeId].increaseFlow(*this, increase); }
-void Graph::setFlow(int edgeId, int newFlow) { edges[edgeId].setFlow(*this, newFlow); }
+void Graph::increaseFlow(int edgeId, int increase) { edges[edgeId].increaseFlow(increase); }
+void Graph::setFlow(int edgeId, int newFlow) { edges[edgeId].setFlow(newFlow); }
 
 void Graph::addVertex()
 {
@@ -63,43 +119,4 @@ void Graph::addEdge(Edge edge)
   vertices[edge.endId].enteringEdgesId.push_back(nbEdges);
 
   nbEdges += 1;
-}
-
-//à ajouter le booléen qui indique la fusion des arcs parallèles
-Graph *Graph::getResidualGraph()
-{
-  Graph *residualGraph = new Graph(nbVertices);
-
-  for (Edge &edge : edges)
-  { // usage d'une référence sinon on itère sur des copies
-
-    int residualCapacity = edge.maxCapacity - edge.flow;
-
-    // arc résiduel
-    int id = residualGraph->nbEdges;
-    int cost = edge.cost;
-    int minCapacity = 0;
-    int maxCapacity = residualCapacity;
-    int startId = edge.startId;
-    int endId = edge.endId;
-
-    Edge residualEdge(id, cost, minCapacity, maxCapacity, startId, endId);
-    residualEdge.pairedEdgeId = id + 1;
-
-    // arc inverse
-    int invId = id + 1;
-    int invCost = edge.cost;
-    int invMinCapacity = 0;
-    int invMaxCapacity = edge.flow;
-    int invStartId = edge.endId;
-    int invEndId = edge.startId;
-
-    Edge inverseEdge(invId, invCost, invMinCapacity, invMaxCapacity, invStartId, invEndId);
-    inverseEdge.pairedEdgeId = id;
-
-    residualGraph->addEdge(residualEdge);
-    residualGraph->addEdge(inverseEdge);
-  }
-
-  return residualGraph;
 }
