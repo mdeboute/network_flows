@@ -68,3 +68,49 @@ void BellmanFord(Graph graph, int src)
 
     return;
 }
+
+// A special BFS version that returns true if there's a path from source to sink.
+bool bfs(Graph *rgraph, int source, int sink, int parent[])
+{
+    // Create an array for all nodes we visited. Initialized to false.
+    int n = rgraph->nbVertices;
+    bool visited[n];
+    memset(visited, 0, sizeof(visited));
+
+    // Create a queue to check each node.
+    std::queue<int> q;
+
+    // Push our source into the queue and mark it as visited. It has no parent.
+    q.push(source);
+    visited[source] = true;
+    parent[source] = -1;
+
+    // Keep visiting vertices.
+    while (!q.empty())
+    {
+        int u = q.front();
+        q.pop();
+
+        // Check all of u's friends.
+        for (Vertex v : rgraph->vertices)
+        {
+            for (int e : v.leavingEdgesId)
+            {
+                // We find a neighbor that hasn't been visited, and the capacity is bigger than 0.
+                if (visited[v.id] == false && rgraph->edges[e].maxCapacity > 0)
+                {
+                    if (v.id == sink)
+                    {
+                        parent[v.id] = u;
+                        return true;
+                    }
+                    // Push the neighbor onto the queue, mark it's parent, and mark it as visited.
+                    q.push(v.id);
+                    parent[v.id] = u;
+                    visited[v.id] = true;
+                }
+            }
+        }
+    }
+    return false;
+}

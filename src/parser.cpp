@@ -1,6 +1,6 @@
 #include "parser.hpp"
 #include "Structures.hpp"
-#include "Manipulation.cpp"
+//#include "Manipulation.cpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
