@@ -6,12 +6,16 @@ Vertex::Vertex(int id)
 {
   this->id = id;
   exceedingFlow = 0;
+  nbEnteringEdges = 0;
+  nbLeavingEdges = 0;
 }
 
 Vertex::Vertex(int id, int exceedingFlow)
 {
   this->id = id;
   this->exceedingFlow = exceedingFlow;
+  nbEnteringEdges = 0;
+  nbLeavingEdges = 0;
 }
 
 Edge::Edge(int id, int cost, int minCapacity, int maxCapacity, int startId, int endId)
@@ -23,7 +27,8 @@ Edge::Edge(int id, int cost, int minCapacity, int maxCapacity, int startId, int 
   residualCapacity = 0;
   this->startId = startId;
   this->endId = endId;
-  this->flow = 0; // normalement pas nécessaire mais c++ l'initialise à 1 sinon (??)
+  this->flow = 0;
+  pairedEdgeId = -1;
 }
 
 Edge::Edge(int id, int startId, int endId, int maxCapacity)
@@ -35,7 +40,8 @@ Edge::Edge(int id, int startId, int endId, int maxCapacity)
   residualCapacity = 0;
   this->startId = startId;
   this->endId = endId;
-  this->flow = 0; // normalement pas nécessaire mais c++ l'initialise à 1 sinon (??)
+  this->flow = 0;
+  pairedEdgeId = -1;
 }
 
 Graph::Graph(int nbVertices, int nbEdges, int src, int sink, int edgeArray[][3])
