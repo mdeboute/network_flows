@@ -122,51 +122,11 @@ void Graph::addEdge(Edge edge)
 }
 
 Edge &Graph::getEdgeFromVerticesId(int vertexId1, int vertexId2){
-  Edge edge;
   for(int i = 0; i < this->vertices[vertexId1].leavingEdgesId.size(); i++){
-    if(this->Edges[this->vertices[vertexId1].leavingEdgesId[i]].endId == vertexId2){
-      edge = Edges[this->vertices[vertexId1].leavingEdgesId[i]];
-      break;
+    if(this->edges[this->vertices[vertexId1].leavingEdgesId[i]].endId == vertexId2){
+      return this->edges[this->vertices[vertexId1].leavingEdgesId[i]];
     }
   }
-  return edge;
+  return this->edges[0];
 }
 
-//à ajouter le booléen qui indique la fusion des arcs parallèles
-Graph *Graph::getResidualGraph()
-{
-  Graph *residualGraph = new Graph(nbVertices);
-
-  for (Edge &edge : edges)
-  { // usage d'une référence sinon on itère sur des copies
-
-    int residualCapacity = edge.maxCapacity - edge.flow;
-
-    // arc résiduel
-    int id = residualGraph->nbEdges;
-    int cost = edge.cost;
-    int minCapacity = 0;
-    int maxCapacity = residualCapacity;
-    int startId = edge.startId;
-    int endId = edge.endId;
-
-    Edge residualEdge(id, cost, minCapacity, maxCapacity, startId, endId);
-    residualEdge.pairedEdgeId = id + 1;
-
-    // arc inverse
-    int invId = id + 1;
-    int invCost = edge.cost;
-    int invMinCapacity = 0;
-    int invMaxCapacity = edge.flow;
-    int invStartId = edge.endId;
-    int invEndId = edge.startId;
-
-    Edge inverseEdge(invId, invCost, invMinCapacity, invMaxCapacity, invStartId, invEndId);
-    inverseEdge.pairedEdgeId = id;
-
-    residualGraph->addEdge(residualEdge);
-    residualGraph->addEdge(inverseEdge);
-  }
-
-  return residualGraph;
-}

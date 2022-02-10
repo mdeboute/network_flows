@@ -34,6 +34,7 @@ public:
   int cost;
   int minCapacity;
   int maxCapacity;
+  int residualCapacity;
   int flow;
   int startId;
   int endId;
