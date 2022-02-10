@@ -6,7 +6,7 @@ include_directories(include)
 file(GLOB SRC
     src/main.cpp
     src/parser.cpp
-    src/manipulation.cpp
+    src/Manipulation.cpp
     src/Structures.cpp
     src/algorithms.cpp
 )
