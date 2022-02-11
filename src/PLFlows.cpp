@@ -1,107 +1,116 @@
-#include <cstdint>
-#include "ortools/graph/max_flow.h"
-#include "ortools/graph/min_cost_flow.h"
+#include "PLFlows.hpp"
+#include "Structures.hpp"
+#include "gurobi_c++.h"
+#include<string>
+#include<sstream>
+#include<iostream>
+#include <climits>
+using namespace std;
 
-namespace PLNE
+namespace PL
 {
   void maxFlow(Graph &graph, int begin, int end)
   {
-    SimpleMaxFlow max_flow;
+    const int nbEdges = graph.nbEdges;
 
-    std::vector<int64_t> start_nodes[graph.nbEdges];
-    std::vector<int64_t> end_nodes[graph.nbEdges];
-    std::vector<int64_t> capacities[graph.nbEdges];
+    GRBVar* f;
+    try{
+  		cout<<"--> Creating the Gurobi environment"<<endl;
+  		GRBEnv env = GRBEnv(true);
+  		env.start();
+  		cout<<"--> Creating the Gurobi model"<<endl;
+  		GRBModel model = GRBModel(env);
 
-    for (int i = 0; i < graph.nbEdges; i++)
-    {
-      start_nodes[i] = graph.edges[i].startId;
-      end_nodes[i] = graph.edges[i].endId;
-      capacities[i] = graph.edges[i].maxCapacity;
-    }
+  		cout<<"--> Creating the variables"<<endl;
+  		f = new GRBVar[nbEdges];
+  		for(size_t i=0;i<nbEdges;++i){
+  			stringstream ss;
+  			ss << "f(" << i<<")";
+  			f[i]=model.addVar(0.0, INT_MAX, 0.0, GRB_CONTINUOUS, ss.str());
+  		}
 
-    for (int i = 0; i < start_nodes.size(); ++i)
-    {
-      max_flow.AddArcWithCapacity(start_nodes[i], end_nodes[i], capacities[i]);
-    }
+      cout<<"--> Creating the objective function"<<endl;
+  		GRBLinExpr obj = 0;
+  		for(size_t i=0;i<graph.vertices[begin].nbEnteringEdges;++i){
+  			obj+=f[graph.vertices[begin].enteringEdgesId[i]];
+  		}
+      for(size_t i=0;i<graph.vertices[begin].nbLeavingEdges;++i){
+  			obj-=f[graph.vertices[begin].leavingEdgesId[i]];
+  		}
+  		model.setObjective(obj, GRB_MINIMIZE);
 
-    int status = max_flow.Solve(begin, end);
+      cout<<"--> Creating the constraints"<<endl;
+      // flot entrant = flot sortant
+      for(size_t i=0;i<nbEdges;++i){
+        if(i!=begin && i!=end){
+          GRBLinExpr lhs = 0;
+          for(size_t j=0;j<graph.vertices[i].nbEnteringEdges;++j){
+      			lhs+=f[graph.vertices[i].enteringEdgesId[j]];
+      		}
+          for(size_t j=0;j<graph.vertices[i].nbLeavingEdges;++j){
+      			lhs-=f[graph.vertices[i].leavingEdgesId[j]];
+      		}
+    			stringstream ss;
+    			ss << "Capacity("<<i<<")";
+    			model.addConstr(lhs==0,ss.str());
+        }
+  		}
 
-    if (status == MaxFlow::OPTIMAL)
-    {
-      LOG(INFO) << "Max flow: " << max_flow.OptimalFlow();
-      LOG(INFO) << "";
-      LOG(INFO) << "  Arc    Flow / Capacity";
-      for (std::size_t i = 0; i < max_flow.NumArcs(); ++i)
-      {
-        LOG(INFO) << max_flow.Tail(i) << " -> " << max_flow.Head(i) << "  "
-                  << max_flow.Flow(i) << "  / " << max_flow.Capacity(i);
-      }
-    }
-    else
-    {
-      LOG(INFO) << "Solving the max flow problem failed. Solver status: "
-                << status;
-    }
+  		// respect des capacités
+  		for(size_t i=0;i<nbEdges;++i){
+  			GRBLinExpr lhs = f[i] - graph.edges[i].maxCapacity;
+  			stringstream ss;
+  			ss << "Capacity("<<i<<")";
+  			model.addConstr(lhs<=0,ss.str());
+  		}
+
+      // Optimize model
+  		// --- Solver configuration ---
+  		cout<<"--> Configuring the solver"<<endl;
+  		model.set(GRB_DoubleParam_TimeLimit, 600.0); //< sets the time limit (in seconds)
+  		model.set(GRB_IntParam_Threads,1); //< limits the solver to single thread usage
+
+
+  		// --- Solver launch ---
+  		cout<<"--> Running the solver"<<endl;
+  		model.optimize();
+  		//model.write("model.lp"); //< Writes the model in a file
+
+  		// --- Solver results retrieval ---
+  		cout<<"--> Retrieving solver results "<<endl;
+
+  		int status = model.get(GRB_IntAttr_Status);
+  		if (status == GRB_OPTIMAL || (status== GRB_TIME_LIMIT && model.get(GRB_IntAttr_SolCount)>0))
+  		{
+  			//the solver has computed the optimal solution or a feasible solution (when the time limit is reached before proving optimality)
+  			cout << "Succes! (Status: " << status << ")" << endl; //< prints the solver status (see the gurobi documentation)
+  			cout << "Runtime : " << model.get(GRB_DoubleAttr_Runtime) << " seconds"<<endl;
+
+  			cout<<"--> Printing results "<<endl;
+  			//model.write("solution.sol"); //< Writes the solution in a file
+  			cout << "Objective value = "<< model.get(GRB_DoubleAttr_ObjVal)  << endl; //<gets the value of the objective function for the best computed solution (optimal if no time limit)
+  			for(size_t i=0;i<nbEdges;++i){
+  				cout << "- Flow "<<i<<" is "<<f[i].get(GRB_DoubleAttr_X)<< endl;
+  			}
+
+  		} else
+  		{
+  			// the model is infeasible (maybe wrong) or the solver has reached the time limit without finding a feasible solution
+  			cerr << "Fail! (Status: " << status << ")" << endl; //< see status page in the Gurobi documentation
+  		}
+  	} catch(GRBException e) {
+  		cout << "Error code = " << e.getErrorCode() << endl;
+  		cout << e.getMessage() << endl;
+  	} catch(...) {
+  		cout << "Exception during optimization" << endl;
+  	}
+  	delete[] f;
   }
 
-  // MinCostFlow simple interface example.
+
   void minCostFlow(Graph &graph)
   {
-    // Instantiate a SimpleMinCostFlow solver.
-    SimpleMinCostFlow min_cost_flow;
 
-    std::vector<int64_t> start_nodes[graph.nbEdges];
-    std::vector<int64_t> end_nodes[graph.nbEdges];
-    std::vector<int64_t> capacities[graph.nbEdges];
-    std::vector<int64_t> unit_costs[graph.nbEdges];
-    std::vector<int64_t> supplies[graph.nbEdges];
-
-    for (int i = 0; i < graph.nbEdges; i++)
-    {
-      start_nodes[i] = graph.edges[i].startId;
-      end_nodes[i] = graph.edges[i].endId;
-      capacities[i] = graph.edges[i].maxCapacity;
-      unit_costs[i] = graph.edges[i].cost;
-      supplies[i] = graph.edges[i].minCapacity;
-    }
-
-    // Add each arc.
-    for (int i = 0; i < start_nodes.size(); ++i)
-    {
-      int arc = min_cost_flow.AddArcWithCapacityAndUnitCost(
-          start_nodes[i], end_nodes[i], capacities[i], unit_costs[i]);
-      if (arc != i)
-        LOG(FATAL) << "Internal error";
-    }
-
-    // Add node supplies.
-    for (int i = 0; i < supplies.size(); ++i)
-    {
-      min_cost_flow.SetNodeSupply(i, supplies[i]);
-    }
-
-    // Find the min cost flow.
-    int status = min_cost_flow.Solve();
-
-    if (status == MinCostFlow::OPTIMAL)
-    {
-      LOG(INFO) << "Minimum cost flow: " << min_cost_flow.OptimalCost();
-      LOG(INFO) << "";
-      LOG(INFO) << " Arc   Flow / Capacity  Cost";
-      for (std::size_t i = 0; i < min_cost_flow.NumArcs(); ++i)
-      {
-        int64_t cost = min_cost_flow.Flow(i) * min_cost_flow.UnitCost(i);
-        LOG(INFO) << min_cost_flow.Tail(i) << " -> " << min_cost_flow.Head(i)
-                  << "  " << min_cost_flow.Flow(i) << "  / "
-                  << min_cost_flow.Capacity(i) << "       " << cost;
-      }
-    }
-    else
-    {
-      LOG(INFO) << "Solving the min cost flow problem failed. Solver status: "
-                << status;
-    }
   }
 
-}
 }
