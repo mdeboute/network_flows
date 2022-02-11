@@ -12,7 +12,8 @@ Edge::Edge(int id, int cost, int minCapacity, int maxCapacity, int startId, int 
     residualCapacity = 0;
     this->startId = startId;
     this->endId = endId;
-    this->flow = 0; // normalement pas nécessaire mais c++ l'initialise à 1 sinon (??)
+    this->flow = 0;
+    pairedEdgeId = -1;
 }
 
 Edge::Edge(int id, int startId, int endId, int maxCapacity)
@@ -24,7 +25,8 @@ Edge::Edge(int id, int startId, int endId, int maxCapacity)
     residualCapacity = 0;
     this->startId = startId;
     this->endId = endId;
-    this->flow = 0; // normalement pas nécessaire mais c++ l'initialise à 1 sinon (??)
+    this->flow = 0;
+    pairedEdgeId = -1;
 }
 
 void Edge::print()

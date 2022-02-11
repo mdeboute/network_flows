@@ -7,12 +7,16 @@ Vertex::Vertex(int id)
 {
     this->id = id;
     exceedingFlow = 0;
+    nbEnteringEdges = 0;
+    nbLeavingEdges = 0;
 }
 
 Vertex::Vertex(int id, int exceedingFlow)
 {
     this->id = id;
     this->exceedingFlow = exceedingFlow;
+    nbEnteringEdges = 0;
+    nbLeavingEdges = 0;
 }
 
 void Vertex::print()

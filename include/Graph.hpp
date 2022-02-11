@@ -24,7 +24,9 @@ public:
     void print();
     void addVertex();
     void addEdge(Edge edge);
-    Graph *getResidualGraph();                                   // ne pas oublier de faire appel à delete pour éviter les fuites mémoires, (en vrai c'est pas grave)
+    void removeEdge(int edgeId);
+    Graph *getResidualGraph();
+    Graph *getResidualGraph(bool fuseParallelEdges);             // ne pas oublier de faire appel à delete pour éviter les fuites mémoires, (en vrai c'est pas grave)
     void increaseFlow(int edgeId, int increase);                 // augmente le flot de l'arête edgeId, les négatifs sont tolérés
     void setFlow(int edgeId, int newFlow);                       // change le flot de l'arête edgeId
     Edge &getEnteringEdge(int vertexId, int edgeId);             // retourne la n-ième arête entrante du sommet m (m=vertexId,n=edgeId)

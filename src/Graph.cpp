@@ -102,8 +102,13 @@ void Graph::print()
     }
 }
 
-//à ajouter le booléen qui indique la fusion des arcs parallèles
 Graph *Graph::getResidualGraph()
+{
+    return getResidualGraph(false);
+}
+
+//à ajouter le booléen qui indique la fusion des arcs parallèles
+Graph *Graph::getResidualGraph(bool fuseParallelEdges)
 {
     Graph *residualGraph = new Graph(nbVertices);
     residualGraph->src = src;
@@ -135,10 +140,32 @@ Graph *Graph::getResidualGraph()
         residualGraph->addEdge(residualEdge);
         residualGraph->addEdge(inverseEdge);
     }
+
+    // fusion des arc parralèles (pour les problèmes de flot maximum)
+    if (fuseParallelEdges)
+    {
+        for (int vertexIndex = 0; vertexIndex < residualGraph->nbVertices; vertexIndex++)
+        {
+            for (int edgeIndex1 = 0; edgeIndex1 < residualGraph->vertices[vertexIndex].nbLeavingEdges; edgeIndex1++)
+            {
+                for (int edgeIndex2 = edgeIndex1 + 1; edgeIndex2 < residualGraph->vertices[vertexIndex].nbLeavingEdges; edgeIndex2++)
+                {
+                    if (residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex1]].startId == residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2]].startId and residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex1]].endId == residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2]].endId)
+                    {
+                        residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex1]].residualCapacity += residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2]].residualCapacity;
+                        residualGraph->removeEdge(residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2]);
+                        edgeIndex2--;
+                        //éventuellment gérer les pairedEdgeId
+                    }
+                }
+            }
+        }
+    }
     return residualGraph;
 }
 
 void Graph::increaseFlow(int edgeId, int increase) { edges[edgeId].increaseFlow(increase); }
+
 void Graph::setFlow(int edgeId, int newFlow) { edges[edgeId].setFlow(newFlow); }
 
 void Graph::addVertex()
@@ -159,6 +186,65 @@ void Graph::addEdge(Edge edge)
     vertices[edge.endId].enteringEdgesId.push_back(nbEdges);
 
     nbEdges += 1;
+}
+
+void Graph::removeEdge(int edgeId)
+{
+
+    for (int vertexIndex = 0; vertexIndex < nbVertices; vertexIndex++)
+    {
+
+        for (int edgeIndex = 0; edgeIndex < vertices[vertexIndex].nbLeavingEdges; edgeIndex++)
+        {
+
+            if (vertices[vertexIndex].leavingEdgesId[edgeIndex] == edgeId)
+            {
+                vertices[vertexIndex].leavingEdgesId.erase(vertices[vertexIndex].leavingEdgesId.begin() + edgeIndex);
+                edges[edgeId].getStart(*this).nbLeavingEdges += -1;
+                edgeIndex += -1;
+            }
+            else if (vertices[vertexIndex].leavingEdgesId[edgeIndex] > edgeId)
+            {
+                vertices[vertexIndex].leavingEdgesId[edgeIndex] += -1;
+            }
+        }
+
+        for (int edgeIndex = 0; edgeIndex < vertices[vertexIndex].nbEnteringEdges; edgeIndex++)
+        {
+
+            if (vertices[vertexIndex].enteringEdgesId[edgeIndex] == edgeId)
+            {
+                vertices[vertexIndex].enteringEdgesId.erase(vertices[vertexIndex].enteringEdgesId.begin() + edgeIndex);
+                edges[edgeId].getEnd(*this).nbEnteringEdges += -1;
+                edgeIndex += -1;
+            }
+            else if (vertices[vertexIndex].enteringEdgesId[edgeIndex] > edgeId)
+            {
+                vertices[vertexIndex].enteringEdgesId[edgeIndex] += -1;
+            }
+        }
+    }
+
+    for (int edgeIndex = 0; edgeIndex < nbEdges; edgeIndex++)
+    {
+        if (edges[edgeIndex].id == edgeId)
+        {
+            edges.erase(edges.begin() + edgeIndex);
+            nbEdges += -1;
+            edgeIndex += -1;
+        }
+        else
+        {
+            if (edges[edgeIndex].id > edgeId)
+            {
+                edges[edgeIndex].id += -1;
+            }
+            if (edges[edgeIndex].pairedEdgeId > edgeId)
+            {
+                edges[edgeIndex].pairedEdgeId += -1;
+            }
+        }
+    }
 }
 
 // getters de la classe Graph
