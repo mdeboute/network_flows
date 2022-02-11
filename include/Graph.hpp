@@ -38,6 +38,7 @@ public:
     Edge &getPairedEdge(int edgeId);                             // retourne l'arc associé de l'arête n (n=edgeId)
     Edge &getEdgeFromVerticesId(int vertexId1, int vertexId2);   // retourne l'arc associé à deux ID de sommets en paramètres
     int getValueObjMaxFlow();
+    void fromMultipleToOne();
 };
 
 #endif

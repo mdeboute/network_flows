@@ -18,17 +18,17 @@ void printArr(int dist[], int n)
 // The main function that finds shortest distances from src
 // to all other vertices using Bellman-Ford algorithm.  The
 // function also detects negative weight cycle
-void BellmanFord(Graph graph, int src)
+int BellmanFord(Graph *graph, int pred[])
 {
-    int V = graph.nbVertices;
-    int E = graph.nbEdges;
+    int V = graph->nbVertices;
+    int E = graph->nbEdges;
     int dist[V];
 
     // Step 1: Initialize distances from src to all other
     // vertices as INFINITE
     for (int i = 0; i < V; i++)
         dist[i] = INT_MAX;
-    dist[src] = 0;
+    dist[graph->src] = 0;
 
     // Step 2: Relax all edges |V| - 1 times. A simple
     // shortest path from src to any other vertex can have
@@ -37,11 +37,13 @@ void BellmanFord(Graph graph, int src)
     {
         for (int j = 0; j < E; j++)
         {
-            int u = graph.edges[j].startId;
-            int v = graph.edges[j].endId;
-            int weight = graph.edges[j].cost;
+            if(graph->edges[j].residualCapacity == 0) continue;
+            int u = graph->edges[j].startId;
+            int v = graph->edges[j].endId;
+            int weight = graph->edges[j].cost;
             if (dist[u] != INT_MAX && dist[u] + weight < dist[v])
                 dist[v] = dist[u] + weight;
+                pred[v] = u;
         }
     }
 
@@ -51,13 +53,13 @@ void BellmanFord(Graph graph, int src)
     // path, then there is a cycle.
     for (int i = 0; i < E; i++)
     {
-        int u = graph.edges[i].startId;
-        int v = graph.edges[i].endId;
-        int weight = graph.edges[i].cost;
+        int u = graph->edges[i].startId;
+        int v = graph->edges[i].endId;
+        int weight = graph->edges[i].cost;
         if (dist[u] != INT_MAX && dist[u] + weight < dist[v])
         {
             printf("Graph contains negative weight cycle!\n");
-            return; // If negative cycle is detected, simply
+            return u; // If negative cycle is detected, simply
                     // return
         }
     }
@@ -66,7 +68,57 @@ void BellmanFord(Graph graph, int src)
     std::cout << std::endl;
     printArr(dist, V);
 
-    return;
+    return -1;
+}
+
+void cycleCancelling(Graph *originGraph){
+    Graph *graph = originGraph->getResidualGraph();
+    graph->fromMultipleToOne();
+    shortestAugmentingPath(graph);
+
+    int pred[graph->vertices.size()];
+    int probVertex = BellmanFord(graph, pred);
+
+    int initialVertex = probVertex;
+    while(probVertex != -1){
+        std::vector<int> edgesToChange;
+        int minResCap = 1;
+
+        int idMinEdge;
+        for(int i = 0; i < graph->vertices[probVertex].leavingEdgesId.size(); i++){
+            if(graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].endId == pred[probVertex] 
+                    && graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].residualCapacity != 0
+                    && graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].cost < graph->edges[idMinEdge].cost){
+                idMinEdge = graph->vertices[probVertex].leavingEdgesId[i];
+            }
+        }
+        edgesToChange.push_back(idMinEdge);
+        if(graph->edges[idMinEdge].residualCapacity < minResCap){
+            minResCap = graph->edges[idMinEdge].residualCapacity;
+        }
+        probVertex = pred[probVertex];
+
+        while(probVertex != initialVertex){
+            int idMinEdge;
+            for(int i = 0; i < graph->vertices[probVertex].leavingEdgesId.size(); i++){
+                if(graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].endId == pred[probVertex] 
+                        && graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].residualCapacity != 0
+                        && graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].cost < graph->edges[idMinEdge].cost){
+                    idMinEdge = graph->vertices[probVertex].leavingEdgesId[i];
+                }
+            }
+            if(graph->edges[idMinEdge].residualCapacity < minResCap){
+                minResCap = graph->edges[idMinEdge].residualCapacity;
+            }
+            probVertex = pred[probVertex];
+        }
+
+        for(int i = 0; i < edgesToChange.size(); i++){
+            graph->edges[edgesToChange[i]].increaseResidualCapacity(*graph, minResCap);
+        }
+
+        probVertex = BellmanFord(graph, pred);
+    }
 }
 
 void retreat(Graph *graph, int i, int dist[]){

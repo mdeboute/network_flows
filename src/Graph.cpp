@@ -261,7 +261,39 @@ int Graph::getValueObjMaxFlow(){
     for(int i = 0; i < this->vertices[this->src].enteringEdgesId.size(); i++){
         sumFlows += this->edges[this->vertices[this->src].enteringEdgesId[i]].residualCapacity;
     }
-    return sumFlows;
+    return sumFlows + 1;
+}
+
+void Graph::fromMultipleToOne(){
+    std::vector<int> srcNodes;
+    std::vector<int> sinkNodes;
+
+    for(int i = 0; i < this->vertices.size(); i++){
+        if(this->vertices[i].exceedingFlow > 0){
+            srcNodes.push_back(i);
+        }
+        if(this->vertices[i].exceedingFlow < 0){
+            sinkNodes.push_back(i);
+        }
+    }
+
+    if(srcNodes.size() > 1){
+        this->src = this->vertices.size();
+        this->addVertex();
+        for(int i = 0; i < srcNodes.size(); i++){
+            Edge newEdge(this->edges.size(), this->src, srcNodes[i], this->vertices[srcNodes[i]].exceedingFlow);
+            this->addEdge(newEdge);
+        }
+    }
+
+    if(sinkNodes.size() > 1){
+        this->sink = this->vertices.size();
+        this->addVertex();
+        for(int i = 0; i < sinkNodes.size(); i++){
+            Edge newEdge(this->edges.size(), this->sink, sinkNodes[i], this->vertices[sinkNodes[i]].exceedingFlow);
+            this->addEdge(newEdge);
+        }
+    }
 }
 
 // getters de la classe Graph
