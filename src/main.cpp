@@ -6,16 +6,16 @@ using namespace std;
 
 int main()
 {
-  Graph graph = mincost::parse("../data/negative_weight_cycle.min");
-  graph.print();
-  cout << endl;
-  cout << "Residual graph:\n"
-       << endl;
-  Graph *rGraph = graph.getResidualGraph();
-  rGraph->print();
+  // Graph graph = mincost::parse("../data/negative_weight_cycle.min");
+  // graph.print();
+  // cout << endl;
+  // cout << "Residual graph:\n"
+  //      << endl;
+  // Graph *rGraph = graph.getResidualGraph();
+  // rGraph->print();
 
-  cout << endl;
-  BellmanFord(graph, 0);
+  // cout << endl;
+  // BellmanFord(graph, 0);
   // ==> it works
 
   Graph graph = maxflow::parse("../data/instance_with_path.max");
