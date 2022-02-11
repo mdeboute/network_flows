@@ -105,12 +105,25 @@ void Graph::print()
     }
 }
 
+void Graph::fillGraphFromResidual(Graph* residualGraph)
+{
+  for(Edge &edge : edges){edge.flow = 0;}
+
+  for(Edge &edge : residualGraph->edges)
+  {
+    if(edge.endId == edges[edge.mirrorEdgeId].startId and edge.startId == edges[edge.mirrorEdgeId].endId)
+    {
+      //si la quantité dépasse la capacité il faut chercher des arc parralèles dans le graphe d'origine et leur donner une partie du flot
+      edges[edge.mirrorEdgeId].setFlow(std::max(edges[edge.mirrorEdgeId].maxCapacity-edge.residualCapacity,0));
+    }
+  }
+}
+
 Graph *Graph::getResidualGraph()
 {
     return getResidualGraph(false);
 }
 
-//à ajouter le booléen qui indique la fusion des arcs parallèles
 Graph *Graph::getResidualGraph(bool fuseParallelEdges)
 {
     Graph *residualGraph = new Graph(nbVertices);
@@ -129,6 +142,7 @@ Graph *Graph::getResidualGraph(bool fuseParallelEdges)
         Edge residualEdge(id, cost, 0, 0, startId, endId);
         residualEdge.residualCapacity = edge.maxCapacity - edge.flow;
         residualEdge.pairedEdgeId = id + 1;
+        residualEdge.mirrorEdgeId = edge.id;
 
         // arc résiduel inverse
         int invId = id + 1;
@@ -139,6 +153,7 @@ Graph *Graph::getResidualGraph(bool fuseParallelEdges)
         Edge inverseEdge(invId, invCost, 0, 0, invStartId, invEndId);
         inverseEdge.residualCapacity = edge.flow;
         inverseEdge.pairedEdgeId = id;
+        inverseEdge.mirrorEdgeId = edge.id;
 
         residualGraph->addEdge(residualEdge);
         residualGraph->addEdge(inverseEdge);
@@ -232,6 +247,7 @@ void Graph::removeEdge(int edgeId)
 
     for (int edgeIndex = 0; edgeIndex < nbEdges; edgeIndex++)
     {
+
         if (edges[edgeIndex].id == edgeId)
         {
             edges.erase(edges.begin() + edgeIndex);
@@ -251,13 +267,14 @@ void Graph::removeEdge(int edgeId)
         }
     }
 }
+
 Edge &Graph::getEdgeFromVerticesId(int vertexId1, int vertexId2){
   for(int i = 0; i < this->vertices[vertexId1].leavingEdgesId.size(); i++){
     if(this->edges[this->vertices[vertexId1].leavingEdgesId[i]].endId == vertexId2){
       return this->edges[this->vertices[vertexId1].leavingEdgesId[i]];
     }
   }
-  return this->edges[0];  //Ne fait jamais ce return, la boucle for implique un return à chaque fois si le code qui appelle la fonction est le bon. 
+  return this->edges[0];  //Ne fait jamais ce return, la boucle for implique un return à chaque fois si le code qui appelle la fonction est le bon.
                           //C'est là pour évite un message d'erreur
 }
 

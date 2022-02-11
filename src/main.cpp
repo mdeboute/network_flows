@@ -13,10 +13,10 @@ int main()
    //graph.edges[2].increaseFlow(2);
    //graph.edges[4].increaseFlow(2);
    //graph.print();
-   //std::cout << "Residual graph\n\n";
    //Graph *rGraph = graph.getResidualGraph(true);
    //shortestAugmentingPath(rGraph);
-   //rGraph->print();
+   //graph.fillGraphFromResidual(rGraph);
+   //graph.print();
 
   // Graph graph = mincost::parse("../data/negative_weight_cycle.min");
   // graph.print();
@@ -31,16 +31,16 @@ int main()
   // ==> it works
 
   Graph graph = maxflow::parse("../data/maxflow/instance_1.max");
-  //graph.print();
-
-  //cout << endl;
+  graph.print();
+  cout << endl;
   cout << "Residual graph:\n";
-  //     << endl;
+  cout << endl;
   Graph *rGraph = graph.getResidualGraph(true);
-  //rGraph->print();
   shortestAugmentingPath(rGraph);
   std::cout << rGraph->getValueObjMaxFlow();
-  rGraph->print();
+  cout << endl;
+  graph.fillGraphFromResidual(rGraph);
+  graph.print();
 
   //int parent[graph.nbVertices];
   //bool hasPath = bfs(rGraph, rGraph->src, rGraph->sink, parent);

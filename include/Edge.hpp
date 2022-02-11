@@ -19,6 +19,7 @@ public:
     int startId;
     int endId;
     int pairedEdgeId;
+    int mirrorEdgeId;
 
     // méthodes
     Edge(int id, int cost, int minCapacity, int maxCapacity, int startId, int endId);

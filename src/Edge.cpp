@@ -14,6 +14,7 @@ Edge::Edge(int id, int cost, int minCapacity, int maxCapacity, int startId, int 
     this->endId = endId;
     this->flow = 0;
     pairedEdgeId = -1;
+    mirrorEdgeId = -1;
 }
 
 Edge::Edge(int id, int startId, int endId, int maxCapacity)
@@ -27,6 +28,7 @@ Edge::Edge(int id, int startId, int endId, int maxCapacity)
     this->endId = endId;
     this->flow = 0;
     pairedEdgeId = -1;
+    mirrorEdgeId = -1;
 }
 
 void Edge::print()
