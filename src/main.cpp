@@ -1,7 +1,7 @@
 #include <iostream>
-#include "Structures.hpp"
+#include "Graph.hpp"
 #include "parser.hpp"
-#include "algorithms.hpp"
+#include "algorithm.hpp"
 using namespace std;
 
 int main()

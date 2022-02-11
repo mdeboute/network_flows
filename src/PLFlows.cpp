@@ -1,4 +1,6 @@
+#include <iostream>
 #include <cstdint>
+#include "Graph.hpp"
 #include "ortools/graph/max_flow.h"
 #include "ortools/graph/min_cost_flow.h"
 
@@ -103,5 +105,4 @@ namespace PLNE
     }
   }
 
-}
 }

@@ -1,9 +1,10 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
+
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include "Structures.hpp"
+#include "Graph.hpp"
 
 namespace mincost
 {

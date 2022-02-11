@@ -1,5 +1,5 @@
 #include "parser.hpp"
-#include "Structures.hpp"
+#include "Graph.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
