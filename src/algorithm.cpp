@@ -1,6 +1,6 @@
 #include <iostream>
-#include "algorithms.hpp"
-#include "Structures.hpp"
+#include "algorithm.hpp"
+#include "Graph.hpp"
 #include <cstdio>
 #include <limits.h>
 #include <climits> // for INT_MAX

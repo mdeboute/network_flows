@@ -6,8 +6,9 @@ include_directories(include)
 file(GLOB SRC
     src/main.cpp
     src/parser.cpp
-    src/manipulation.cpp
-    src/Structures.cpp
-    src/algorithms.cpp
+    src/algorithm.cpp
+    src/Vertex.cpp
+    src/Edge.cpp
+    src/Graph.cpp
 )
 add_executable(a.out ${SRC})
