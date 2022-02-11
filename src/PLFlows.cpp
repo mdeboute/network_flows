@@ -1,9 +1,10 @@
 #include "PLFlows.hpp"
-#include "Structures.hpp"
+#include "Graph.hpp"
 #include "gurobi_c++.h"
 #include<string>
 #include<sstream>
 #include<iostream>
+#include <cstdint>
 #include <climits>
 using namespace std;
 

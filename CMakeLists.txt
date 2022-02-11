@@ -14,12 +14,7 @@ project(network_flows)
 include_directories(include)
 include_directories(${GUROBI_INCLUDE_DIR})
 file(GLOB SRC
-    src/main.cpp
-    src/parser.cpp
-    src/manipulation.cpp
-    src/Structures.cpp
-    src/algorithms.cpp
-    src/PLFlows.cpp
+    src/*.cpp
 )
 add_executable(a.out ${SRC})
 target_link_libraries(a.out ${GUROBI_LIBRARIES})

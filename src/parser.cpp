@@ -1,6 +1,5 @@
 #include "parser.hpp"
-#include "Structures.hpp"
-#include "Manipulation.cpp"
+#include "Graph.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
