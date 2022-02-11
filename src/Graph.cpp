@@ -82,6 +82,9 @@ Graph::Graph(int nbVertices) // même constructeur mais sans arêtes
         Vertex newVertice(id);
         vertices.push_back(newVertice);
     }
+    this->nbEdges = 0;
+    this->src = -1;
+    this->sink = -1;
 }
 
 void Graph::print()
@@ -148,9 +151,11 @@ Graph *Graph::getResidualGraph(bool fuseParallelEdges)
         {
             for (int edgeIndex1 = 0; edgeIndex1 < residualGraph->vertices[vertexIndex].nbLeavingEdges; edgeIndex1++)
             {
+                int edgeId1 = residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex1];
                 for (int edgeIndex2 = edgeIndex1 + 1; edgeIndex2 < residualGraph->vertices[vertexIndex].nbLeavingEdges; edgeIndex2++)
                 {
-                    if (residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex1]].startId == residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2]].startId and residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex1]].endId == residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2]].endId)
+                    int edgeId2 = residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2];
+                    if (residualGraph->edges[edgeId1].startId == residualGraph->edges[edgeId2].startId and residualGraph->edges[edgeId1].endId == residualGraph->edges[edgeId2].endId)
                     {
                         residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex1]].residualCapacity += residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2]].residualCapacity;
                         residualGraph->removeEdge(residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2]);
