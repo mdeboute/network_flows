@@ -2,6 +2,7 @@
 #include "Graph.hpp"
 #include "parser.hpp"
 #include "algorithm.hpp"
+#include "PLFlows.hpp"
 using namespace std;
 
 int main()
@@ -32,6 +33,8 @@ int main()
 
   Graph graph = maxflow::parse("../data/maxflow/instance_1.max");
   //graph.print();
+
+  //PL::maxFlow(graph, 0, graph.nbVertices - 1);
 
   //cout << endl;
   cout << "Residual graph:\n";

@@ -40,7 +40,7 @@ namespace PL
   		}
   		model.setObjective(obj, GRB_MINIMIZE);
 
-      cout<<"--> Creating the constraints"<<endl;
+      cout<<"--> Creating the constraints"<<endl; //Erreur de segmentation
       // flot entrant = flot sortant
       for(size_t i=0;i<nbEdges;++i){
         if(i!=begin && i!=end){
