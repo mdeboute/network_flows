@@ -3,6 +3,7 @@
 #include "parser.hpp"
 #include "algorithm.hpp"
 #include "saver.hpp"
+#include "checker.hpp"
 using namespace std;
 
 int main()
@@ -42,6 +43,7 @@ int main()
   graph.fillGraphFromResidual(rGraph);
   graph.print();
   saveSolution(&graph,"../data/solutions/max1");
+  validFlow(&graph);
 
   //int parent[graph.nbVertices];
   //bool hasPath = bfs(rGraph, rGraph->src, rGraph->sink, parent);
