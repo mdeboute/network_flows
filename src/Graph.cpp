@@ -105,18 +105,21 @@ void Graph::print()
     }
 }
 
-void Graph::fillGraphFromResidual(Graph* residualGraph)
+void Graph::fillGraphFromResidual(Graph *residualGraph)
 {
-  for(Edge &edge : edges){edge.flow = 0;}
-
-  for(Edge &edge : residualGraph->edges)
-  {
-    if(edge.endId == edges[edge.mirrorEdgeId].startId and edge.startId == edges[edge.mirrorEdgeId].endId)
+    for (Edge &edge : edges)
     {
-      //si la quantité dépasse la capacité il faut chercher des arc parralèles dans le graphe d'origine et leur donner une partie du flot
-      edges[edge.mirrorEdgeId].setFlow(std::max(edges[edge.mirrorEdgeId].maxCapacity-edge.residualCapacity,0));
+        edge.flow = 0;
     }
-  }
+
+    for (Edge &edge : residualGraph->edges)
+    {
+        if (edge.endId == edges[edge.mirrorEdgeId].startId and edge.startId == edges[edge.mirrorEdgeId].endId)
+        {
+            // si la quantité dépasse la capacité il faut chercher des arc parralèles dans le graphe d'origine et leur donner une partie du flot
+            edges[edge.mirrorEdgeId].setFlow(std::max(edges[edge.mirrorEdgeId].maxCapacity - edge.residualCapacity, 0));
+        }
+    }
 }
 
 Graph *Graph::getResidualGraph()
@@ -268,50 +271,63 @@ void Graph::removeEdge(int edgeId)
     }
 }
 
-Edge &Graph::getEdgeFromVerticesId(int vertexId1, int vertexId2){
-  for(int i = 0; i < this->vertices[vertexId1].leavingEdgesId.size(); i++){
-    if(this->edges[this->vertices[vertexId1].leavingEdgesId[i]].endId == vertexId2){
-      return this->edges[this->vertices[vertexId1].leavingEdgesId[i]];
+Edge &Graph::getEdgeFromVerticesId(int vertexId1, int vertexId2)
+{
+    for (int i = 0; i < this->vertices[vertexId1].leavingEdgesId.size(); i++)
+    {
+        if (this->edges[this->vertices[vertexId1].leavingEdgesId[i]].endId == vertexId2)
+        {
+            return this->edges[this->vertices[vertexId1].leavingEdgesId[i]];
+        }
     }
-  }
-  return this->edges[0];  //Ne fait jamais ce return, la boucle for implique un return à chaque fois si le code qui appelle la fonction est le bon.
-                          //C'est là pour évite un message d'erreur
+    return this->edges[0]; // Ne fait jamais ce return, la boucle for implique un return à chaque fois si le code qui appelle la fonction est le bon.
+                           // C'est là pour évite un message d'erreur
 }
 
-int Graph::getValueObjMaxFlow(){
+int Graph::getValueObjMaxFlow()
+{
     int sumFlows = 0;
-    for(int i = 0; i < this->vertices[this->src].enteringEdgesId.size(); i++){
+    for (int i = 0; i < this->vertices[this->src].enteringEdgesId.size(); i++)
+    {
         sumFlows += this->edges[this->vertices[this->src].enteringEdgesId[i]].residualCapacity;
     }
     return sumFlows + 1;
 }
 
-void Graph::fromMultipleToOne(){
+void Graph::fromMultipleToOne()
+{
     std::vector<int> srcNodes;
     std::vector<int> sinkNodes;
 
-    for(int i = 0; i < this->vertices.size(); i++){
-        if(this->vertices[i].exceedingFlow > 0){
+    for (int i = 0; i < this->vertices.size(); i++)
+    {
+        if (this->vertices[i].exceedingFlow > 0)
+        {
             srcNodes.push_back(i);
         }
-        if(this->vertices[i].exceedingFlow < 0){
+        if (this->vertices[i].exceedingFlow < 0)
+        {
             sinkNodes.push_back(i);
         }
     }
 
-    if(srcNodes.size() > 1){
+    if (srcNodes.size() > 1)
+    {
         this->src = this->vertices.size();
         this->addVertex();
-        for(int i = 0; i < srcNodes.size(); i++){
+        for (int i = 0; i < srcNodes.size(); i++)
+        {
             Edge newEdge(this->edges.size(), this->src, srcNodes[i], this->vertices[srcNodes[i]].exceedingFlow);
             this->addEdge(newEdge);
         }
     }
 
-    if(sinkNodes.size() > 1){
+    if (sinkNodes.size() > 1)
+    {
         this->sink = this->vertices.size();
         this->addVertex();
-        for(int i = 0; i < sinkNodes.size(); i++){
+        for (int i = 0; i < sinkNodes.size(); i++)
+        {
             Edge newEdge(this->edges.size(), this->sink, sinkNodes[i], this->vertices[sinkNodes[i]].exceedingFlow);
             this->addEdge(newEdge);
         }

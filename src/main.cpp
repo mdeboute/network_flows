@@ -8,16 +8,16 @@ using namespace std;
 
 int main()
 {
-   //int edgeArray[][3] = {{0,1,10},{0,2,3},{1,2,4},{1,3,5},{2,3,8}};
-   //Graph graph(4,5,0,3,edgeArray);
-   //graph.edges[0].increaseFlow(2);
-   //graph.edges[2].increaseFlow(2);
-   //graph.edges[4].increaseFlow(2);
-   //graph.print();
-   //Graph *rGraph = graph.getResidualGraph(true);
-   //shortestAugmentingPath(rGraph);
-   //graph.fillGraphFromResidual(rGraph);
-   //graph.print();
+  // int edgeArray[][3] = {{0,1,10},{0,2,3},{1,2,4},{1,3,5},{2,3,8}};
+  // Graph graph(4,5,0,3,edgeArray);
+  // graph.edges[0].increaseFlow(2);
+  // graph.edges[2].increaseFlow(2);
+  // graph.edges[4].increaseFlow(2);
+  // graph.print();
+  // Graph *rGraph = graph.getResidualGraph(true);
+  // shortestAugmentingPath(rGraph);
+  // graph.fillGraphFromResidual(rGraph);
+  // graph.print();
 
   // Graph graph = mincost::parse("../data/negative_weight_cycle.min");
   // graph.print();
@@ -42,19 +42,19 @@ int main()
   cout << endl;
   graph.fillGraphFromResidual(rGraph);
   graph.print();
-  saveSolution(&graph,"../data/solutions/max1");
+  saveSolution(&graph, "../data/solutions/max1");
   validFlow(&graph);
 
-  //int parent[graph.nbVertices];
-  //bool hasPath = bfs(rGraph, rGraph->src, rGraph->sink, parent);
-  //if (hasPath)
+  // int parent[graph.nbVertices];
+  // bool hasPath = bfs(rGraph, rGraph->src, rGraph->sink, parent);
+  // if (hasPath)
   //{
-  //  cout << "Path found" << endl;
-  //}
-  //else
+  //   cout << "Path found" << endl;
+  // }
+  // else
   //{
-  //  cout << "No path found" << endl;
-  //}
+  //   cout << "No path found" << endl;
+  // }
 
   // TODO: on doit trouver un chemin sur l'exemple ci-dessus
   return 0;

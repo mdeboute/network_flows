@@ -5,6 +5,6 @@
 #include <iostream>
 #include <fstream>
 
-void saveSolution(Graph* graph,std::string filename);
+void saveSolution(Graph *graph, std::string filename);
 
 #endif

@@ -13,8 +13,6 @@ add_compile_options(-std=c++11)
 project(network_flows)
 include_directories(include)
 include_directories(${GUROBI_INCLUDE_DIR})
-file(GLOB SRC
-    src/*.cpp
-)
+file(GLOB SRC src/*.cpp)
 add_executable(a.out ${SRC})
 target_link_libraries(a.out ${GUROBI_LIBRARIES})

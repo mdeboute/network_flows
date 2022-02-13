@@ -6,8 +6,8 @@
 #include "Edge.hpp"
 #include <iostream>
 
-bool validFlow(Graph* graph);
-bool flowConservation(Graph* graph);
-bool flowLimitations(Graph* graph);
+bool validFlow(Graph *graph);
+bool flowConservation(Graph *graph);
+bool flowLimitations(Graph *graph);
 
 #endif
