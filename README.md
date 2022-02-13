@@ -5,22 +5,21 @@ Implémentation d'algorithmes de théorie des graphes ainsi que la structure de 
 ## Comment compiler et exécuter le programme ?
 
 ```shell
+mkdir build
 cd build
 cmake ..
 make
-cd ..
-cd exec
 ./a.out
 ```
 
 ## Ressources
 
-Netflow : [ici](http://archive.dimacs.rutgers.edu/pub/netflow/generators/network/)
+Projet Netflow : [ici](http://archive.dimacs.rutgers.edu/pub/netflow/generators/network/)
 
 Ce répertoire contient des programmes qui génèrent des réseaux et des graphes.
 La plupart sont au format DIMACS, [ceci](http://lpsolve.sourceforge.net/5.5/DIMACS_maxf.htm) est un site Web pour en savoir plus sur ce format.
 
-## Travail minimum requis (deadline: fin Janvier 2022)
+## Travail minimum requis (deadline: 18/02/2022)
 
 ### Implémenter 3 algorithmes
 
@@ -37,6 +36,6 @@ La plupart sont au format DIMACS, [ceci](http://lpsolve.sourceforge.net/5.5/DIMA
 
 #### Modéliser les problèmes sous forme de PL avec Gurobi ou CPLEX ou OR-Tools
 
-## Lien overleaf
+## Lien overleaf du rapport
 
 <https://www.overleaf.com/5234754873zyydkskvjsdn>

@@ -1,18 +1,18 @@
 cmake_minimum_required(VERSION 2.8.12)
 set(CMAKE_BUILD_TYPE Debug)
 
-set(GUROBI_ROOT "/opt/local/stow/gurobi910/linux64/")
-set(GUROBI_INCLUDE_DIR "${GUROBI_ROOT}include")
-message(STATUS "GUROBI_INCLUDE_DIR : ${GUROBI_INCLUDE_DIR}")
-set(GUROBI_LIBRARY_CPLUS "${GUROBI_ROOT}lib/libgurobi_c++.a")
-set(GUROBI_LIBRARY "${GUROBI_ROOT}lib/libgurobi91.so")
+find_library(GUROBI_LIBRARY_CPLUS libgurobi_c++.a PATHS /opt/local/stow/gurobi910/linux64/lib/ /Library/gurobi903/mac64/lib/)
+find_library(GUROBI_LIBRARY libgurobi91.so OR libgurobi90.dylib PATHS /opt/local/stow/gurobi910/linux64/lib/ /Library/gurobi903/mac64/lib/)
 set(GUROBI_LIBRARIES ${GUROBI_LIBRARY_CPLUS} ${GUROBI_LIBRARY})
 message(STATUS "GUROBI_LIBRARIES : ${GUROBI_LIBRARIES}")
 
-add_compile_options(-std=c++11)
+set(GUROBI_INCLUDE_DIR /opt/local/stow/gurobi910/linux64/include/ /Library/gurobi903/mac64/include/)
+
 project(network_flows)
-include_directories(include)
-include_directories(${GUROBI_INCLUDE_DIR})
+include_directories(include ${GUROBI_INCLUDE_DIR})
 file(GLOB SRC src/*.cpp)
+add_compile_options(-std=c++11)
 add_executable(a.out ${SRC})
 target_link_libraries(a.out ${GUROBI_LIBRARIES})
+
+execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/data/ ${CMAKE_CURRENT_BINARY_DIR}/data)

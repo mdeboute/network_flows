@@ -42,7 +42,7 @@ int main()
   cout << endl;
   graph.fillGraphFromResidual(rGraph);
   graph.print();
-  saveSolution(&graph, "../data/solutions/max1");
+  saveSolution(&graph, "../solution/maxflow_1");
   validFlow(&graph);
 
   // int parent[graph.nbVertices];
@@ -56,6 +56,6 @@ int main()
   //   cout << "No path found" << endl;
   // }
 
-  // TODO: on doit trouver un chemin sur l'exemple ci-dessus
+  // TODO: on doit trouver un chemin sur l'exemple ci-dessus + tester le solveur
   return 0;
 }
