@@ -42,7 +42,7 @@ int main()
   cout << endl;
   graph.fillGraphFromResidual(rGraph);
   graph.print();
-  saveSolution(&graph, "../solution/maxflow_1");
+  saveSolution(&graph, "../sol/maxflow_1");
   validFlow(&graph);
 
   // int parent[graph.nbVertices];
