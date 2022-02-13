@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.8.12)
+project(network_flows)
 set(CMAKE_BUILD_TYPE Debug)
 
 find_library(GUROBI_LIBRARY_CPLUS libgurobi_c++.a PATHS /opt/local/stow/gurobi910/linux64/lib/ /Library/gurobi903/mac64/lib/)
@@ -8,7 +9,6 @@ message(STATUS "GUROBI_LIBRARIES : ${GUROBI_LIBRARIES}")
 
 set(GUROBI_INCLUDE_DIR /opt/local/stow/gurobi910/linux64/include/ /Library/gurobi903/mac64/include/)
 
-project(network_flows)
 include_directories(include ${GUROBI_INCLUDE_DIR})
 file(GLOB SRC src/*.cpp)
 add_compile_options(-std=c++11)
