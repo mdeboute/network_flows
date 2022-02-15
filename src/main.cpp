@@ -9,49 +9,29 @@ using namespace std;
 
 int main()
 {
-   //int edgeArray[][3] = {{0,1,10},{0,2,3},{1,2,4},{1,3,5},{2,3,8}};
-   //Graph graph(4,5,0,3,edgeArray);
-   //graph.edges[0].increaseFlow(2);
-   //graph.edges[2].increaseFlow(2);
-   //graph.edges[4].increaseFlow(2);
-   //graph.print();
-   //Graph *rGraph = graph.getResidualGraph(true);
-   //shortestAugmentingPath(rGraph);
-   //std::cout << rGraph->getValueObjMaxFlow() << endl;
-   //graph.fillGraphFromResidual(rGraph);
-   //graph.print();
+  Graph graph = maxflow::parse("../data/maxflow/instance_1.max");
+  graph.print();
+  cout << endl;
+  cout << "Residual graph:\n";
+  cout << endl;
+  Graph *rGraph = graph.getResidualGraph(true);
+  shortestAugmentingPath(rGraph);
+  graph.fillGraphFromResidual(rGraph);
+  graph.print();
+  cout << endl;
+  cout << "Max flow: " << rGraph->getValueObjMaxFlow() << endl;
+  saveSolution(&graph, "../sol/maxflow_1");
+  validFlow(&graph); // flow pas valide cf. l'execution du programme
 
-  // Graph graph = mincost::parse("../data/negative_weight_cycle.min");
-  // graph.print();
-  // cout << endl;
-  // cout << "Residual graph:\n"
-  //      << endl;
-  // Graph *rGraph = graph.getResidualGraph();
-  // rGraph->print();
+  cout << endl;
 
-  // cout << endl;
-  // BellmanFord(graph, 0);
-  // ==> it works
+  Graph graphMax = maxflow::parse("../data/maxflow/instance_1.max");
+  PL::maxFlow(graphMax);
 
-  //Graph graph = maxflow::parse("../data/maxflow/instance_1.max");
-  //graph.print();
-  //cout << endl;
-  //cout << "Residual graph:\n";
-  //cout << endl;
-  //Graph *rGraph = graph.getResidualGraph(true);
-  //shortestAugmentingPath(rGraph);
-  //std::cout << rGraph->getValueObjMaxFlow();
-  //cout << endl;
-  //graph.fillGraphFromResidual(rGraph);
-  //graph.print();
-  //saveSolution(&graph, "../sol/maxflow_1");
-  //validFlow(&graph);
+  // Graph graphMin = mincost::parse("../data/simple_min_cost.min");
+  // PL::minCostFlow(graphMin);
 
-  //Les PL fonctionnent !!!
-  //Graph graphMax = maxflow::parse("../data/maxflow/instance_1.max");
-  //PL::maxFlow(graphMax);
-  //Graph graphMin = mincost::parse("../data/simple_min_cost.min");
-  //PL::minCostFlow(graphMin);
+  // Problème: on trouve pas la même solution pour l'algo et le solveur...
 
   return 0;
 }
