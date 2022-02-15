@@ -118,7 +118,8 @@ namespace mincost
         // set the flows
         for (int i = 0; i < flowsArray.size(); i++)
         {
-            graph.setFlow(flowsArray[i][0], flowsArray[i][1]);
+            //graph.setFlow(flowsArray[i][0], flowsArray[i][1]);
+            graph.vertices[flowsArray[i][0]].exceedingFlow = flowsArray[i][1];
         }
 
         return graph;
