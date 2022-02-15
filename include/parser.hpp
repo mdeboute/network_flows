@@ -11,13 +11,13 @@ namespace mincost
     void openFile(std::ifstream &file, std::string filePath);
     Graph processFile(std::ifstream &file);
     Graph parse(std::string filePath);
-} // namespace mincost
+}
 
 namespace maxflow
 {
     void openFile(std::ifstream &file, std::string filePath);
     Graph processFile(std::ifstream &file);
     Graph parse(std::string filePath);
-} // namespace maxflow
+}
 
 #endif
