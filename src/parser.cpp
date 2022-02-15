@@ -6,6 +6,8 @@
 #include <vector>
 #include <algorithm>
 
+const char delimiter = ' ';
+
 namespace mincost
 {
     void openFile(std::ifstream &file, std::string filePath)
@@ -39,14 +41,14 @@ namespace mincost
         int sourceNodeId, destinationNodeId, minFlow, maxFlow, cost;
         std::vector<std::vector<int>> edgesArray;
         std::vector<std::vector<int>> flowsArray;
-        const char delimiter = ' ';
 
         // for all the line of the file parse the line and store the data to create the graph
         while (getline(file, line))
         {
             if (file.eof())
+            {
                 break;
-
+            }
             if (line[0] == 'c')
             {
                 // comment line, skip
@@ -118,16 +120,12 @@ namespace mincost
         // set the flows
         for (int i = 0; i < flowsArray.size(); i++)
         {
-            //graph.setFlow(flowsArray[i][0], flowsArray[i][1]);
             graph.vertices[flowsArray[i][0]].exceedingFlow = flowsArray[i][1];
         }
 
         return graph;
     }
 
-    // this function parse an input file and return a network graph
-    // parameters: filepath
-    // return value: graph
     Graph parse(std::string filePath)
     {
         std::ifstream file;
@@ -136,7 +134,7 @@ namespace mincost
         file.close();
         return graph;
     }
-} // namespace mincost
+}
 
 namespace maxflow
 {
@@ -169,7 +167,6 @@ namespace maxflow
         int src, sink;
         int sourceNodeId, destinationNodeId, maxFlow;
         std::vector<std::vector<int>> edgesArray;
-        const char delimiter = ' ';
 
         auto isEmptyOrBlank = [](const std::string &s)
         {
@@ -180,8 +177,9 @@ namespace maxflow
         while (getline(file, line))
         {
             if (file.eof())
+            {
                 break;
-
+            }
             if (line[0] == 'c')
             {
                 // comment line, skip
@@ -280,9 +278,6 @@ namespace maxflow
         return graph;
     }
 
-    // this function parse an input file and return a network graph
-    // parameters: filepath
-    // return value: graph
     Graph parse(std::string filePath)
     {
         std::ifstream file;
@@ -291,5 +286,4 @@ namespace maxflow
         file.close();
         return graph;
     }
-
 }

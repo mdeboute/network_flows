@@ -1,9 +1,10 @@
 #ifndef PLFLOWS_HPP
-#define PLFLOW_HPP
-#include<string>
-#include<sstream>
-#include<vector>
-#include<iostream>
+#define PLFLOWS_HPP
+
+#include <string>
+#include <sstream>
+#include <vector>
+#include <iostream>
 #include "gurobi_c++.h"
 #include "Graph.hpp"
 

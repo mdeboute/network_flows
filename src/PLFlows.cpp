@@ -1,3 +1,4 @@
+#include "PLFlows.hpp"
 #include "Graph.hpp"
 #include "gurobi_c++.h"
 #include <string>
@@ -12,7 +13,7 @@ namespace PL
 	void maxFlow(Graph &graph)
 	{
 		GRBVar *f;
-    GRBVar v;
+		GRBVar v;
 		try
 		{
 			cout << "--> Creating the Gurobi environment" << endl;
@@ -29,10 +30,10 @@ namespace PL
 				ss << "f(" << i << ")";
 				f[i] = model.addVar(0.0, INT_MAX, 0.0, GRB_CONTINUOUS, ss.str());
 			}
-      v = model.addVar(0.0, INT_MAX, 0.0, GRB_CONTINUOUS, "v");
+			v = model.addVar(0.0, INT_MAX, 0.0, GRB_CONTINUOUS, "v");
 
 			cout << "--> Creating the objective function" << endl;
-      GRBLinExpr obj = v;
+			GRBLinExpr obj = v;
 			model.setObjective(obj, GRB_MAXIMIZE);
 
 			cout << "--> Creating the constraints" << endl;
@@ -55,34 +56,34 @@ namespace PL
 					model.addConstr(lhs == 0, ss.str());
 				}
 			}
-      //flot de s
-      GRBLinExpr lhsS = 0;
-      for (size_t j = 0; j < graph.vertices[graph.src].nbLeavingEdges; ++j)
-      {
-        lhsS += f[graph.vertices[graph.src].leavingEdgesId[j]];
-      }
-      for (size_t j = 0; j < graph.vertices[graph.src].nbEnteringEdges; ++j)
-      {
-        lhsS -= f[graph.vertices[graph.src].enteringEdgesId[j]];
-      }
-      lhsS -= v;
-      stringstream ssS;
-      ssS << "Flow(" << graph.src << ")";
-      model.addConstr(lhsS == 0, ssS.str());
-      //flot de t
-      GRBLinExpr lhsT = 0;
-      for (size_t j = 0; j < graph.vertices[graph.sink].nbLeavingEdges; ++j)
-      {
-        lhsT += f[graph.vertices[graph.sink].leavingEdgesId[j]];
-      }
-      for (size_t j = 0; j < graph.vertices[graph.sink].nbEnteringEdges; ++j)
-      {
-        lhsT -= f[graph.vertices[graph.sink].enteringEdgesId[j]];
-      }
-      lhsT += v;
-      stringstream ssT;
-      ssT << "Flow(" << graph.sink << ")";
-      model.addConstr(lhsT == 0, ssT.str());
+			// flot de s
+			GRBLinExpr lhsS = 0;
+			for (size_t j = 0; j < graph.vertices[graph.src].nbLeavingEdges; ++j)
+			{
+				lhsS += f[graph.vertices[graph.src].leavingEdgesId[j]];
+			}
+			for (size_t j = 0; j < graph.vertices[graph.src].nbEnteringEdges; ++j)
+			{
+				lhsS -= f[graph.vertices[graph.src].enteringEdgesId[j]];
+			}
+			lhsS -= v;
+			stringstream ssS;
+			ssS << "Flow(" << graph.src << ")";
+			model.addConstr(lhsS == 0, ssS.str());
+			// flot de t
+			GRBLinExpr lhsT = 0;
+			for (size_t j = 0; j < graph.vertices[graph.sink].nbLeavingEdges; ++j)
+			{
+				lhsT += f[graph.vertices[graph.sink].leavingEdgesId[j]];
+			}
+			for (size_t j = 0; j < graph.vertices[graph.sink].nbEnteringEdges; ++j)
+			{
+				lhsT -= f[graph.vertices[graph.sink].enteringEdgesId[j]];
+			}
+			lhsT += v;
+			stringstream ssT;
+			ssT << "Flow(" << graph.sink << ")";
+			model.addConstr(lhsT == 0, ssT.str());
 
 			// respect des capacités
 			for (size_t i = 0; i < graph.nbEdges; ++i)
@@ -119,12 +120,13 @@ namespace PL
 				cout << "Arc\t Flow/Capacity\n";
 				for (size_t i = 0; i < graph.nbEdges; ++i)
 				{
-          if(f[i].get(GRB_DoubleAttr_X) > 0)
-          {
-            cout << graph.edges[i].startId << "-> " << graph.edges[i].endId << "\t" << f[i].get(GRB_DoubleAttr_X) << "\t" << graph.edges[i].maxCapacity << endl;
-          }
+					if (f[i].get(GRB_DoubleAttr_X) > 0)
+					{
+						cout << graph.edges[i].startId << "-> " << graph.edges[i].endId << "\t" << f[i].get(GRB_DoubleAttr_X) << "\t" << graph.edges[i].maxCapacity << endl;
+					}
 				}
-				cout << "Objective value = " << model.get(GRB_DoubleAttr_ObjVal) << "\n" << endl; //<gets the value of the objective function for the best computed solution (optimal if no time limit)
+				cout << "Objective value = " << model.get(GRB_DoubleAttr_ObjVal) << "\n"
+					 << endl; //<gets the value of the objective function for the best computed solution (optimal if no time limit)
 			}
 			else
 			{
@@ -165,10 +167,10 @@ namespace PL
 			}
 
 			cout << "--> Creating the objective function" << endl;
-      GRBLinExpr obj = 0;
+			GRBLinExpr obj = 0;
 			for (size_t i = 0; i < graph.nbEdges; ++i)
 			{
-				obj += f[i]*graph.edges[i].cost;
+				obj += f[i] * graph.edges[i].cost;
 			}
 			model.setObjective(obj, GRB_MINIMIZE);
 
@@ -237,7 +239,8 @@ namespace PL
 				{
 					cout << graph.edges[i].startId << "-> " << graph.edges[i].endId << "\t" << f[i].get(GRB_DoubleAttr_X) << "\t" << graph.edges[i].maxCapacity << "\t" << graph.edges[i].cost << endl;
 				}
-				cout << "Objective value = " << model.get(GRB_DoubleAttr_ObjVal) << "\n"<< endl; //<gets the value of the objective function for the best computed solution (optimal if no time limit)
+				cout << "Objective value = " << model.get(GRB_DoubleAttr_ObjVal) << "\n"
+					 << endl; //<gets the value of the objective function for the best computed solution (optimal if no time limit)
 			}
 			else
 			{
