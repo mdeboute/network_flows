@@ -5,6 +5,7 @@
 #include "saver.hpp"
 #include "checker.hpp"
 #include "PLFlows.hpp"
+#include "PreflowPush.hpp"
 using namespace std;
 
 int main()
@@ -47,11 +48,16 @@ int main()
   //saveSolution(&graph, "../sol/maxflow_1");
   //validFlow(&graph);
 
-  //Les PL fonctionnent !!!
+  //Tests PL ==> ils fonctionnent !!
   //Graph graphMax = maxflow::parse("../data/maxflow/instance_1.max");
   //PL::maxFlow(graphMax);
   //Graph graphMin = mincost::parse("../data/simple_min_cost.min");
   //PL::minCostFlow(graphMin);
+
+  //Test Preflow Push
+  //Graph graph = maxflow::parse("../data/simple_max_flot.max");
+  //preflowPush(&graph);
+  //std::cout << graph.getValueObjMaxFlow();
 
   // int parent[graph.nbVertices];
   // bool hasPath = bfs(rGraph, rGraph->src, rGraph->sink, parent);

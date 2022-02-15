@@ -13,6 +13,7 @@ public:
     // attributs
     int id;
     int exceedingFlow;
+    int height;
     int nbEnteringEdges;
     int nbLeavingEdges;
     std::vector<int> enteringEdgesId;
