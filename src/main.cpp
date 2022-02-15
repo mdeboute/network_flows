@@ -45,17 +45,5 @@ int main()
   saveSolution(&graph, "../sol/maxflow_1");
   validFlow(&graph);
 
-  // int parent[graph.nbVertices];
-  // bool hasPath = bfs(rGraph, rGraph->src, rGraph->sink, parent);
-  // if (hasPath)
-  //{
-  //   cout << "Path found" << endl;
-  // }
-  // else
-  //{
-  //   cout << "No path found" << endl;
-  // }
-
-  // TODO: on doit trouver un chemin sur l'exemple ci-dessus + tester le solveur
   return 0;
 }
