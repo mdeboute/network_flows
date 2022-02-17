@@ -15,7 +15,8 @@ int main()
   cout << endl;
   cout << "Residual graph:\n";
   cout << endl;
-  shortestAugmentingPath(&graph);
+  Graph *rGraph = graph.getResidualGraph(true);
+  shortestAugmentingPath(rGraph);
   //graph.print();
   cout << endl;
   cout << "Max flow: " << graph.getValueObjMaxFlow() << endl;

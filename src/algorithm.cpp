@@ -133,7 +133,7 @@ void retreat(Graph *graph, int i, int dist[])
     dist[i] = min;
 }
 
-void augment(Graph *graph, int pred[], int *total)
+void augment(Graph *graph, int pred[])
 {
     int vertexId = graph->sink;
     int min = graph->getEdgeFromVerticesId(pred[vertexId], vertexId).residualCapacity;
@@ -145,8 +145,6 @@ void augment(Graph *graph, int pred[], int *total)
         }
         vertexId = pred[vertexId];
     }
-    *total += min;
-    std::cout << min << " FLOW TO SINK ADDED" << std::endl;
     vertexId = graph->sink;
     while (vertexId != graph->src)
     {
@@ -187,7 +185,6 @@ void distanceLabelling(Graph *graph, int dist[])
 
 void shortestAugmentingPath(Graph *graph)
 {
-    int total = 0;
     int dist[graph->nbVertices];
     distanceLabelling(graph, dist);
     int pred[graph->nbVertices];
@@ -210,9 +207,7 @@ void shortestAugmentingPath(Graph *graph)
                 i = j;
                 if (i == graph->sink)
                 {
-                    std::cout << "BEFORE :" << graph->getEdgeFromVerticesId(graph->sink, pred[graph->sink]).residualCapacity << std::endl;
-                    augment(graph, pred, &total);
-                    std::cout << "AFTER :" << graph->getEdgeFromVerticesId(graph->sink, pred[graph->sink]).residualCapacity << std::endl;
+                    augment(graph, pred);
                     i = graph->src;
                 }
                 break;
@@ -227,5 +222,4 @@ void shortestAugmentingPath(Graph *graph)
             }
         }
     }
-    std::cout << total << " TOTAL FLOW ADDED" << std::endl;
 }
