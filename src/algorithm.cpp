@@ -63,10 +63,11 @@ int BellmanFord(Graph *graph, int pred[])
 
 void cycleCancelling(Graph *originGraph)
 {
-    graph->fromMultipleToOne();
-    Graph *graph 
-    
     Graph *graph = originGraph->getResidualGraph();
+    graph->fromMultipleToOne();
+    //Graph graph(this->nbVertices);
+    
+    
     shortestAugmentingPath(graph);
 
     int pred[graph->vertices.size()];

@@ -280,8 +280,8 @@ Edge &Graph::getEdgeFromVerticesId(int vertexId1, int vertexId2)
             return this->edges[this->vertices[vertexId1].leavingEdgesId[i]];
         }
     }
-    Edge e = Edge(int -1, int -1, int -1, int -1);
-    return e; 
+    Edge *e = new Edge(-1,  -1,  -1,  -1);
+    return *e; 
 }
 
 int Graph::getValueObjMaxFlow()
@@ -334,13 +334,13 @@ void Graph::fromMultipleToOne()
     }
 }
 
-void Graph::switchOffParallel(Graph &graph){  // create the equivalent of "this" in graph in parameter, all parallel edges are grouped into one, like the cost doesn't matter
+void Graph::switchOffParallel(Graph *graph){  // create the equivalent of "this" in graph in parameter, all parallel edges are grouped into one, like the cost doesn't matter
     for(int i = 0; i < this->nbVertices; i++){
         graph->addVertex();
     }
 
     for(int i = 0; i < this->nbVertices; i++){
-        for(int j = 0; j < this->vertices[i].nbLeavingEdges){
+        for(int j = 0; j < this->vertices[i].nbLeavingEdges; j++){
             Edge e = graph->getEdgeFromVerticesId(i, this->vertices[i].leavingEdgesId[j]);
             if(e.id != -1){
                 e.maxCapacity += this->edges[this->vertices[i].leavingEdgesId[j]].maxCapacity;
@@ -348,22 +348,21 @@ void Graph::switchOffParallel(Graph &graph){  // create the equivalent of "this"
             else{
                 e.maxCapacity = this->edges[this->vertices[i].leavingEdgesId[j]].maxCapacity;
                 e.startId = i;
-                e.endId = this->edges[this->vertices[i].leavingEdgesId[j].endId];
+                e.endId = this->edges[this->vertices[i].leavingEdgesId[j]].endId;
                 e.id = graph->nbEdges;
-                graph.addEdge(e);
+                graph->addEdge(e);
             }
         }
     }
 }
 
-void Graph::switchOnParallel(Graph &graph){
+void Graph::switchOnParallel(Graph *graph){
     for(int i = 0; i < this->nbVertices; i++){
         for(int j = 0; j < this->vertices[i].nbLeavingEdges; j++){
             int minFlowMaxCap = std::min(this->edges[this->vertices[i].leavingEdgesId[j]].maxCapacity, 
-                    graph->getEdgeFromVerticesId(i, this->vertices[i].leavingEdgesId[j].endId).flow);
+                    graph->getEdgeFromVerticesId(i, this->edges[this->vertices[i].leavingEdgesId[j]].endId).flow);
             this->edges[this->vertices[i].leavingEdgesId[j]].flow = minFlowMaxCap;
-            graph->getEdgeFromVerticesId(i, this->vertices[i].leavingEdgesId[j].endId).flow -= minFlowMaxCap;
-            }
+            graph->getEdgeFromVerticesId(i, this->edges[this->vertices[i].leavingEdgesId[j]].endId).flow -= minFlowMaxCap;
         }
     }
 }
