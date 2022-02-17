@@ -12,22 +12,23 @@ int main()
 {
   Graph graph = maxflow::parse("../data/maxflow/instance_1.max");
   //graph.print();
-  cout << endl;
-  cout << "Residual graph:\n";
-  cout << endl;
+  //cout << endl;
+  //cout << "Residual graph:\n";
+  //cout << endl;
   Graph *rGraph = graph.getResidualGraph(true);
   shortestAugmentingPath(rGraph);
-  //graph.print();
-  cout << endl;
+  graph.fillGraphFromResidual(rGraph);
+  graph.print();
+  //cout << endl;
   cout << "Max flow: " << graph.getValueObjMaxFlow() << endl;
-  saveSolution(&graph, "../sol/maxflow_1");
-  validFlow(&graph); // flow pas valide cf. l'execution du programme
+  //saveSolution(&graph, "../sol/maxflow_1");
+  validFlow(&graph);
 
   cout << endl;
 
   Graph graphMax = maxflow::parse("../data/maxflow/instance_1.max");
   PL::maxFlow(graphMax);
-  
+
   // Graph graphMin = mincost::parse("../data/simple_min_cost.min");
   // PL::minCostFlow(graphMin);
 
