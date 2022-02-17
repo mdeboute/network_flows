@@ -41,6 +41,8 @@ public:
     bool parallelEdgesPresent(int vertexId1,int vertexId2);
     int getValueObjMaxFlow();
     void fromMultipleToOne();
+    void switchOffParallel(Graph *graph);
+    void switchOnParallel(Graph *graph);
 };
 
 #endif

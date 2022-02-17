@@ -65,6 +65,9 @@ void cycleCancelling(Graph *originGraph)
 {
     Graph *graph = originGraph->getResidualGraph();
     graph->fromMultipleToOne();
+    //Graph graph(this->nbVertices);
+    
+    
     shortestAugmentingPath(graph);
 
     int pred[graph->vertices.size()];
