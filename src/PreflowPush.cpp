@@ -6,117 +6,94 @@
 #include <climits> // for INT_MAX
 #include <queue>
 #include <string.h>
+using namespace std;
 
-
-/*//Calcul l'excédant de flot
-int exceedingFlow(Graph *graph, int vertexId)
+void distanceLabelling(Graph *graph)
 {
-  Vertex current = graph->vertices[vertexId];
-  int tmp = 0;
-  for(int id : current.enteringEdgesId)
-  {
-    tmp += graph->edges[id].flow;
-  }
-  for(int id : current.leavingEdgesId)
-  {
-    tmp -= graph->edges[id].flow;
-  }
-  return tmp;
-}
-*/
-int min (int a, int b){
-  if (a > b)
-    return b;
-  return a;
-}
-//Retourne l'indice de la première arrête ayant un excédant de flot
-int overFlow(Graph *graph)
-{
-  for(Vertex ver : graph->vertices)
-  {
-    if(ver.exceedingFlow > 0)
+    bool marks[graph->nbVertices];
+    for (int i = 0; i < graph->nbVertices; i++)
     {
-      return ver.id;
+        marks[i] = false;
+        graph->vertices[i].height = -1;
     }
-  }
-  return -1;
+    marks[graph->sink] = true;
+    graph->vertices[graph->sink].height = 0;
+    std::queue<int> List;
+    List.push(graph->sink);
+    while (List.size() > 0)
+    {
+        bool hasAdmissibleArc = false;
+        for (int i = 0; i < graph->vertices[List.front()].leavingEdgesId.size(); i++)
+        {
+            if (marks[graph->edges[graph->vertices[List.front()].leavingEdgesId[i]].endId] == false)
+            {
+                hasAdmissibleArc = true;
+                marks[graph->edges[graph->vertices[List.front()].leavingEdgesId[i]].endId] = true;
+                graph->vertices[graph->edges[graph->vertices[List.front()].leavingEdgesId[i]].endId].height = graph->vertices[List.front()].height + 1;
+                List.push(graph->edges[graph->vertices[List.front()].leavingEdgesId[i]].endId);
+            }
+        }
+        List.pop();
+    }
+    return;
 }
 
-//Fonction qui pousse le flot vers des sommets de hauteurs inf
-bool push(Graph *graph, int vertexId)
+void preflowPush(Graph *original_graph)
 {
-  Vertex u = graph->vertices[vertexId];
-  for(int id : u.leavingEdgesId)
-  {
-    Edge e = graph->edges[id];
-    Vertex v = graph->vertices[e.endId];
-    if(e.flow == e.maxCapacity)
-    {
-      continue;
-    }
-    if(u.height > v.height)
-    {
-      int f = min(e.maxCapacity - e.flow, u.exceedingFlow);
-      u.exceedingFlow -= f;
-      e.flow += f;
-      v.exceedingFlow += f;
-      e.increaseResidualCapacity(*graph, f);
-      return true;
-    }
-  }
-  return false;
-}
-
-//Mise à jour des hauteurs pour pouvoir push
-void relabel(Graph *graph, int vertexId)
-{
-  Vertex u = graph->vertices[vertexId];
-  int h_best = INT_MAX;
-  for(int id : u.leavingEdgesId)
-  {
-    Vertex v = graph->vertices[graph->edges[id].endId];
-    if(graph->edges[id].flow == graph->edges[id].maxCapacity)
-    {
-      continue;
-    }
-    //actualisation des hauteurs
-    if(v.height < h_best)
-    {
-      h_best = v.height;
-      u.height = h_best + 1;
-    }
-  }
-}
-
-void preflowPush(Graph *graph)
-{
-  Graph *graph_res = graph->getResidualGraph();
+  Graph *graph = original_graph->getResidualGraph(true);
+  queue<int> activeNodes;
 
   //Initialisation des valeurs
   for(int i = 0; i < graph->nbVertices; ++i)
   {
     graph->vertices[i].exceedingFlow = 0;
-    graph->vertices[i].height = 0;
   }
-  graph->vertices[graph->src].height = graph->nbVertices;
+  //distance
+  distanceLabelling(graph);
+
   for(int id : graph->vertices[graph->src].leavingEdgesId)
   {
-    graph->edges[id].flow = graph->edges[id].maxCapacity;
-    int end = graph->edges[id].endId;
-    graph->vertices[end].exceedingFlow = graph->edges[end].flow;
+    graph->vertices[graph->edges[id].endId].exceedingFlow = graph->edges[id].residualCapacity;
+    graph->edges[id].increaseResidualCapacity(*graph, -graph->vertices[graph->edges[id].endId].exceedingFlow);
+    activeNodes.push(graph->edges[id].endId);
   }
-  for(int id : graph_res->vertices[graph->src].enteringEdgesId)
-  {
-    graph_res->edges[id].flow = 0;
-  }
+
   //Tant qu'il existe du flot en exces
-  while(overFlow(graph) != -1)
+  while(!activeNodes.empty())
   {
-    int v = overFlow(graph);
-    if(!push(graph, v))
+    int v = activeNodes.front();
+    bool admissibleEdge = false;
+    for(int id : graph->vertices[v].leavingEdgesId)
     {
-      relabel(graph, v);
+      if(graph->edges[id].residualCapacity > 0 && graph->vertices[graph->edges[id].endId].height + 1 == graph->vertices[v].height)
+      {
+        admissibleEdge = true;
+        int delta = min(graph->vertices[v].exceedingFlow, graph->edges[id].residualCapacity);
+        graph->edges[id].increaseResidualCapacity(*graph, -delta);
+        graph->vertices[v].exceedingFlow -= delta;
+        if(graph->edges[id].endId != graph->src && graph->edges[id].endId != graph->sink && graph->vertices[graph->edges[id].endId].exceedingFlow == 0){
+          activeNodes.push(graph->edges[id].endId);
+        }
+        graph->vertices[graph->edges[id].endId].exceedingFlow += delta;
+        if(graph->vertices[v].exceedingFlow == 0){
+          activeNodes.pop();
+          break;
+        }
+      }
+    }
+    if(!admissibleEdge)
+    {
+        int min_height = 2*graph->nbVertices;
+        for(int id : graph->vertices[v].leavingEdgesId)
+        {
+          if(graph->edges[id].residualCapacity > 0 && graph->vertices[graph->edges[id].endId].height + 1 < min_height)
+          {
+              min_height = graph->vertices[graph->edges[id].endId].height + 1;
+          }
+        }
+        graph->vertices[v].height = min_height;
     }
   }
-  std::cout << graph->vertices[graph->sink].exceedingFlow << std::endl;
+  cout << graph->vertices[graph->sink].exceedingFlow << endl;
+  original_graph->fillGraphFromResidual(graph);
 }
