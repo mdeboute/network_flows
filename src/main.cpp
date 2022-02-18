@@ -10,27 +10,28 @@ using namespace std;
 
 int main()
 {
-  // Graph graph = maxflow::parse("../data/maxflow/instance_1.max");
+  Graph graph = maxflow::parse("../data/maxflow/instance_1.max");
   // graph.print();
   // cout << endl;
   // cout << "Residual graph:\n";
   // cout << endl;
-  // Graph *rGraph = graph.getResidualGraph(true);
-  // shortestAugmentingPath(rGraph);
-  // graph.fillGraphFromResidual(rGraph);
-  // graph.print();
+  Graph *rGraph = graph.getResidualGraph(true);
+  shortestAugmentingPath(rGraph);
+  graph.fillGraphFromResidual(rGraph);
+  graph.print();
   // cout << endl;
-  // cout << "Max flow: " << graph.getValueObjMaxFlow() << endl;
+  cout << "Max flow: " << graph.getValueObjMaxFlow() << endl;
   // saveSolution(&graph, "../sol/maxflow_1");
-  // validFlow(&graph);
+  validFlow(&graph);
 
   // cout << endl;
 
   // Graph graphMax = maxflow::parse("../data/maxflow/instance_1.max");
   // PL::maxFlow(graphMax);
 
-  // Graph graphMin = mincost::parse("../data/simple_min_cost.min");
+  // Graph graphMin = mincost::parse("../data/mincost/simple_min_cost.min");
   // PL::minCostFlow(graphMin);
+
 
   // Test Preflow Push
   // Graph graph = maxflow::parse("../data/simple_max_flot.max");
