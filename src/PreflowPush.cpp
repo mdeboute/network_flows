@@ -94,6 +94,5 @@ void preflowPush(Graph *original_graph)
         graph->vertices[v].height = min_height;
     }
   }
-  cout << graph->vertices[graph->sink].exceedingFlow << endl;
   original_graph->fillGraphFromResidual(graph);
 }

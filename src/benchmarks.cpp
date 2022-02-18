@@ -29,7 +29,7 @@ bool maxFlowComparison(std::string fileName)
 
   //Preflow Push
   int startTime2 = time(NULL);
-  graph2 = graph1;//preflowPush(&graph2); //Preflow doit marcher pour décommenter cette ligne
+  preflowPush(&graph2);
   int duration2 = time(NULL) - startTime2;
 
   std::cout << "Preflow Push duration: " << duration2 << " seconds\n";
