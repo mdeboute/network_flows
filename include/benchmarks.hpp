@@ -1,13 +1,20 @@
+#ifndef BENCHMARKS_HPP
+#define BENCHMARKS_HPP
+
 #include <iostream>
 
 
 
-void maxFlowComparison(std::string fileName);
+bool maxFlowComparison(std::string fileName);
 
-void maxFlowBenchmarks();
+bool maxFlowBenchmarks();
 
 
 
-void minCostComparison(std::string fileName);
+bool minCostComparison(std::string fileName);
 
-void minCostBenchmarks();
+bool minCostBenchmarks();
+
+
+
+#endif

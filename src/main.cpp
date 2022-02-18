@@ -6,28 +6,34 @@
 #include "checker.hpp"
 #include "PLFlows.hpp"
 #include "PreflowPush.hpp"
+#include "benchmarks.hpp"
 using namespace std;
 
 int main()
 {
-  Graph graph = maxflow::parse("../data/maxflow/instance_1.max");
+  maxFlowComparison("../data/maxflow/instance_1.max");
+
+  //Graph graph = maxflow::parse("../data/maxflow/instance_1.max");
   //graph.print();
   //cout << endl;
   //cout << "Residual graph:\n";
   //cout << endl;
-  Graph *rGraph = graph.getResidualGraph(true);
-  shortestAugmentingPath(rGraph);
-  graph.fillGraphFromResidual(rGraph);
-  graph.print();
+  //Graph graphMax = maxflow::parse("../data/maxflow/instance_1.max");
+  //PL::maxFlow(graphMax);
+
+  //Graph *rGraph = graph.getResidualGraph(true);
+  //shortestAugmentingPath(rGraph);
+  //graph.fillGraphFromResidual(rGraph);
+  //graph.print();
   //cout << endl;
-  cout << "Max flow: " << graph.getValueObjMaxFlow() << endl;
+
+  //cout << endl;
+
+
+
+  //cout << "Max flow: " << graph.getValueObjMaxFlow() << endl;
   //saveSolution(&graph, "../sol/maxflow_1");
-  validFlow(&graph);
-
-  cout << endl;
-
-  Graph graphMax = maxflow::parse("../data/maxflow/instance_1.max");
-  PL::maxFlow(graphMax);
+  //validFlow(&graph);
 
   // Graph graphMin = mincost::parse("../data/simple_min_cost.min");
   // PL::minCostFlow(graphMin);
