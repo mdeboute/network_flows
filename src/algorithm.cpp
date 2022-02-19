@@ -45,6 +45,8 @@ int BellmanFord(Graph *graph, int pred[])
 
     for (int i = 0; i < E; i++)
     {
+        if (graph->edges[i].residualCapacity == 0)
+            continue;
         int u = graph->edges[i].startId;
         int v = graph->edges[i].endId;
         int weight = graph->edges[i].cost;
@@ -56,19 +58,28 @@ int BellmanFord(Graph *graph, int pred[])
     }
 
     printf("Graph doesn't contain negative weight cycle!\n");
-    std::cout << std::endl;
-    printArr(dist, V);
+    //graph->print();
     return -1;
 }
 
 void cycleCancelling(Graph *originGraph)
 {
-    Graph *graph = originGraph->getResidualGraph();
-    graph->fromMultipleToOne();
-    //Graph graph(this->nbVertices);
     
+    originGraph->fromMultipleToOne();
     
-    shortestAugmentingPath(graph);
+    Graph noParallelGraph(originGraph->nbVertices);
+    
+    originGraph->switchOffParallel(&noParallelGraph);
+
+    Graph *resGraphNoPara = noParallelGraph.getResidualGraph();
+    
+    shortestAugmentingPath(resGraphNoPara);
+    
+    noParallelGraph.fillGraphFromResidual(resGraphNoPara);
+
+    originGraph->switchOnParallel(&noParallelGraph);
+
+    Graph* graph = originGraph->getResidualGraph(false);
 
     int pred[graph->vertices.size()];
     int probVertex = BellmanFord(graph, pred);
@@ -77,32 +88,40 @@ void cycleCancelling(Graph *originGraph)
     while (probVertex != -1)
     {
         std::vector<int> edgesToChange;
-        int minResCap = 1;
 
-        int idMinEdge;
+        int idMinEdge = -1;
         for (int i = 0; i < graph->vertices[probVertex].leavingEdgesId.size(); i++)
         {
-            if (graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].endId == pred[probVertex] && graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].residualCapacity != 0 && graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].cost < graph->edges[idMinEdge].cost)
+            int idEndVertex = graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].endId;
+            int resCapEdge = graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].residualCapacity;
+            int costEdge = graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].cost;
+            if (idEndVertex == pred[probVertex] && resCapEdge != 0 && (costEdge < graph->edges[idMinEdge].cost || idMinEdge == -1))
             {
                 idMinEdge = graph->vertices[probVertex].leavingEdgesId[i];
             }
         }
-        edgesToChange.push_back(idMinEdge);
-        if (graph->edges[idMinEdge].residualCapacity < minResCap)
-        {
-            minResCap = graph->edges[idMinEdge].residualCapacity;
+        if(idMinEdge == -1){
+            std::cout << "ERROR, IDMINEDGE STILL -1" << std::endl;
         }
+        edgesToChange.push_back(idMinEdge);
+        int minResCap = graph->edges[idMinEdge].residualCapacity;
         probVertex = pred[probVertex];
 
         while (probVertex != initialVertex)
         {
-            int idMinEdge;
+            int idMinEdge = -1;
             for (int i = 0; i < graph->vertices[probVertex].leavingEdgesId.size(); i++)
             {
-                if (graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].endId == pred[probVertex] && graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].residualCapacity != 0 && graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].cost < graph->edges[idMinEdge].cost)
+                int idEndVertex = graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].endId;
+                int resCapEdge = graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].residualCapacity;
+                int costEdge = graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].cost;
+                if (idEndVertex == pred[probVertex] && resCapEdge != 0 && (costEdge < graph->edges[idMinEdge].cost || idMinEdge == -1))
                 {
                     idMinEdge = graph->vertices[probVertex].leavingEdgesId[i];
                 }
+            }
+            if(idMinEdge == -1){
+                std::cout << "ERROR, IDMINEDGE STILL -1" << std::endl;
             }
             if (graph->edges[idMinEdge].residualCapacity < minResCap)
             {
@@ -118,18 +137,28 @@ void cycleCancelling(Graph *originGraph)
 
         probVertex = BellmanFord(graph, pred);
     }
+    originGraph->fillGraphFromResidual(graph);
 }
 
 void retreat(Graph *graph, int i, int dist[])
 {
     int min = INT_MAX;
+    std::vector<Edge> beep;
     for (int j = 0; j < graph->vertices[i].leavingEdgesId.size(); j++)
     {
+        beep.push_back(graph->edges[graph->vertices[i].leavingEdgesId[j]]);
         if (graph->edges[graph->vertices[i].leavingEdgesId[j]].residualCapacity > 0 && min > dist[graph->vertices[i].getLeavingNeighbour(*graph, j).id] + 1)
         {
             min = dist[graph->vertices[i].getLeavingNeighbour(*graph, j).id] + 1;
         }
     }
+    
+    if(min == INT_MAX)
+        std::cout << "boop" << std::endl;
+    if(i == 577)
+        std::cout << "boop";
+    if(i == 225)
+        std::cout << "boop";
     dist[i] = min;
 }
 
@@ -195,13 +224,20 @@ void shortestAugmentingPath(Graph *graph)
 
     int i = graph->src;
     while (dist[graph->src] < graph->nbVertices)
-    {
+    { 
+        // if(i == 388) 
+        //     std::cout << INT_MAX << " ";
         bool hasAdmissibleArc = false;
         for (int p = 0; p < graph->vertices[i].leavingEdgesId.size(); p++)
         {
-            int j = graph->edges[graph->vertices[i].leavingEdgesId[p]].endId;
+            int j = graph->edges[graph->vertices[i].leavingEdgesId[graph->vertices[i].height]].endId;
+            graph->vertices[i].height += 1;
+            if(graph->vertices[i].height == graph->vertices[i].nbLeavingEdges) 
+                graph->vertices[i].height = 0;
             if (graph->getEdgeFromVerticesId(i, j).residualCapacity > 0 && dist[i] == dist[j] + 1)
             {
+                if(i == 225) 
+                    std::cout << INT_MAX << " ";
                 hasAdmissibleArc = true;
                 pred[j] = i; // advance(i) cf. pdf
                 i = j;
@@ -212,7 +248,9 @@ void shortestAugmentingPath(Graph *graph)
                 }
                 break;
             }
+            
         }
+        
         if (hasAdmissibleArc == false)
         {
             retreat(graph, i, dist);

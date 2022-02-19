@@ -114,7 +114,7 @@ void Graph::fillGraphFromResidual(Graph *residualGraph)
 
     for (Edge &edge : residualGraph->edges)
     {
-        if (edge.endId == edges[edge.mirrorEdgeId].startId and edge.startId == edges[edge.mirrorEdgeId].endId)
+        if (edge.startId == edges[edge.mirrorEdgeId].startId and edge.endId == edges[edge.mirrorEdgeId].endId)
         {
             // si la quantité dépasse la capacité il faut chercher des arc parralèles dans le graphe d'origine et leur donner une partie du flot
             edges[edge.mirrorEdgeId].setFlow(std::max(edges[edge.mirrorEdgeId].maxCapacity - edge.residualCapacity, 0));
@@ -321,6 +321,9 @@ void Graph::fromMultipleToOne()
             this->addEdge(newEdge);
         }
     }
+    else{
+        this->src = srcNodes[0];
+    }
 
     if (sinkNodes.size() > 1)
     {
@@ -328,20 +331,21 @@ void Graph::fromMultipleToOne()
         this->addVertex();
         for (int i = 0; i < sinkNodes.size(); i++)
         {
-            Edge newEdge(this->edges.size(), this->sink, sinkNodes[i], this->vertices[sinkNodes[i]].exceedingFlow);
+            Edge newEdge(this->edges.size(), sinkNodes[i], this->sink, - 1 * this->vertices[sinkNodes[i]].exceedingFlow);
             this->addEdge(newEdge);
         }
+    }
+    else{
+        this->sink = sinkNodes[0];
     }
 }
 
 void Graph::switchOffParallel(Graph *graph){  // create the equivalent of "this" in graph in parameter, all parallel edges are grouped into one, like the cost doesn't matter
-    for(int i = 0; i < this->nbVertices; i++){
-        graph->addVertex();
-    }
-
+    graph->src = this->src;
+    graph->sink = this->sink;
     for(int i = 0; i < this->nbVertices; i++){
         for(int j = 0; j < this->vertices[i].nbLeavingEdges; j++){
-            Edge e = graph->getEdgeFromVerticesId(i, this->vertices[i].leavingEdgesId[j]);
+            Edge e = graph->getEdgeFromVerticesId(i, this->edges[this->vertices[i].leavingEdgesId[j]].endId);
             if(e.id != -1){
                 e.maxCapacity += this->edges[this->vertices[i].leavingEdgesId[j]].maxCapacity;
             }
