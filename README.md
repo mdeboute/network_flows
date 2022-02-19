@@ -19,7 +19,7 @@ Projet Netflow : [ici](http://archive.dimacs.rutgers.edu/pub/netflow/generators/
 Ce répertoire contient des programmes qui génèrent des réseaux et des graphes.
 La plupart sont au format DIMACS, [ceci](http://lpsolve.sourceforge.net/5.5/DIMACS_maxf.htm) est un site Web pour en savoir plus sur ce format.
 
-## Travail minimum requis (deadline: 18/02/2022)
+## Travail minimum requis (deadline: 04/03/2022)
 
 ### Implémenter 3 algorithmes
 

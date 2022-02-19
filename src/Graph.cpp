@@ -20,7 +20,6 @@ Graph::Graph(int nbVertices, int nbEdges, int src, int sink, int edgeArray[][3])
     // création des arêtes
     for (int id = 0; id < nbEdges; id++)
     {
-
         int startId = edgeArray[id][0];
         int endId = edgeArray[id][1];
         int maxCapacity = edgeArray[id][2];
@@ -55,7 +54,6 @@ Graph::Graph(int nbVertices, int nbEdges, int edgeArray[][5])
     // création des arêtes
     for (int id = 0; id < nbEdges; id++)
     {
-
         int cost = edgeArray[id][0];
         int minCapacity = edgeArray[id][1];
         int maxCapacity = edgeArray[id][2];
@@ -105,6 +103,28 @@ void Graph::print()
     }
 }
 
+bool Graph::parallelEdgesPresent(int vertexId1,int vertexId2)
+{
+  int parallelEdgesAmount = 0;
+  for(int edgeId : vertices[vertexId1].leavingEdgesId)
+  {
+    Edge edge = edges[edgeId];
+    if(edge.endId == vertexId2)
+    {
+      parallelEdgesAmount++;
+    }
+  }
+  if(parallelEdgesAmount>1)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+
+}
+
 void Graph::fillGraphFromResidual(Graph *residualGraph)
 {
     for (Edge &edge : edges)
@@ -116,7 +136,11 @@ void Graph::fillGraphFromResidual(Graph *residualGraph)
     {
         if (edge.startId == edges[edge.mirrorEdgeId].startId and edge.endId == edges[edge.mirrorEdgeId].endId)
         {
-            // si la quantité dépasse la capacité il faut chercher des arc parralèles dans le graphe d'origine et leur donner une partie du flot
+            if(parallelEdgesPresent(edges[edge.mirrorEdgeId].startId,edges[edge.mirrorEdgeId].endId))
+            {
+                // si la quantité dépasse la capacité il faut chercher des arc parralèles dans le graphe d'origine et leur donner une partie du flot
+                std::cout << "arêtes parralèles, si ce message est visible les résultats sont faux et il faut demander à pierre de modifier la fonction fillGraphFromResidual\n";
+            }
             edges[edge.mirrorEdgeId].setFlow(std::max(edges[edge.mirrorEdgeId].maxCapacity - edge.residualCapacity, 0));
         }
     }
@@ -175,6 +199,10 @@ Graph *Graph::getResidualGraph(bool fuseParallelEdges)
                     int edgeId2 = residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2];
                     if (residualGraph->edges[edgeId1].startId == residualGraph->edges[edgeId2].startId and residualGraph->edges[edgeId1].endId == residualGraph->edges[edgeId2].endId)
                     {
+                        if(residualGraph->edges[edgeId1].startId != edges[residualGraph->edges[edgeId1].mirrorEdgeId].startId)
+                        {
+                          residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex1]].mirrorEdgeId = residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2]].mirrorEdgeId;
+                        }
                         residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex1]].residualCapacity += residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2]].residualCapacity;
                         residualGraph->removeEdge(residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2]);
                         edgeIndex2--;
@@ -281,7 +309,7 @@ Edge &Graph::getEdgeFromVerticesId(int vertexId1, int vertexId2)
         }
     }
     Edge *e = new Edge(-1,  -1,  -1,  -1);
-    return *e; 
+    return *e;
 }
 
 int Graph::getValueObjMaxFlow()
@@ -363,7 +391,7 @@ void Graph::switchOffParallel(Graph *graph){  // create the equivalent of "this"
 void Graph::switchOnParallel(Graph *graph){
     for(int i = 0; i < this->nbVertices; i++){
         for(int j = 0; j < this->vertices[i].nbLeavingEdges; j++){
-            int minFlowMaxCap = std::min(this->edges[this->vertices[i].leavingEdgesId[j]].maxCapacity, 
+            int minFlowMaxCap = std::min(this->edges[this->vertices[i].leavingEdgesId[j]].maxCapacity,
                     graph->getEdgeFromVerticesId(i, this->edges[this->vertices[i].leavingEdgesId[j]].endId).flow);
             this->edges[this->vertices[i].leavingEdgesId[j]].flow = minFlowMaxCap;
             graph->getEdgeFromVerticesId(i, this->edges[this->vertices[i].leavingEdgesId[j]].endId).flow -= minFlowMaxCap;
