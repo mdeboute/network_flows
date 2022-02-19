@@ -11,16 +11,17 @@ using namespace std;
 
 int main()
 {
-  maxFlowComparison("../data/maxflow/instance_1.max");
+  maxFlowComparison("../data/maxflow/maxFlowTest500v5000e.max");
 
-  //Graph graph = maxflow::parse("../data/maxflow/instance_1.max");
+  //Graph graph = maxflow::parse("../data/maxflow/maxFlowTest600v6000e.max");
   //graph.print();
   //cout << endl;
   //cout << "Residual graph:\n";
   //cout << endl;
-  //Graph graphMax = maxflow::parse("../data/maxflow/instance_1.max");
+  //Graph graphMax = maxflow::parse("../data/maxflow/maxFlowTest600v6000e.max");
   //PL::maxFlow(graphMax);
 
+  //graph.removeLonelyNodes();
   //Graph *rGraph = graph.getResidualGraph(true);
   //shortestAugmentingPath(rGraph);
   //graph.fillGraphFromResidual(rGraph);

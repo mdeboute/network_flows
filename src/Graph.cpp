@@ -262,7 +262,7 @@ void Graph::removeEdge(int edgeId)
 
         for (int edgeIndex = 0; edgeIndex < vertices[vertexIndex].nbEnteringEdges; edgeIndex++)
         {
-
+                
             if (vertices[vertexIndex].enteringEdgesId[edgeIndex] == edgeId)
             {
                 vertices[vertexIndex].enteringEdgesId.erase(vertices[vertexIndex].enteringEdgesId.begin() + edgeIndex);
@@ -395,6 +395,16 @@ void Graph::switchOnParallel(Graph *graph){
                     graph->getEdgeFromVerticesId(i, this->edges[this->vertices[i].leavingEdgesId[j]].endId).flow);
             this->edges[this->vertices[i].leavingEdgesId[j]].flow = minFlowMaxCap;
             graph->getEdgeFromVerticesId(i, this->edges[this->vertices[i].leavingEdgesId[j]].endId).flow -= minFlowMaxCap;
+        }
+    }
+}
+
+void Graph::removeLonelyNodes(){
+    for(Vertex& vrt : vertices){
+        if(vrt.nbLeavingEdges == 0){
+            while(vrt.nbEnteringEdges > 0){
+                removeEdge(vrt.enteringEdgesId[0]);
+            }
         }
     }
 }

@@ -20,9 +20,7 @@ bool maxFlowComparison(std::string fileName)
 
   //Shortest Augmenting Path
   int startTime1 = time(NULL);
-  Graph *residualGraph = graph1.getResidualGraph(true);
-  shortestAugmentingPath(residualGraph);
-  graph1.fillGraphFromResidual(residualGraph);
+  shortestAugmentingPath(&graph1);
   int duration1 = time(NULL) - startTime1;
 
   std::cout << "Shortest Augmenting Path duration: " << duration1 << " seconds\n";

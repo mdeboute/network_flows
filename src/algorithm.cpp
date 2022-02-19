@@ -6,6 +6,7 @@
 #include <climits> // for INT_MAX
 #include <queue>
 #include <string.h>
+#include <ctime>
 
 // A utility function used to print the solution
 void printArr(int dist[], int n)
@@ -64,6 +65,8 @@ int BellmanFord(Graph *graph, int pred[])
 
 void cycleCancelling(Graph *originGraph)
 {
+
+    originGraph->removeLonelyNodes();
     
     originGraph->fromMultipleToOne();
     
@@ -143,22 +146,13 @@ void cycleCancelling(Graph *originGraph)
 void retreat(Graph *graph, int i, int dist[])
 {
     int min = INT_MAX;
-    std::vector<Edge> beep;
     for (int j = 0; j < graph->vertices[i].leavingEdgesId.size(); j++)
     {
-        beep.push_back(graph->edges[graph->vertices[i].leavingEdgesId[j]]);
         if (graph->edges[graph->vertices[i].leavingEdgesId[j]].residualCapacity > 0 && min > dist[graph->vertices[i].getLeavingNeighbour(*graph, j).id] + 1)
         {
             min = dist[graph->vertices[i].getLeavingNeighbour(*graph, j).id] + 1;
         }
     }
-    
-    if(min == INT_MAX)
-        std::cout << "boop" << std::endl;
-    if(i == 577)
-        std::cout << "boop";
-    if(i == 225)
-        std::cout << "boop";
     dist[i] = min;
 }
 
@@ -212,8 +206,13 @@ void distanceLabelling(Graph *graph, int dist[])
     return;
 }
 
-void shortestAugmentingPath(Graph *graph)
+void shortestAugmentingPath(Graph *originGraph)
 {
+    // int ST1 = time(NULL);
+    // originGraph->removeLonelyNodes();
+    // int ST2 = time(NULL);
+    // std::cout << "beep" << ST1 - ST2 << std::endl;
+    Graph* graph = originGraph->getResidualGraph(true);
     int dist[graph->nbVertices];
     distanceLabelling(graph, dist);
     int pred[graph->nbVertices];
@@ -225,8 +224,6 @@ void shortestAugmentingPath(Graph *graph)
     int i = graph->src;
     while (dist[graph->src] < graph->nbVertices)
     { 
-        // if(i == 388) 
-        //     std::cout << INT_MAX << " ";
         bool hasAdmissibleArc = false;
         for (int p = 0; p < graph->vertices[i].leavingEdgesId.size(); p++)
         {
@@ -236,8 +233,6 @@ void shortestAugmentingPath(Graph *graph)
                 graph->vertices[i].height = 0;
             if (graph->getEdgeFromVerticesId(i, j).residualCapacity > 0 && dist[i] == dist[j] + 1)
             {
-                if(i == 225) 
-                    std::cout << INT_MAX << " ";
                 hasAdmissibleArc = true;
                 pred[j] = i; // advance(i) cf. pdf
                 i = j;
@@ -260,4 +255,5 @@ void shortestAugmentingPath(Graph *graph)
             }
         }
     }
+    originGraph->fillGraphFromResidual(graph);
 }
