@@ -6,6 +6,6 @@
 #include <fstream>
 
 void saveSolution(Graph *graph, std::string filename);
-void saveSolution(Graph *graph, std::string filename,int time);
+void saveSolution(Graph *graph, std::string filename, int time);
 
 #endif

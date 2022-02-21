@@ -24,13 +24,16 @@ namespace PL
 		cout << "------------------> Maximum flow by linear programming <------------------" << endl;
 		try
 		{
-			if(verbose) cout << "--> Creating the Gurobi environment" << endl;
+			if (verbose)
+				cout << "--> Creating the Gurobi environment" << endl;
 			GRBEnv env = GRBEnv(true);
 			env.start();
-			if(verbose) cout << "--> Creating the Gurobi model" << endl;
+			if (verbose)
+				cout << "--> Creating the Gurobi model" << endl;
 			GRBModel model = GRBModel(env);
 
-			if(verbose) cout << "--> Creating the variables" << endl;
+			if (verbose)
+				cout << "--> Creating the variables" << endl;
 			f = new GRBVar[graph.nbEdges];
 			for (size_t i = 0; i < graph.nbEdges; ++i)
 			{
@@ -40,11 +43,13 @@ namespace PL
 			}
 			v = model.addVar(0.0, INT_MAX, 0.0, GRB_CONTINUOUS, "v");
 
-			if(verbose) cout << "--> Creating the objective function" << endl;
+			if (verbose)
+				cout << "--> Creating the objective function" << endl;
 			GRBLinExpr obj = v;
 			model.setObjective(obj, GRB_MAXIMIZE);
 
-			if(verbose) cout << "--> Creating the constraints" << endl;
+			if (verbose)
+				cout << "--> Creating the constraints" << endl;
 			// flot entrant = flot sortant
 			for (size_t i = 0; i < graph.nbVertices; ++i)
 			{
@@ -104,22 +109,26 @@ namespace PL
 
 			// Optimize model
 			// --- Solver configuration ---
-			if(verbose) cout << "--> Configuring the solver" << endl;
+			if (verbose)
+				cout << "--> Configuring the solver" << endl;
 			model.set(GRB_DoubleParam_TimeLimit, 600.0); //< sets the time limit (in seconds)
 			model.set(GRB_IntParam_Threads, 1);			 //< limits the solver to single thread usage
 
 			// --- Solver launch ---
-			if(verbose) cout << "--> Running the solver" << endl;
+			if (verbose)
+				cout << "--> Running the solver" << endl;
 			model.optimize();
 			// model.write("model.lp"); //< Writes the model in a file
 
 			// --- Solver results retrieval ---
-			if(verbose) cout << "--> Retrieving solver results " << endl;
+			if (verbose)
+				cout << "--> Retrieving solver results " << endl;
 
 			int status = model.get(GRB_IntAttr_Status);
 			if (status == GRB_OPTIMAL || (status == GRB_TIME_LIMIT && model.get(GRB_IntAttr_SolCount) > 0))
 			{
-				if(verbose) {
+				if (verbose)
+				{
 					// the solver has computed the optimal solution or a feasible solution (when the time limit is reached before proving optimality)
 					cout << "Succes! (Status: " << status << ")" << endl; //< prints the solver status (see the gurobi documentation)
 					cout << "Runtime : " << model.get(GRB_DoubleAttr_Runtime) << " seconds" << endl;
@@ -135,7 +144,7 @@ namespace PL
 						}
 					}
 					cout << "Objective value = " << model.get(GRB_DoubleAttr_ObjVal) << "\n"
-					 	<< endl; //<gets the value of the objective function for the best computed solution (optimal if no time limit)
+						 << endl; //<gets the value of the objective function for the best computed solution (optimal if no time limit)
 				}
 				result = model.get(GRB_DoubleAttr_ObjVal);
 			}
@@ -171,13 +180,16 @@ namespace PL
 		cout << "------------------> Minimum cost flow by linear programming <------------------" << endl;
 		try
 		{
-			if(verbose) cout << "--> Creating the Gurobi environment" << endl;
+			if (verbose)
+				cout << "--> Creating the Gurobi environment" << endl;
 			GRBEnv env = GRBEnv(true);
 			env.start();
-			if(verbose) cout << "--> Creating the Gurobi model" << endl;
+			if (verbose)
+				cout << "--> Creating the Gurobi model" << endl;
 			GRBModel model = GRBModel(env);
 
-			if(verbose) cout << "--> Creating the variables" << endl;
+			if (verbose)
+				cout << "--> Creating the variables" << endl;
 			f = new GRBVar[graph.nbEdges];
 			for (size_t i = 0; i < graph.nbEdges; ++i)
 			{
@@ -186,7 +198,8 @@ namespace PL
 				f[i] = model.addVar(0.0, INT_MAX, 0.0, GRB_CONTINUOUS, ss.str());
 			}
 
-			if(verbose) cout << "--> Creating the objective function" << endl;
+			if (verbose)
+				cout << "--> Creating the objective function" << endl;
 			GRBLinExpr obj = 0;
 			for (size_t i = 0; i < graph.nbEdges; ++i)
 			{
@@ -194,7 +207,8 @@ namespace PL
 			}
 			model.setObjective(obj, GRB_MINIMIZE);
 
-			if(verbose) cout << "--> Creating the constraints" << endl;
+			if (verbose)
+				cout << "--> Creating the constraints" << endl;
 			// flot entrant = flot sortant
 			for (size_t i = 0; i < graph.nbVertices; ++i)
 			{
@@ -233,22 +247,26 @@ namespace PL
 
 			// Optimize model
 			// --- Solver configuration ---
-			if(verbose) cout << "--> Configuring the solver" << endl;
+			if (verbose)
+				cout << "--> Configuring the solver" << endl;
 			model.set(GRB_DoubleParam_TimeLimit, 600.0); //< sets the time limit (in seconds)
 			model.set(GRB_IntParam_Threads, 1);			 //< limits the solver to single thread usage
 
 			// --- Solver launch ---
-			if(verbose) cout << "--> Running the solver" << endl;
+			if (verbose)
+				cout << "--> Running the solver" << endl;
 			model.optimize();
 			// model.write("model.lp"); //< Writes the model in a file
 
 			// --- Solver results retrieval ---
-			if(verbose) cout << "--> Retrieving solver results " << endl;
+			if (verbose)
+				cout << "--> Retrieving solver results " << endl;
 
 			int status = model.get(GRB_IntAttr_Status);
 			if (status == GRB_OPTIMAL || (status == GRB_TIME_LIMIT && model.get(GRB_IntAttr_SolCount) > 0))
 			{
-				if(verbose) {
+				if (verbose)
+				{
 					// the solver has computed the optimal solution or a feasible solution (when the time limit is reached before proving optimality)
 					cout << "Succes! (Status: " << status << ")" << endl; //< prints the solver status (see the gurobi documentation)
 					cout << "Runtime : " << model.get(GRB_DoubleAttr_Runtime) << " seconds" << endl;
