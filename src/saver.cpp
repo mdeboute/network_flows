@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 
-void saveSolution(Graph *graph, std::string filename,int time)
+void saveSolution(Graph *graph, std::string filename, int time)
 {
   int suppliedEdgesAmount = 0;
   std::string flowLines = "";
@@ -27,5 +27,5 @@ void saveSolution(Graph *graph, std::string filename,int time)
 
 void saveSolution(Graph *graph, std::string filename)
 {
-  saveSolution(graph,filename,-1);
+  saveSolution(graph, filename, -1);
 }

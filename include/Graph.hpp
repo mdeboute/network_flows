@@ -38,11 +38,12 @@ public:
     Vertex &getEnd(int edgeId);                                  // retourne le sommet de d'arrivée de l'arête n (n=edgeId)
     Edge &getPairedEdge(int edgeId);                             // retourne l'arc associé de l'arête n (n=edgeId)
     Edge &getEdgeFromVerticesId(int vertexId1, int vertexId2);   // retourne l'arc associé à deux ID de sommets en paramètres
-    bool parallelEdgesPresent(int vertexId1,int vertexId2);
+    bool parallelEdgesPresent(int vertexId1, int vertexId2);
     int getValueObjMaxFlow();
     void fromMultipleToOne();
     void switchOffParallel(Graph *graph);
     void switchOnParallel(Graph *graph);
+    void removeLonelyNodes();
 };
 
 #endif
