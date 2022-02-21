@@ -21,7 +21,6 @@ namespace PL
 		GRBVar *f;
 		GRBVar v;
 		int result = -1;
-		cout << "------------------> Maximum flow by linear programming <------------------" << endl;
 		try
 		{
 			if (verbose)
@@ -31,6 +30,7 @@ namespace PL
 			if (verbose)
 				cout << "--> Creating the Gurobi model" << endl;
 			GRBModel model = GRBModel(env);
+			if(not verbose){model.set(GRB_IntParam_OutputFlag,0);}
 
 			if (verbose)
 				cout << "--> Creating the variables" << endl;
@@ -163,7 +163,6 @@ namespace PL
 		{
 			cout << "Exception during optimization" << endl;
 		}
-		cout << "-------------------------> End of linear programming <-------------------------" << endl;
 		delete[] f;
 		return result;
 	}
@@ -177,7 +176,6 @@ namespace PL
 	{
 		GRBVar *f;
 		int result = -1;
-		cout << "------------------> Minimum cost flow by linear programming <------------------" << endl;
 		try
 		{
 			if (verbose)
@@ -187,6 +185,7 @@ namespace PL
 			if (verbose)
 				cout << "--> Creating the Gurobi model" << endl;
 			GRBModel model = GRBModel(env);
+			if(not verbose){model.set(GRB_IntParam_OutputFlag,0);}
 
 			if (verbose)
 				cout << "--> Creating the variables" << endl;
@@ -298,7 +297,6 @@ namespace PL
 		{
 			cout << "Exception during optimization" << endl;
 		}
-		cout << "-------------------------> End of linear programming <-------------------------" << endl;
 		delete[] f;
 		return result;
 	}
