@@ -11,9 +11,9 @@ using namespace std;
 
 int main()
 {
-  maxFlowComparison("../data/maxflow/instance_1.max");
+  maxFlowComparison("../data/maxflow/maxFlowTest100v1000e.max",true);
+  //maxFlowBenchmarks(true);
 
-  //Graph graph = maxflow::parse("../data/maxflow/instance_1.max");
   //graph.print();
   //cout << endl;
   //cout << "Residual graph:\n";
@@ -28,8 +28,6 @@ int main()
   //cout << endl;
 
   //cout << endl;
-
-
 
   //cout << "Max flow: " << graph.getValueObjMaxFlow() << endl;
   //saveSolution(&graph, "../sol/maxflow_1");

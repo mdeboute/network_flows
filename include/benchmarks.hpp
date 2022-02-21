@@ -5,15 +5,15 @@
 
 
 
-bool maxFlowComparison(std::string fileName);
+bool maxFlowComparison(std::string fileName,bool checkWithLP);
 
-bool maxFlowBenchmarks();
+bool maxFlowBenchmarks(bool checkWithLP);
 
 
 
-bool minCostComparison(std::string fileName);
+bool minCostComparison(std::string fileName,bool checkWithLP);
 
-bool minCostBenchmarks();
+bool minCostBenchmarks(bool checkWithLP);
 
 
 

@@ -1,16 +1,37 @@
 #include <iostream>
 #include <ctime>
 #include <fstream>
+#include "benchmarks.hpp"
 #include "Graph.hpp"
 #include "parser.hpp"
 #include "algorithm.hpp"
 #include "PreflowPush.hpp"
 #include "checker.hpp"
 #include "saver.hpp"
+#include "PLFlows.hpp"
 
 
 
-bool maxFlowComparison(std::string fileName)
+bool maxFlowBenchmarks(bool checkWithLP)
+{
+  std::string fileList[10];
+  for(int index = 0;index<10;index++)
+  {
+    fileList[index]="../generator/maxflow/debug"+std::to_string(index)+".max";
+  }
+
+
+  for(std::string fileName:fileList)
+  {
+    if(not maxFlowComparison(fileName,checkWithLP)){return false;}
+  }
+
+  return true;
+}
+
+
+
+bool maxFlowComparison(std::string fileName,bool checkWithLP)
 {
   std::string localName = fileName.substr(16);
   std::cout << "Maxflow comparison on " << localName << "\n";
@@ -33,6 +54,17 @@ bool maxFlowComparison(std::string fileName)
   int duration2 = time(NULL) - startTime2;
 
   std::cout << "Preflow Push duration: " << duration2 << " seconds\n";
+
+  int value3;
+  int duration3;
+  if(checkWithLP)
+  {
+    Graph graph3 = maxflow::parse(fileName,false);
+    int startTime3 = time(NULL);
+    value3 = PL::maxFlow(graph3);
+    duration3 = time(NULL) - startTime3;
+    std::cout << "LP duration: " << duration3 << " seconds\n";
+  }
 
   //on vérifie la validité des solutions
   int value1 = graph1.getValueObjMaxFlow();
@@ -58,13 +90,23 @@ bool maxFlowComparison(std::string fileName)
     return false;
   }
 
-  saveSolution(&graph1, "../sol/sol_"+localName);
+  if(checkWithLP and (value3 != value1 or value3 != value2))
+  {
+    std::cout << "LP: " << value3 << "\n";
+    std::cout << "Both algorithm: " << value1 << "\n";
+    std::cout << "Error: different objective values\n";
+    return false;
+  }
 
-  std::ofstream timeFile;
-  timeFile.open("../sol/time_"+localName);
+  saveSolution(&graph1, "../solution/sol_"+localName);
+
+  std::fstream timeFile;
+  timeFile.open("../solution/time_"+localName);
+  if(not timeFile.is_open()){std::cout << "pas réussi à créer le fichier\n";}
   timeFile << std::to_string(graph1.nbVertices) << " vertices, " << std::to_string(graph1.nbEdges) << " edges"<< "\n";
   timeFile << "Shortest Augmenting Path: " << std::to_string(duration1) << "\n";
   timeFile << "Preflow Push: " << std::to_string(duration2) << "\n";
+  if(checkWithLP){timeFile << "LP: " << std::to_string(duration3) << "\n";}
   timeFile.close();
 
   return true;
