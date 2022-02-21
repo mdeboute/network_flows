@@ -1,4 +1,4 @@
-# Instances
+# Instances from Netflow
 
 This directory contains a number of files of the form gte_bad.XXXXXX
 
