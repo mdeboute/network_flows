@@ -103,26 +103,25 @@ void Graph::print()
     }
 }
 
-bool Graph::parallelEdgesPresent(int vertexId1,int vertexId2)
+bool Graph::parallelEdgesPresent(int vertexId1, int vertexId2)
 {
-  int parallelEdgesAmount = 0;
-  for(int edgeId : vertices[vertexId1].leavingEdgesId)
-  {
-    Edge edge = edges[edgeId];
-    if(edge.endId == vertexId2)
+    int parallelEdgesAmount = 0;
+    for (int edgeId : vertices[vertexId1].leavingEdgesId)
     {
-      parallelEdgesAmount++;
+        Edge edge = edges[edgeId];
+        if (edge.endId == vertexId2)
+        {
+            parallelEdgesAmount++;
+        }
     }
-  }
-  if(parallelEdgesAmount>1)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-
+    if (parallelEdgesAmount > 1)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void Graph::fillGraphFromResidual(Graph *residualGraph)
@@ -136,7 +135,7 @@ void Graph::fillGraphFromResidual(Graph *residualGraph)
     {
         if (edge.startId == edges[edge.mirrorEdgeId].startId and edge.endId == edges[edge.mirrorEdgeId].endId)
         {
-            if(parallelEdgesPresent(edges[edge.mirrorEdgeId].startId,edges[edge.mirrorEdgeId].endId))
+            if (parallelEdgesPresent(edges[edge.mirrorEdgeId].startId, edges[edge.mirrorEdgeId].endId))
             {
                 // si la quantité dépasse la capacité il faut chercher des arc parralèles dans le graphe d'origine et leur donner une partie du flot
                 std::cout << "arêtes parralèles, si ce message est visible les résultats sont faux et il faut demander à pierre de modifier la fonction fillGraphFromResidual\n";
@@ -199,9 +198,9 @@ Graph *Graph::getResidualGraph(bool fuseParallelEdges)
                     int edgeId2 = residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2];
                     if (residualGraph->edges[edgeId1].startId == residualGraph->edges[edgeId2].startId and residualGraph->edges[edgeId1].endId == residualGraph->edges[edgeId2].endId)
                     {
-                        if(residualGraph->edges[edgeId1].startId != edges[residualGraph->edges[edgeId1].mirrorEdgeId].startId)
+                        if (residualGraph->edges[edgeId1].startId != edges[residualGraph->edges[edgeId1].mirrorEdgeId].startId)
                         {
-                          residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex1]].mirrorEdgeId = residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2]].mirrorEdgeId;
+                            residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex1]].mirrorEdgeId = residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2]].mirrorEdgeId;
                         }
                         residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex1]].residualCapacity += residualGraph->edges[residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2]].residualCapacity;
                         residualGraph->removeEdge(residualGraph->vertices[vertexIndex].leavingEdgesId[edgeIndex2]);
@@ -262,7 +261,7 @@ void Graph::removeEdge(int edgeId)
 
         for (int edgeIndex = 0; edgeIndex < vertices[vertexIndex].nbEnteringEdges; edgeIndex++)
         {
-                
+
             if (vertices[vertexIndex].enteringEdgesId[edgeIndex] == edgeId)
             {
                 vertices[vertexIndex].enteringEdgesId.erase(vertices[vertexIndex].enteringEdgesId.begin() + edgeIndex);
@@ -308,7 +307,7 @@ Edge &Graph::getEdgeFromVerticesId(int vertexId1, int vertexId2)
             return this->edges[this->vertices[vertexId1].leavingEdgesId[i]];
         }
     }
-    Edge *e = new Edge(-1,  -1,  -1,  -1);
+    Edge *e = new Edge(-1, -1, -1, -1);
     return *e;
 }
 
@@ -349,7 +348,8 @@ void Graph::fromMultipleToOne()
             this->addEdge(newEdge);
         }
     }
-    else{
+    else
+    {
         this->src = srcNodes[0];
     }
 
@@ -359,25 +359,31 @@ void Graph::fromMultipleToOne()
         this->addVertex();
         for (int i = 0; i < sinkNodes.size(); i++)
         {
-            Edge newEdge(this->edges.size(), sinkNodes[i], this->sink, - 1 * this->vertices[sinkNodes[i]].exceedingFlow);
+            Edge newEdge(this->edges.size(), sinkNodes[i], this->sink, -1 * this->vertices[sinkNodes[i]].exceedingFlow);
             this->addEdge(newEdge);
         }
     }
-    else{
+    else
+    {
         this->sink = sinkNodes[0];
     }
 }
 
-void Graph::switchOffParallel(Graph *graph){  // create the equivalent of "this" in graph in parameter, all parallel edges are grouped into one, like the cost doesn't matter
+void Graph::switchOffParallel(Graph *graph)
+{ // create the equivalent of "this" in graph in parameter, all parallel edges are grouped into one, like the cost doesn't matter
     graph->src = this->src;
     graph->sink = this->sink;
-    for(int i = 0; i < this->nbVertices; i++){
-        for(int j = 0; j < this->vertices[i].nbLeavingEdges; j++){
+    for (int i = 0; i < this->nbVertices; i++)
+    {
+        for (int j = 0; j < this->vertices[i].nbLeavingEdges; j++)
+        {
             Edge e = graph->getEdgeFromVerticesId(i, this->edges[this->vertices[i].leavingEdgesId[j]].endId);
-            if(e.id != -1){
+            if (e.id != -1)
+            {
                 e.maxCapacity += this->edges[this->vertices[i].leavingEdgesId[j]].maxCapacity;
             }
-            else{
+            else
+            {
                 e.maxCapacity = this->edges[this->vertices[i].leavingEdgesId[j]].maxCapacity;
                 e.startId = i;
                 e.endId = this->edges[this->vertices[i].leavingEdgesId[j]].endId;
@@ -388,21 +394,35 @@ void Graph::switchOffParallel(Graph *graph){  // create the equivalent of "this"
     }
 }
 
-void Graph::switchOnParallel(Graph *graph){
-    for(int i = 0; i < this->nbVertices; i++){
-        for(int j = 0; j < this->vertices[i].nbLeavingEdges; j++){
+void Graph::switchOnParallel(Graph *graph)
+{
+    for (int i = 0; i < this->nbVertices; i++)
+    {
+        for (int j = 0; j < this->vertices[i].nbLeavingEdges; j++)
+        {
             int minFlowMaxCap = std::min(this->edges[this->vertices[i].leavingEdgesId[j]].maxCapacity,
-                    graph->getEdgeFromVerticesId(i, this->edges[this->vertices[i].leavingEdgesId[j]].endId).flow);
+                                         graph->getEdgeFromVerticesId(i, this->edges[this->vertices[i].leavingEdgesId[j]].endId).flow);
             this->edges[this->vertices[i].leavingEdgesId[j]].flow = minFlowMaxCap;
             graph->getEdgeFromVerticesId(i, this->edges[this->vertices[i].leavingEdgesId[j]].endId).flow -= minFlowMaxCap;
         }
     }
 }
 
+<<<<<<< HEAD
 void Graph::removeLonelyNodes(){
     for(Vertex& vrt : vertices){
         if(vrt.id != sink && vrt.nbLeavingEdges == 0){
             while(vrt.nbEnteringEdges > 0){
+=======
+void Graph::removeLonelyNodes()
+{
+    for (Vertex &vrt : vertices)
+    {
+        if (vrt.nbLeavingEdges == 0)
+        {
+            while (vrt.nbEnteringEdges > 0)
+            {
+>>>>>>> 552ea5fdf122c735baa0b8de774d673a5d3cdc65
                 removeEdge(vrt.enteringEdgesId[0]);
             }
         }

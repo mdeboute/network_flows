@@ -10,12 +10,15 @@ const char delimiter = ' ';
 
 namespace mincost
 {
-    void openFile(std::ifstream &file, std::string filePath,bool verbose)
+    void openFile(std::ifstream &file, std::string filePath, bool verbose)
     {
         file.open(filePath);
         if (file.is_open())
         {
-            if(verbose){std::cout << "File opened successfully" << std::endl;}
+            if (verbose)
+            {
+                std::cout << "File opened successfully" << std::endl;
+            }
         }
         else
         {
@@ -27,10 +30,10 @@ namespace mincost
 
     void openFile(std::ifstream &file, std::string filePath)
     {
-      openFile(file,filePath,true);
+        openFile(file, filePath, true);
     }
 
-    Graph processFile(std::ifstream &file,bool verbose)
+    Graph processFile(std::ifstream &file, bool verbose)
     {
         // data format example:
         // "c 20 msec" comment line, to skip
@@ -119,7 +122,11 @@ namespace mincost
         // create the graph
         Graph graph(nbNodes, nbEdges, infos);
 
-        if(verbose){std::cout << "Graph created!\n" << std::endl;}
+        if (verbose)
+        {
+            std::cout << "Graph created!\n"
+                      << std::endl;
+        }
 
         // set the flows
         for (int i = 0; i < flowsArray.size(); i++)
@@ -132,32 +139,35 @@ namespace mincost
 
     Graph processFile(std::ifstream &file)
     {
-      return processFile(file,true);
+        return processFile(file, true);
     }
 
-    Graph parse(std::string filePath,bool verbose)
+    Graph parse(std::string filePath, bool verbose)
     {
         std::ifstream file;
-        openFile(file, filePath,verbose);
-        Graph graph = processFile(file,verbose);
+        openFile(file, filePath, verbose);
+        Graph graph = processFile(file, verbose);
         file.close();
         return graph;
     }
 
     Graph parse(std::string filePath)
     {
-        return parse(filePath,true);
+        return parse(filePath, true);
     }
 }
 
 namespace maxflow
 {
-    void openFile(std::ifstream &file, std::string filePath,bool verbose)
+    void openFile(std::ifstream &file, std::string filePath, bool verbose)
     {
         file.open(filePath);
         if (file.is_open())
         {
-            if(verbose){std::cout << "File opened successfully" << std::endl;}
+            if (verbose)
+            {
+                std::cout << "File opened successfully" << std::endl;
+            }
         }
         else
         {
@@ -169,10 +179,10 @@ namespace maxflow
 
     void openFile(std::ifstream &file, std::string filePath)
     {
-      openFile(file,filePath,true);
+        openFile(file, filePath, true);
     }
 
-    Graph processFile(std::ifstream &file,bool verbose)
+    Graph processFile(std::ifstream &file, bool verbose)
     {
         // data format example:
         // c Random Network, comment line to skip
@@ -291,27 +301,31 @@ namespace maxflow
         // create the graph
         Graph graph(nbNodes, nbEdges, src, sink, infos);
 
-        if(verbose){std::cout << "Graph created!\n" << std::endl;}
+        if (verbose)
+        {
+            std::cout << "Graph created!\n"
+                      << std::endl;
+        }
 
         return graph;
     }
 
     Graph processFile(std::ifstream &file)
     {
-      return processFile(file,true);
+        return processFile(file, true);
     }
 
-    Graph parse(std::string filePath,bool verbose)
+    Graph parse(std::string filePath, bool verbose)
     {
         std::ifstream file;
-        openFile(file, filePath,verbose);
-        Graph graph = processFile(file,verbose);
+        openFile(file, filePath, verbose);
+        Graph graph = processFile(file, verbose);
         file.close();
         return graph;
     }
 
     Graph parse(std::string filePath)
     {
-        return parse(filePath,true);
+        return parse(filePath, true);
     }
 }

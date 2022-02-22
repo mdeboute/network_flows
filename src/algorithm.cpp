@@ -66,7 +66,7 @@ int BellmanFord(Graph *graph, int pred[])
     }
 
     printf("Graph doesn't contain negative weight cycle!\n");
-    //graph->print();
+    // graph->print();
     return -1;
 }
 
@@ -77,14 +77,14 @@ void cycleCancelling(Graph *originGraph)
     originGraph->removeLonelyNodes();
     
     Graph noParallelGraph(originGraph->nbVertices);
-    
+
     originGraph->switchOffParallel(&noParallelGraph);
     
     shortestAugmentingPath(&noParallelGraph);
 
     originGraph->switchOnParallel(&noParallelGraph);
 
-    Graph* graph = originGraph->getResidualGraph(false);
+    Graph *graph = originGraph->getResidualGraph(false);
 
     int pred[graph->vertices.size()];
     int probVertex = BellmanFord(graph, pred);
@@ -108,7 +108,8 @@ void cycleCancelling(Graph *originGraph)
                 idMinEdge = graph->vertices[probVertex].enteringEdgesId[i];
             }
         }
-        if(idMinEdge == -1){
+        if (idMinEdge == -1)
+        {
             std::cout << "ERROR, IDMINEDGE STILL -1" << std::endl;
         }
         edgesToChange.push_back(idMinEdge);
@@ -128,7 +129,8 @@ void cycleCancelling(Graph *originGraph)
                     idMinEdge = graph->vertices[probVertex].enteringEdgesId[i];
                 }
             }
-            if(idMinEdge == -1){
+            if (idMinEdge == -1)
+            {
                 std::cout << "ERROR, IDMINEDGE STILL -1" << std::endl;
             }
             if (graph->edges[idMinEdge].residualCapacity < minResCap)
@@ -218,11 +220,10 @@ void distanceLabelling(Graph *graph, int dist[])
 
 void shortestAugmentingPath(Graph *originGraph)
 {
-    // int ST1 = time(NULL);
+
     originGraph->removeLonelyNodes();
-    // int ST2 = time(NULL);
-    // std::cout << "beep" << ST1 - ST2 << std::endl;
-    Graph* graph = originGraph->getResidualGraph(true);
+
+    Graph *graph = originGraph->getResidualGraph(true);
     int dist[graph->nbVertices];
     distanceLabelling(graph, dist);
     int pred[graph->nbVertices];
@@ -233,13 +234,13 @@ void shortestAugmentingPath(Graph *originGraph)
 
     int i = graph->src;
     while (dist[graph->src] < graph->nbVertices)
-    { 
+    {
         bool hasAdmissibleArc = false;
         for (int p = 0; p < graph->vertices[i].leavingEdgesId.size(); p++)
         {
             int j = graph->edges[graph->vertices[i].leavingEdgesId[graph->vertices[i].height]].endId;
             graph->vertices[i].height += 1;
-            if(graph->vertices[i].height == graph->vertices[i].nbLeavingEdges) 
+            if (graph->vertices[i].height == graph->vertices[i].nbLeavingEdges)
                 graph->vertices[i].height = 0;
             if (graph->getEdgeFromVerticesId(i, j).residualCapacity > 0 && dist[i] == dist[j] + 1)
             {
@@ -253,9 +254,8 @@ void shortestAugmentingPath(Graph *originGraph)
                 }
                 break;
             }
-            
         }
-        
+
         if (hasAdmissibleArc == false)
         {
             retreat(graph, i, dist);
