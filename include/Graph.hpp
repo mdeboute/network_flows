@@ -43,6 +43,7 @@ public:
     void fromMultipleToOne();
     void switchOffParallel(Graph *graph);
     void switchOnParallel(Graph *graph);
+    void removeLonelyNodes();
 };
 
 #endif

@@ -401,7 +401,7 @@ void Graph::switchOnParallel(Graph *graph){
 
 void Graph::removeLonelyNodes(){
     for(Vertex& vrt : vertices){
-        if(vrt.nbLeavingEdges == 0){
+        if(vrt.id != sink && vrt.nbLeavingEdges == 0){
             while(vrt.nbEnteringEdges > 0){
                 removeEdge(vrt.enteringEdgesId[0]);
             }
