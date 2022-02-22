@@ -1,6 +1,7 @@
 #include <iostream>
 #include "algorithm.hpp"
 #include "Graph.hpp"
+#include "checker.hpp"
 #include <cstdio>
 #include <limits.h>
 #include <climits> // for INT_MAX
@@ -29,7 +30,7 @@ int BellmanFord(Graph *graph, int pred[])
         dist[i] = INT_MAX;
     dist[graph->src] = 0;
 
-    for (int i = 1; i <= V - 1; i++)
+    for (int i = 1; i < V ; i++)
     {
         for (int j = 0; j < E; j++)
         {
@@ -38,11 +39,17 @@ int BellmanFord(Graph *graph, int pred[])
             int u = graph->edges[j].startId;
             int v = graph->edges[j].endId;
             int weight = graph->edges[j].cost;
-            if (dist[u] != INT_MAX && dist[u] + weight < dist[v])
+            if (dist[u] != INT_MAX && dist[u] + weight < dist[v]){
                 dist[v] = dist[u] + weight;
-            pred[v] = u;
+                pred[v] = u;
+            }
         }
     }
+
+    // for(int i = 0; i < V; i++){
+    //     std::cout << pred[i];
+    // }
+    // std::cout << std::endl;
 
     for (int i = 0; i < E; i++)
     {
@@ -65,20 +72,15 @@ int BellmanFord(Graph *graph, int pred[])
 
 void cycleCancelling(Graph *originGraph)
 {
-
-    originGraph->removeLonelyNodes();
-
     originGraph->fromMultipleToOne();
-
+    
+    originGraph->removeLonelyNodes();
+    
     Graph noParallelGraph(originGraph->nbVertices);
 
     originGraph->switchOffParallel(&noParallelGraph);
-
-    Graph *resGraphNoPara = noParallelGraph.getResidualGraph();
-
-    shortestAugmentingPath(resGraphNoPara);
-
-    noParallelGraph.fillGraphFromResidual(resGraphNoPara);
+    
+    shortestAugmentingPath(&noParallelGraph);
 
     originGraph->switchOnParallel(&noParallelGraph);
 
@@ -87,20 +89,24 @@ void cycleCancelling(Graph *originGraph)
     int pred[graph->vertices.size()];
     int probVertex = BellmanFord(graph, pred);
 
-    int initialVertex = probVertex;
+    
+    int a = 0;
     while (probVertex != -1)
     {
+        int initialVertex = probVertex;
+        //std::cout << "nb rounds :" << a << std::endl;
+        a ++;
         std::vector<int> edgesToChange;
 
         int idMinEdge = -1;
-        for (int i = 0; i < graph->vertices[probVertex].leavingEdgesId.size(); i++)
+        for (int i = 0; i < graph->vertices[probVertex].enteringEdgesId.size(); i++)
         {
-            int idEndVertex = graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].endId;
-            int resCapEdge = graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].residualCapacity;
-            int costEdge = graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].cost;
-            if (idEndVertex == pred[probVertex] && resCapEdge != 0 && (costEdge < graph->edges[idMinEdge].cost || idMinEdge == -1))
+            int idStartVertex = graph->edges[graph->vertices[probVertex].enteringEdgesId[i]].startId;
+            int resCapEdge = graph->edges[graph->vertices[probVertex].enteringEdgesId[i]].residualCapacity;
+            int costEdge = graph->edges[graph->vertices[probVertex].enteringEdgesId[i]].cost;
+            if (idStartVertex == pred[probVertex] && resCapEdge != 0 && (costEdge < graph->edges[idMinEdge].cost || idMinEdge == -1))
             {
-                idMinEdge = graph->vertices[probVertex].leavingEdgesId[i];
+                idMinEdge = graph->vertices[probVertex].enteringEdgesId[i];
             }
         }
         if (idMinEdge == -1)
@@ -114,14 +120,14 @@ void cycleCancelling(Graph *originGraph)
         while (probVertex != initialVertex)
         {
             int idMinEdge = -1;
-            for (int i = 0; i < graph->vertices[probVertex].leavingEdgesId.size(); i++)
+            for (int i = 0; i < graph->vertices[probVertex].enteringEdgesId.size(); i++)
             {
-                int idEndVertex = graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].endId;
-                int resCapEdge = graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].residualCapacity;
-                int costEdge = graph->edges[graph->vertices[probVertex].leavingEdgesId[i]].cost;
-                if (idEndVertex == pred[probVertex] && resCapEdge != 0 && (costEdge < graph->edges[idMinEdge].cost || idMinEdge == -1))
+                int idStartVertex = graph->edges[graph->vertices[probVertex].enteringEdgesId[i]].startId;
+                int resCapEdge = graph->edges[graph->vertices[probVertex].enteringEdgesId[i]].residualCapacity;
+                int costEdge = graph->edges[graph->vertices[probVertex].enteringEdgesId[i]].cost;
+                if (idStartVertex == pred[probVertex] && resCapEdge != 0 && (costEdge < graph->edges[idMinEdge].cost || idMinEdge == -1))
                 {
-                    idMinEdge = graph->vertices[probVertex].leavingEdgesId[i];
+                    idMinEdge = graph->vertices[probVertex].enteringEdgesId[i];
                 }
             }
             if (idMinEdge == -1)
@@ -132,17 +138,22 @@ void cycleCancelling(Graph *originGraph)
             {
                 minResCap = graph->edges[idMinEdge].residualCapacity;
             }
+            edgesToChange.push_back(idMinEdge);
             probVertex = pred[probVertex];
         }
 
         for (int i = 0; i < edgesToChange.size(); i++)
         {
-            graph->edges[edgesToChange[i]].increaseResidualCapacity(*graph, minResCap);
+            graph->edges[edgesToChange[i]].increaseResidualCapacity(*graph, -minResCap);
         }
 
         probVertex = BellmanFord(graph, pred);
     }
+    std::cout << "wazai" << std::endl;
     originGraph->fillGraphFromResidual(graph);
+    std::cout << "wazai" << std::endl;
+    std::cout << validFlow(originGraph) << std::endl;
+
 }
 
 void retreat(Graph *graph, int i, int dist[])
