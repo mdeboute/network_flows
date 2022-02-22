@@ -210,10 +210,9 @@ void distanceLabelling(Graph *graph, int dist[])
 
 void shortestAugmentingPath(Graph *originGraph)
 {
-    // int ST1 = time(NULL);
-    // originGraph->removeLonelyNodes();
-    // int ST2 = time(NULL);
-    // std::cout << "beep" << ST1 - ST2 << std::endl;
+
+    originGraph->removeLonelyNodes();
+
     Graph *graph = originGraph->getResidualGraph(true);
     int dist[graph->nbVertices];
     distanceLabelling(graph, dist);

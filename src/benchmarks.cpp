@@ -98,7 +98,7 @@ bool maxFlowComparison(std::string fileName,bool checkWithLP)
 
   saveSolution(&graph1, "../solution/sol_"+localName);
 
-  std::fstream timeFile;
+  std::ofstream timeFile;
   timeFile.open("../solution/time_"+localName);
   if(not timeFile.is_open()){std::cout << "pas réussi à créer le fichier\n";}
   timeFile << std::to_string(graph1.nbVertices) << " vertices, " << std::to_string(graph1.nbEdges) << " edges"<< "\n";

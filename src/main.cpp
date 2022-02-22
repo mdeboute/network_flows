@@ -7,11 +7,12 @@
 #include "PLFlows.hpp"
 #include "PreflowPush.hpp"
 #include "benchmarks.hpp"
+#include <fstream>
 using namespace std;
 
 int main()
 {
-  maxFlowComparison("../data/maxflow/maxFlowTest500v5000e.max",true);
+  maxFlowComparison("../data/maxflow/maxFlowTest1000v10000e.max",true);
   //maxFlowBenchmarks(true);
 
   //graph.print();
