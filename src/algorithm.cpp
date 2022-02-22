@@ -89,10 +89,11 @@ void cycleCancelling(Graph *originGraph)
     int pred[graph->vertices.size()];
     int probVertex = BellmanFord(graph, pred);
 
-    int initialVertex = probVertex;
+    
     int a = 0;
     while (probVertex != -1)
     {
+        int initialVertex = probVertex;
         //std::cout << "nb rounds :" << a << std::endl;
         a ++;
         std::vector<int> edgesToChange;

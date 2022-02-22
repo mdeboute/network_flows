@@ -408,21 +408,10 @@ void Graph::switchOnParallel(Graph *graph)
     }
 }
 
-<<<<<<< HEAD
 void Graph::removeLonelyNodes(){
     for(Vertex& vrt : vertices){
         if(vrt.id != sink && vrt.nbLeavingEdges == 0){
             while(vrt.nbEnteringEdges > 0){
-=======
-void Graph::removeLonelyNodes()
-{
-    for (Vertex &vrt : vertices)
-    {
-        if (vrt.nbLeavingEdges == 0)
-        {
-            while (vrt.nbEnteringEdges > 0)
-            {
->>>>>>> 552ea5fdf122c735baa0b8de774d673a5d3cdc65
                 removeEdge(vrt.enteringEdgesId[0]);
             }
         }

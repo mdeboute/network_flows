@@ -12,7 +12,7 @@ using namespace std;
 
 int main()
 {
-  maxFlowComparison("../data/maxflow/maxFlowTest1000v10000e.max",true);
+  //maxFlowComparison("../data/maxflow/instance_10_20_1 (1).max",true);
   //maxFlowBenchmarks(true);
 
   // graph.print();
@@ -35,8 +35,8 @@ int main()
   // saveSolution(&graph, "../sol/maxflow_1");
   // validFlow(&graph);
 
-  // Graph graphMin = mincost::parse("../data/mincost/simple_min_cost.min");
-  // PL::minCostFlow(graphMin);
+  Graph graphMin = mincost::parse("../data/mincost/simple_min_cost.min");
+  cycleCancelling(&graphMin);
 
   // Test Preflow Push
   // Graph graph = maxflow::parse("../data/simple_max_flot.max");
