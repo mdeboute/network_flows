@@ -1,2 +1,4 @@
 Awk language converter from DIMACS max-flow format to DIMACS min-cost flow format.
 Usage: 'chmod u+x maxmin.sh' and './maxmin.sh <input_file>'
+
+PS: the maxmin.a file is from the netflow project.
