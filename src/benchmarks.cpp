@@ -17,9 +17,8 @@ bool maxFlowBenchmarks(bool checkWithLP)
   std::string fileList[10];
   for(int index = 0;index<10;index++)
   {
-    fileList[index]="../generator/maxflow/debug"+std::to_string(index)+".max";
+    fileList[index]="../generator/maxflow/instance_10_20_"+std::to_string(index+1)+".max";
   }
-
 
   for(std::string fileName:fileList)
   {
@@ -39,19 +38,19 @@ bool maxFlowComparison(std::string fileName,bool checkWithLP)
   Graph graph1 = maxflow::parse(fileName, false);
   Graph graph2 = maxflow::parse(fileName, false);
 
-  // Shortest Augmenting Path
-  int startTime1 = time(NULL);
-  shortestAugmentingPath(&graph1);
-  int duration1 = time(NULL) - startTime1;
-
-  std::cout << "Shortest Augmenting Path duration: " << duration1 << " seconds\n";
-
   // Preflow Push
   int startTime2 = time(NULL);
   preflowPush(&graph2);
   int duration2 = time(NULL) - startTime2;
 
   std::cout << "Preflow Push duration: " << duration2 << " seconds\n";
+
+  // Shortest Augmenting Path
+  int startTime1 = time(NULL);
+  shortestAugmentingPath(&graph1);
+  int duration1 = time(NULL) - startTime1;
+
+  std::cout << "Shortest Augmenting Path duration: " << duration1 << " seconds\n";
 
   int value3;
   int duration3;
@@ -98,7 +97,7 @@ bool maxFlowComparison(std::string fileName,bool checkWithLP)
 
   saveSolution(&graph1, "../solution/sol_"+localName);
 
-  std::fstream timeFile;
+  std::ofstream timeFile;
   timeFile.open("../solution/time_"+localName);
   if(not timeFile.is_open()){std::cout << "pas réussi à créer le fichier\n";}
   timeFile << std::to_string(graph1.nbVertices) << " vertices, " << std::to_string(graph1.nbEdges) << " edges"<< "\n";
