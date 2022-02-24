@@ -35,8 +35,13 @@ int main()
   // saveSolution(&graph, "../sol/maxflow_1");
   // validFlow(&graph);
 
-  Graph graphMin = mincost::parse("../data/mincost/simple_min_cost.min");
-  cycleCancelling(&graphMin);
+  Graph graphMin = mincost::parse("../data/mincost/gte/gte_bad.20");
+  PL::minCostFlow(graphMin, false);
+
+  Graph graph = mincost::parse("../data/mincost/gte/gte_bad.20");
+  cycleCancelling(&graph);
+  std ::cout << graph.getValueObjMinCost() << std::endl;
+
 
   // Test Preflow Push
   // Graph graph = maxflow::parse("../data/simple_max_flot.max");

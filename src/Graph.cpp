@@ -311,6 +311,16 @@ Edge &Graph::getEdgeFromVerticesId(int vertexId1, int vertexId2)
     return *e;
 }
 
+int Graph::getValueObjMinCost()
+{
+    int sumFlows = 0;
+    for (Edge e : edges)
+    {
+        sumFlows += e.flow * e.cost;
+    }
+    return sumFlows;
+}
+
 int Graph::getValueObjMaxFlow()
 {
     int sumFlows = 0;
