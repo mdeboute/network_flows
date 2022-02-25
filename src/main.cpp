@@ -12,11 +12,11 @@ using namespace std;
 
 int main()
 {
-  maxFlowComparison("../generator/maxflow/instance_10_20_1.max",true);
+  maxFlowComparison("../generator/maxflow/instance_10_20_39.max","instance_10_20_39.max",true);
   //maxFlowBenchmarks(true);
 
-  Graph graphMin = mincost::parse("../data/mincost/simple_min_cost.min");
-  cycleCancelling(&graphMin);
+  //Graph graphMin = mincost::parse("../data/mincost/simple_min_cost.min");
+  //cycleCancelling(&graphMin);
 
   return 0;
 }
