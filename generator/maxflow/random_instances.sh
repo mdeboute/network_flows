@@ -12,16 +12,15 @@ file="log.txt"
 
 chmod u+x random
 for (( i=1; i<=$NB_INSTANCE; i++))
-	do
-		touch $file
-		echo $CHOICE >> $file
-		echo "${FILENAME}_$i" >> $file
-		echo ${NB_VERTICES} >> $file
-		echo ${NB_EDGES} >> $file
-		echo ${UPPER_BOUND} >> $file
-		./random < $file
-		rm $file
+do
+    touch $file
+    echo $CHOICE >> $file
+    echo "${FILENAME}_$i" >> $file
+    echo ${NB_VERTICES} >> $file
+    echo ${NB_EDGES} >> $file
+    echo ${UPPER_BOUND} >> $file
+    ./random < $file
+    rm $file
 done
 
 exit 0
-
