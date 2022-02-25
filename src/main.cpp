@@ -12,7 +12,7 @@ using namespace std;
 
 int main()
 {
-  maxFlowComparison("../generator/maxflow/instance_10_20_39.max","instance_10_20_39.max",true);
+  maxFlowComparison("../data/maxflow/instance_10_20_39.max","instance_10_20_39.max",true);
   //maxFlowBenchmarks(true);
 
   //Graph graphMin = mincost::parse("../data/mincost/simple_min_cost.min");
