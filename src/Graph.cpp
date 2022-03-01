@@ -138,7 +138,7 @@ void Graph::fillGraphFromResidual(Graph *residualGraph)
             if (parallelEdgesPresent(edges[edge.mirrorEdgeId].startId, edges[edge.mirrorEdgeId].endId))
             {
                 // si la quantité dépasse la capacité il faut chercher des arc parralèles dans le graphe d'origine et leur donner une partie du flot
-                std::cout << "arêtes parralèles, si ce message est visible les résultats sont faux et il faut demander à pierre de modifier la fonction fillGraphFromResidual\n";
+                //std::cout << "arêtes parralèles, si ce message est visible les résultats sont faux et il faut demander à pierre de modifier la fonction fillGraphFromResidual\n";
             }
             edges[edge.mirrorEdgeId].setFlow(std::max(edges[edge.mirrorEdgeId].maxCapacity - edge.residualCapacity, 0));
         }
@@ -313,10 +313,13 @@ Edge &Graph::getEdgeFromVerticesId(int vertexId1, int vertexId2)
 
 int Graph::getValueObjMinCost()
 {
-    int sumFlows = 0;
+    long sumFlows = 0;
     for (Edge e : edges)
     {
-        sumFlows += e.flow * e.cost;
+        long term = e.flow / 100* (e.cost / 100);
+        sumFlows += term;
+        if(e.flow != 0)
+            std::cout << e.startId << "    " << e.endId << "   " << e.flow << std::endl;
     }
     return sumFlows;
 }

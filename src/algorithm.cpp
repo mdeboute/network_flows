@@ -20,7 +20,7 @@ void printArr(int dist[], int n)
 // The main function that finds shortest distances from src
 // to all other vertices using Bellman-Ford algorithm. The
 // function also detects negative weight cycle
-int BellmanFord(Graph *graph, int pred[])
+int BellmanFord(Graph *graph, int pred[], int startingVrt, bool toVisit[])
 {
     int V = graph->nbVertices;
     int E = graph->nbEdges;
@@ -28,46 +28,132 @@ int BellmanFord(Graph *graph, int pred[])
 
     for (int i = 0; i < V; i++)
         dist[i] = INT_MAX;
-    dist[graph->src] = 0;
+    dist[startingVrt] = 0;
 
-    for (int i = 1; i < V ; i++)
-    {
-        for (int j = 0; j < E; j++)
-        {
-            if (graph->edges[j].residualCapacity == 0)
-                continue;
-            int u = graph->edges[j].startId;
-            int v = graph->edges[j].endId;
-            int weight = graph->edges[j].cost;
-            if (dist[u] != INT_MAX && dist[u] + weight < dist[v]){
-                dist[v] = dist[u] + weight;
-                pred[v] = u;
+    std::queue<int> queue;
+    queue.push(startingVrt);
+    int count[V];
+    bool isInQueue[V];
+    for(int i = 0; i < V; i++){
+        count[i] = 0;
+        isInQueue[i] = false;
+    }
+
+    count[startingVrt] ++;
+    isInQueue[startingVrt] = true;
+    
+    while(queue.size() != 0){
+        int vertex = queue.front();
+        isInQueue[vertex] = false;
+        queue.pop();
+        toVisit[vertex] = false;
+        if(dist[vertex] == INT_MAX){
+            dist[vertex] = 0;
+        }
+        for(int id : graph->vertices[vertex].leavingEdgesId){
+            Edge e = graph->edges[id];
+            if(graph->edges[id].residualCapacity == 0) continue;
+            int vertex2 = graph->edges[id].endId;
+            if(dist[vertex2] > dist[vertex] + graph->edges[id].cost){
+                dist[vertex2] = dist[vertex] + graph->edges[id].cost;
+                pred[vertex2] = vertex;
+                if(!isInQueue[vertex2]){
+                    queue.push(vertex2);
+                    isInQueue[vertex2] = true;
+                    count[vertex2] ++;
+                    if(count[vertex2] >= V){
+                        std::cout << "contains a negative cycle" << std::endl;
+                        return vertex2;
+                    }
+                }
             }
         }
     }
-
-    // for(int i = 0; i < V; i++){
-    //     std::cout << pred[i];
-    // }
-    // std::cout << std::endl;
-
-    for (int i = 0; i < E; i++)
-    {
-        if (graph->edges[i].residualCapacity == 0)
-            continue;
-        int u = graph->edges[i].startId;
-        int v = graph->edges[i].endId;
-        int weight = graph->edges[i].cost;
-        if (dist[u] != INT_MAX && dist[u] + weight < dist[v])
-        {
-            printf("Graph contains negative weight cycle!\n");
-            return u;
-        }
-    }
-
-    printf("Graph doesn't contain negative weight cycle!\n");
-    // graph->print();
+    std::cout << "!doesn't! contain a negative cycle" << std::endl;
     return -1;
+}
+
+int findTheTruth(bool toVisit[], int size){
+    for(int i = 0; i < size; i++){
+        if(toVisit[i]) return i;
+    }
+    return -1;
+}
+
+int findNegativeCycle(Graph *graph, int pred[]){
+    bool toVisit[graph->nbVertices];
+    for(int i = 0; i < graph->nbVertices; i++){
+        toVisit[i] = true;
+    }
+    int u = graph->src;
+    while(u != -1){
+        int probVertex = BellmanFord(graph, pred, u, toVisit);
+        if(probVertex != -1) return probVertex;
+        u = findTheTruth(toVisit, graph->nbVertices);
+    }
+    return -1;
+}
+
+// int BellmanFord(Graph *graph, int pred[])
+// {
+//     int V = graph->nbVertices;
+//     int E = graph->nbEdges;
+//     int dist[V];
+
+//     for (int i = 0; i < V; i++)
+//         dist[i] = INT_MAX;
+//     dist[graph->src] = 0;
+
+//     for (int i = 1; i < V ; i++)
+//     {
+//         for (int j = 0; j < E; j++)
+//         {
+//             if (graph->edges[j].residualCapacity == 0)
+//                 continue;
+//             int u = graph->edges[j].startId;
+//             int v = graph->edges[j].endId;
+//             int weight = graph->edges[j].cost;
+//             if (dist[u] != INT_MAX && dist[u] + weight < dist[v]){
+//                 dist[v] = dist[u] + weight;
+//                 pred[v] = u;
+//             }
+//         }
+//     }
+
+//     // for(int i = 0; i < V; i++){
+//     //     std::cout << pred[i];
+//     // }
+//     // std::cout << std::endl;
+
+//     for (int i = 0; i < E; i++)
+//     {
+//         if (graph->edges[i].residualCapacity == 0)
+//             continue;
+//         int u = graph->edges[i].startId;
+//         int v = graph->edges[i].endId;
+//         int weight = graph->edges[i].cost;
+//         if (dist[u] != INT_MAX && dist[u] + weight < dist[v])
+//         {
+//             printf("Graph contains negative weight cycle!\n");
+//             return u;
+//         }
+//     }
+
+//     printf("Graph doesn't contain negative weight cycle!\n");
+//     // graph->print();
+//     return -1;
+// }
+
+int getNodeFromNegCycleInPath(Graph *graph, int pred[], int probVertex){
+    bool tab[graph->nbVertices];
+    for(int i = 0; i < graph->nbVertices; i++){
+        tab[i] = false;
+    }
+    while(!tab[probVertex]){
+        tab[probVertex] = true;
+        probVertex = pred[probVertex];
+    }
+    return probVertex;
 }
 
 void cycleCancelling(Graph *originGraph)
@@ -86,16 +172,22 @@ void cycleCancelling(Graph *originGraph)
 
     Graph *graph = originGraph->getResidualGraph(false);
 
+    for(int id : graph->vertices[graph->src].leavingEdgesId){
+        Edge e = graph->edges[id];
+        int a = 0;
+    }
+
     int pred[graph->vertices.size()];
-    int probVertex = BellmanFord(graph, pred);
+    int probVertex = findNegativeCycle(graph, pred);
+
+    if(probVertex != -1){
+        probVertex = getNodeFromNegCycleInPath(graph, pred, probVertex);
+    }
 
     
-    int a = 0;
     while (probVertex != -1)
     {
         int initialVertex = probVertex;
-        //std::cout << "nb rounds :" << a << std::endl;
-        a ++;
         std::vector<int> edgesToChange;
 
         int idMinEdge = -1;
@@ -144,14 +236,17 @@ void cycleCancelling(Graph *originGraph)
 
         for (int i = 0; i < edgesToChange.size(); i++)
         {
+            Edge e = graph->edges[edgesToChange[i]];
+               
             graph->edges[edgesToChange[i]].increaseResidualCapacity(*graph, -minResCap);
         }
 
-        probVertex = BellmanFord(graph, pred);
+        probVertex = findNegativeCycle(graph, pred);
+        if(probVertex != -1){
+            probVertex = getNodeFromNegCycleInPath(graph, pred, probVertex);
+        }
     }
-    std::cout << "wazai" << std::endl;
     originGraph->fillGraphFromResidual(graph);
-    std::cout << "wazai" << std::endl;
     std::cout << validFlow(originGraph) << std::endl;
 
 }
