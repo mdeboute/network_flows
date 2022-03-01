@@ -8,7 +8,7 @@
 
 const char delimiter = ' ';
 
-namespace mincost
+namespace minCost
 {
     void openFile(std::ifstream &file, std::string filePath, bool verbose)
     {
@@ -157,7 +157,7 @@ namespace mincost
     }
 }
 
-namespace maxflow
+namespace maxFlow
 {
     void openFile(std::ifstream &file, std::string filePath, bool verbose)
     {

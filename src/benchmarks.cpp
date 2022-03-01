@@ -32,8 +32,8 @@ bool maxFlowComparison(std::string filePath, std::string fileName, bool checkWit
 {
   std::cout << "Maxflow comparison on " << fileName << "\n";
 
-  Graph graph1 = maxflow::parse(filePath, false);
-  Graph graph2 = maxflow::parse(filePath, false);
+  Graph graph1 = maxFlow::parse(filePath, false);
+  Graph graph2 = maxFlow::parse(filePath, false);
 
   // Preflow Push
   int startTime2 = time(NULL);
@@ -53,7 +53,7 @@ bool maxFlowComparison(std::string filePath, std::string fileName, bool checkWit
   int duration3;
   if (checkWithLP)
   {
-    Graph graph3 = maxflow::parse(filePath, false);
+    Graph graph3 = maxFlow::parse(filePath, false);
     int startTime3 = time(NULL);
     value3 = PL::maxFlow(graph3);
     duration3 = time(NULL) - startTime3;

@@ -169,12 +169,12 @@ namespace PL
 		return result;
 	}
 
-	int minCostFlow(Graph &graph)
+	int minCost(Graph &graph)
 	{
-		return minCostFlow(graph, false);
+		return minCost(graph, false);
 	}
 
-	int minCostFlow(Graph &graph, bool verbose)
+	int minCost(Graph &graph, bool verbose)
 	{
 		GRBVar *f;
 		int result = -1;
