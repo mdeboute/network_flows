@@ -6,7 +6,6 @@
 #include <iostream>
 #include <cstdint>
 #include <climits>
-using namespace std;
 
 namespace PL
 {
@@ -24,32 +23,35 @@ namespace PL
 		try
 		{
 			if (verbose)
-				cout << "--> Creating the Gurobi environment" << endl;
+				std::cout << "--> Creating the Gurobi environment" << std::endl;
 			GRBEnv env = GRBEnv(true);
 			env.start();
 			if (verbose)
-				cout << "--> Creating the Gurobi model" << endl;
+				std::cout << "--> Creating the Gurobi model" << std::endl;
 			GRBModel model = GRBModel(env);
-			if(not verbose){model.set(GRB_IntParam_OutputFlag,0);}
+			if (not verbose)
+			{
+				model.set(GRB_IntParam_OutputFlag, 0);
+			}
 
 			if (verbose)
-				cout << "--> Creating the variables" << endl;
+				std::cout << "--> Creating the variables" << std::endl;
 			f = new GRBVar[graph.nbEdges];
 			for (size_t i = 0; i < graph.nbEdges; ++i)
 			{
-				stringstream ss;
+				std::stringstream ss;
 				ss << "f(" << i << ")";
 				f[i] = model.addVar(0.0, INT_MAX, 0.0, GRB_CONTINUOUS, ss.str());
 			}
 			v = model.addVar(0.0, INT_MAX, 0.0, GRB_CONTINUOUS, "v");
 
 			if (verbose)
-				cout << "--> Creating the objective function" << endl;
+				std::cout << "--> Creating the objective function" << std::endl;
 			GRBLinExpr obj = v;
 			model.setObjective(obj, GRB_MAXIMIZE);
 
 			if (verbose)
-				cout << "--> Creating the constraints" << endl;
+				std::cout << "--> Creating the constraints" << std::endl;
 			// flot entrant = flot sortant
 			for (size_t i = 0; i < graph.nbVertices; ++i)
 			{
@@ -64,7 +66,7 @@ namespace PL
 					{
 						lhs -= f[graph.vertices[i].leavingEdgesId[j]];
 					}
-					stringstream ss;
+					std::stringstream ss;
 					ss << "Flow(" << i << ")";
 					model.addConstr(lhs == 0, ss.str());
 				}
@@ -80,7 +82,7 @@ namespace PL
 				lhsS -= f[graph.vertices[graph.src].enteringEdgesId[j]];
 			}
 			lhsS -= v;
-			stringstream ssS;
+			std::stringstream ssS;
 			ssS << "Flow(" << graph.src << ")";
 			model.addConstr(lhsS == 0, ssS.str());
 			// flot de t
@@ -94,7 +96,7 @@ namespace PL
 				lhsT -= f[graph.vertices[graph.sink].enteringEdgesId[j]];
 			}
 			lhsT += v;
-			stringstream ssT;
+			std::stringstream ssT;
 			ssT << "Flow(" << graph.sink << ")";
 			model.addConstr(lhsT == 0, ssT.str());
 
@@ -102,7 +104,7 @@ namespace PL
 			for (size_t i = 0; i < graph.nbEdges; ++i)
 			{
 				GRBLinExpr lhs = f[i] - graph.edges[i].maxCapacity;
-				stringstream ss;
+				std::stringstream ss;
 				ss << "Capacity(" << i << ")";
 				model.addConstr(lhs <= 0, ss.str());
 			}
@@ -110,19 +112,19 @@ namespace PL
 			// Optimize model
 			// --- Solver configuration ---
 			if (verbose)
-				cout << "--> Configuring the solver" << endl;
+				std::cout << "--> Configuring the solver" << std::endl;
 			model.set(GRB_DoubleParam_TimeLimit, 600.0); //< sets the time limit (in seconds)
 			model.set(GRB_IntParam_Threads, 1);			 //< limits the solver to single thread usage
 
 			// --- Solver launch ---
 			if (verbose)
-				cout << "--> Running the solver" << endl;
+				std::cout << "--> Running the solver" << std::endl;
 			model.optimize();
 			// model.write("model.lp"); //< Writes the model in a file
 
 			// --- Solver results retrieval ---
 			if (verbose)
-				cout << "--> Retrieving solver results " << endl;
+				std::cout << "--> Retrieving solver results " << std::endl;
 
 			int status = model.get(GRB_IntAttr_Status);
 			if (status == GRB_OPTIMAL || (status == GRB_TIME_LIMIT && model.get(GRB_IntAttr_SolCount) > 0))
@@ -130,75 +132,78 @@ namespace PL
 				if (verbose)
 				{
 					// the solver has computed the optimal solution or a feasible solution (when the time limit is reached before proving optimality)
-					cout << "Succes! (Status: " << status << ")" << endl; //< prints the solver status (see the gurobi documentation)
-					cout << "Runtime : " << model.get(GRB_DoubleAttr_Runtime) << " seconds" << endl;
+					std::cout << "Succes! (Status: " << status << ")" << std::endl; //< prints the solver status (see the gurobi documentation)
+					std::cout << "Runtime : " << model.get(GRB_DoubleAttr_Runtime) << " seconds" << std::endl;
 
-					cout << "--> Printing results " << endl;
+					std::cout << "--> Printing results " << std::endl;
 					// model.write("solution.sol"); //< Writes the solution in a file
-					cout << "Arc\t Flow/Capacity\n";
+					std::cout << "Arc\t Flow/Capacity\n";
 					for (size_t i = 0; i < graph.nbEdges; ++i)
 					{
 						if (f[i].get(GRB_DoubleAttr_X) > 0)
 						{
-							cout << graph.edges[i].startId << "-> " << graph.edges[i].endId << "\t" << f[i].get(GRB_DoubleAttr_X) << "\t" << graph.edges[i].maxCapacity << endl;
+							std::cout << graph.edges[i].startId << "-> " << graph.edges[i].endId << "\t" << f[i].get(GRB_DoubleAttr_X) << "\t" << graph.edges[i].maxCapacity << std::endl;
 						}
 					}
-					cout << "Objective value = " << model.get(GRB_DoubleAttr_ObjVal) << "\n"
-						 << endl; //<gets the value of the objective function for the best computed solution (optimal if no time limit)
+					std::cout << "Objective value = " << model.get(GRB_DoubleAttr_ObjVal) << "\n"
+							  << std::endl; //<gets the value of the objective function for the best computed solution (optimal if no time limit)
 				}
 				result = model.get(GRB_DoubleAttr_ObjVal);
 			}
 			else
 			{
 				// the model is infeasible (maybe wrong) or the solver has reached the time limit without finding a feasible solution
-				cerr << "Fail! (Status: " << status << ")" << endl; //< see status page in the Gurobi documentation
+				std::cerr << "Fail! (Status: " << status << ")" << std::endl; //< see status page in the Gurobi documentation
 			}
 		}
 		catch (GRBException e)
 		{
-			cout << "Error code = " << e.getErrorCode() << endl;
-			cout << e.getMessage() << endl;
+			std::cout << "Error code = " << e.getErrorCode() << std::endl;
+			std::cout << e.getMessage() << std::endl;
 		}
 		catch (...)
 		{
-			cout << "Exception during optimization" << endl;
+			std::cout << "Exception during optimization" << std::endl;
 		}
 		delete[] f;
 		return result;
 	}
 
-	int minCostFlow(Graph &graph)
+	int minCost(Graph &graph)
 	{
-		return minCostFlow(graph, false);
+		return minCost(graph, false);
 	}
 
-	int minCostFlow(Graph &graph, bool verbose)
+	int minCost(Graph &graph, bool verbose)
 	{
 		GRBVar *f;
 		int result = -1;
 		try
 		{
 			if (verbose)
-				cout << "--> Creating the Gurobi environment" << endl;
+				std::cout << "--> Creating the Gurobi environment" << std::endl;
 			GRBEnv env = GRBEnv(true);
 			env.start();
 			if (verbose)
-				cout << "--> Creating the Gurobi model" << endl;
+				std::cout << "--> Creating the Gurobi model" << std::endl;
 			GRBModel model = GRBModel(env);
-			if(not verbose){model.set(GRB_IntParam_OutputFlag,0);}
+			if (not verbose)
+			{
+				model.set(GRB_IntParam_OutputFlag, 0);
+			}
 
 			if (verbose)
-				cout << "--> Creating the variables" << endl;
+				std::cout << "--> Creating the variables" << std::endl;
 			f = new GRBVar[graph.nbEdges];
 			for (size_t i = 0; i < graph.nbEdges; ++i)
 			{
-				stringstream ss;
+				std::stringstream ss;
 				ss << "f(" << i << ")";
 				f[i] = model.addVar(0.0, INT_MAX, 0.0, GRB_CONTINUOUS, ss.str());
 			}
 
 			if (verbose)
-				cout << "--> Creating the objective function" << endl;
+				std::cout << "--> Creating the objective function" << std::endl;
 			GRBLinExpr obj = 0;
 			for (size_t i = 0; i < graph.nbEdges; ++i)
 			{
@@ -207,7 +212,7 @@ namespace PL
 			model.setObjective(obj, GRB_MINIMIZE);
 
 			if (verbose)
-				cout << "--> Creating the constraints" << endl;
+				std::cout << "--> Creating the constraints" << std::endl;
 			// flot entrant = flot sortant
 			for (size_t i = 0; i < graph.nbVertices; ++i)
 			{
@@ -221,7 +226,7 @@ namespace PL
 				{
 					lhs -= f[graph.vertices[i].leavingEdgesId[j]];
 				}
-				stringstream ss;
+				std::stringstream ss;
 				ss << "Flow(" << i << ")";
 				model.addConstr(lhs == 0, ss.str());
 			}
@@ -230,7 +235,7 @@ namespace PL
 			for (size_t i = 0; i < graph.nbEdges; ++i)
 			{
 				GRBLinExpr lhs = f[i] - graph.edges[i].maxCapacity;
-				stringstream ss;
+				std::stringstream ss;
 				ss << "CapacityMax(" << i << ")";
 				model.addConstr(lhs <= 0, ss.str());
 			}
@@ -239,7 +244,7 @@ namespace PL
 			for (size_t i = 0; i < graph.nbEdges; ++i)
 			{
 				GRBLinExpr lhs = f[i] - graph.edges[i].minCapacity;
-				stringstream ss;
+				std::stringstream ss;
 				ss << "CapacityMin(" << i << ")";
 				model.addConstr(lhs >= 0, ss.str());
 			}
@@ -247,19 +252,19 @@ namespace PL
 			// Optimize model
 			// --- Solver configuration ---
 			if (verbose)
-				cout << "--> Configuring the solver" << endl;
+				std::cout << "--> Configuring the solver" << std::endl;
 			model.set(GRB_DoubleParam_TimeLimit, 600.0); //< sets the time limit (in seconds)
 			model.set(GRB_IntParam_Threads, 1);			 //< limits the solver to single thread usage
 
 			// --- Solver launch ---
 			if (verbose)
-				cout << "--> Running the solver" << endl;
+				std::cout << "--> Running the solver" << std::endl;
 			model.optimize();
 			// model.write("model.lp"); //< Writes the model in a file
 
 			// --- Solver results retrieval ---
 			if (verbose)
-				cout << "--> Retrieving solver results " << endl;
+				std::cout << "--> Retrieving solver results " << std::endl;
 
 			int status = model.get(GRB_IntAttr_Status);
 			if (status == GRB_OPTIMAL || (status == GRB_TIME_LIMIT && model.get(GRB_IntAttr_SolCount) > 0))
@@ -267,35 +272,35 @@ namespace PL
 				if (verbose)
 				{
 					// the solver has computed the optimal solution or a feasible solution (when the time limit is reached before proving optimality)
-					cout << "Succes! (Status: " << status << ")" << endl; //< prints the solver status (see the gurobi documentation)
-					cout << "Runtime : " << model.get(GRB_DoubleAttr_Runtime) << " seconds" << endl;
+					std::cout << "Succes! (Status: " << status << ")" << std::endl; //< prints the solver status (see the gurobi documentation)
+					std::cout << "Runtime : " << model.get(GRB_DoubleAttr_Runtime) << " seconds" << std::endl;
 
-					cout << "--> Printing results " << endl;
+					std::cout << "--> Printing results " << std::endl;
 					// model.write("solution.sol"); //< Writes the solution in a file
-					cout << "Arc - Flow - Capacity - Cost/u\n";
+					std::cout << "Arc - Flow - Capacity - Cost/u\n";
 					for (size_t i = 0; i < graph.nbEdges; ++i)
 					{
-						cout << graph.edges[i].startId << "-> " << graph.edges[i].endId << "\t" << f[i].get(GRB_DoubleAttr_X) << "\t" << graph.edges[i].maxCapacity << "\t" << graph.edges[i].cost << endl;
+						std::cout << graph.edges[i].startId << "-> " << graph.edges[i].endId << "\t" << f[i].get(GRB_DoubleAttr_X) << "\t" << graph.edges[i].maxCapacity << "\t" << graph.edges[i].cost << std::endl;
 					}
-					cout << "Objective value = " << model.get(GRB_DoubleAttr_ObjVal) << "\n"
-						 << endl; //<gets the value of the objective function for the best computed solution (optimal if no time limit)
+					std::cout << "Objective value = " << model.get(GRB_DoubleAttr_ObjVal) << "\n"
+							  << std::endl; //<gets the value of the objective function for the best computed solution (optimal if no time limit)
 				}
 				result = model.get(GRB_DoubleAttr_ObjVal);
 			}
 			else
 			{
 				// the model is infeasible (maybe wrong) or the solver has reached the time limit without finding a feasible solution
-				cerr << "Fail! (Status: " << status << ")" << endl; //< see status page in the Gurobi documentation
+				std::cerr << "Fail! (Status: " << status << ")" << std::endl; //< see status page in the Gurobi documentation
 			}
 		}
 		catch (GRBException e)
 		{
-			cout << "Error code = " << e.getErrorCode() << endl;
-			cout << e.getMessage() << endl;
+			std::cout << "Error code = " << e.getErrorCode() << std::endl;
+			std::cout << e.getMessage() << std::endl;
 		}
 		catch (...)
 		{
-			cout << "Exception during optimization" << endl;
+			std::cout << "Exception during optimization" << std::endl;
 		}
 		delete[] f;
 		return result;
