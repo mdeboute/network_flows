@@ -1,11 +1,10 @@
 #include <iostream>
 #include "Graph.hpp"
 #include "parser.hpp"
-#include "algorithm.hpp"
+#include "algorithms.hpp"
 #include "saver.hpp"
 #include "checker.hpp"
 #include "PLFlows.hpp"
-#include "PreflowPush.hpp"
 #include "benchmarks.hpp"
 #include <fstream>
 using namespace std;
