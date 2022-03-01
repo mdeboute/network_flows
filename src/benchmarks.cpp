@@ -10,27 +10,26 @@
 #include "saver.hpp"
 #include "PLFlows.hpp"
 
-
-
 bool maxFlowBenchmarks(bool checkWithLP)
 {
   std::string fileList[1000];
-  for(int index = 0;index<1000;index++)
+  for (int index = 0; index < 1000; index++)
   {
-    fileList[index]="../generator/maxflow/instance_10_20_"+std::to_string(index+1)+".max";
+    fileList[index] = "../generator/maxflow/instance_10_20_" + std::to_string(index + 1) + ".max";
   }
 
-  for(std::string filePath:fileList)
+  for (std::string filePath : fileList)
   {
-    if(not maxFlowComparison(filePath,filePath.substr(21),checkWithLP)){return false;}
+    if (not maxFlowComparison(filePath, filePath.substr(21), checkWithLP))
+    {
+      return false;
+    }
   }
 
   return true;
 }
 
-
-
-bool maxFlowComparison(std::string filePath,std::string fileName,bool checkWithLP)
+bool maxFlowComparison(std::string filePath, std::string fileName, bool checkWithLP)
 {
   std::cout << "Maxflow comparison on " << fileName << "\n";
 
@@ -53,16 +52,16 @@ bool maxFlowComparison(std::string filePath,std::string fileName,bool checkWithL
 
   int value3;
   int duration3;
-  if(checkWithLP)
+  if (checkWithLP)
   {
-    Graph graph3 = maxflow::parse(filePath,false);
+    Graph graph3 = maxflow::parse(filePath, false);
     int startTime3 = time(NULL);
     value3 = PL::maxFlow(graph3);
     duration3 = time(NULL) - startTime3;
     std::cout << "LP duration: " << duration3 << " seconds\n";
   }
 
-  //on vérifie la validité des solutions
+  // on vérifie la validité des solutions
   int value1 = graph1.getValueObjMaxFlow();
   int value2 = graph2.getValueObjMaxFlow();
 
@@ -86,7 +85,7 @@ bool maxFlowComparison(std::string filePath,std::string fileName,bool checkWithL
     return false;
   }
 
-  if(checkWithLP and (value3 != value1 or value3 != value2))
+  if (checkWithLP and (value3 != value1 or value3 != value2))
   {
     std::cout << "LP: " << value3 << "\n";
     std::cout << "Both algorithm: " << value1 << "\n";
@@ -94,19 +93,26 @@ bool maxFlowComparison(std::string filePath,std::string fileName,bool checkWithL
     return false;
   }
 
-  //si tout est valide on sauvegarde la solution et les temps
-  std::string solName = "../solution/sol_"+fileName;
-  saveSolution(&graph1,solName);
+  // si tout est valide on sauvegarde la solution et les temps
+  std::string solName = "../solution/sol_" + fileName;
+  saveSolution(&graph1, solName);
 
-  std::string timeName = "../solution/time_"+fileName;
+  std::string timeName = "../solution/time_" + fileName;
   std::ofstream timeFile;
   timeFile.open(timeName);
-  if(not timeFile.is_open()){std::cout << "pas réussi à créer le fichier\n";}
+  if (not timeFile.is_open())
+  {
+    std::cout << "pas réussi à créer le fichier\n";
+  }
 
-  timeFile << std::to_string(graph1.nbVertices) << " vertices, " << std::to_string(graph1.nbEdges) << " edges"<< "\n";
+  timeFile << std::to_string(graph1.nbVertices) << " vertices, " << std::to_string(graph1.nbEdges) << " edges"
+           << "\n";
   timeFile << "Shortest Augmenting Path: " << std::to_string(duration1) << "\n";
   timeFile << "Preflow Push: " << std::to_string(duration2) << "\n";
-  if(checkWithLP){timeFile << "LP: " << std::to_string(duration3) << "\n";}
+  if (checkWithLP)
+  {
+    timeFile << "LP: " << std::to_string(duration3) << "\n";
+  }
   timeFile.close();
 
   return true;

@@ -30,7 +30,10 @@ namespace PL
 			if (verbose)
 				cout << "--> Creating the Gurobi model" << endl;
 			GRBModel model = GRBModel(env);
-			if(not verbose){model.set(GRB_IntParam_OutputFlag,0);}
+			if (not verbose)
+			{
+				model.set(GRB_IntParam_OutputFlag, 0);
+			}
 
 			if (verbose)
 				cout << "--> Creating the variables" << endl;
@@ -185,7 +188,10 @@ namespace PL
 			if (verbose)
 				cout << "--> Creating the Gurobi model" << endl;
 			GRBModel model = GRBModel(env);
-			if(not verbose){model.set(GRB_IntParam_OutputFlag,0);}
+			if (not verbose)
+			{
+				model.set(GRB_IntParam_OutputFlag, 0);
+			}
 
 			if (verbose)
 				cout << "--> Creating the variables" << endl;

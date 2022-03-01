@@ -30,7 +30,7 @@ int BellmanFord(Graph *graph, int pred[])
         dist[i] = INT_MAX;
     dist[graph->src] = 0;
 
-    for (int i = 1; i < V ; i++)
+    for (int i = 1; i < V; i++)
     {
         for (int j = 0; j < E; j++)
         {
@@ -39,7 +39,8 @@ int BellmanFord(Graph *graph, int pred[])
             int u = graph->edges[j].startId;
             int v = graph->edges[j].endId;
             int weight = graph->edges[j].cost;
-            if (dist[u] != INT_MAX && dist[u] + weight < dist[v]){
+            if (dist[u] != INT_MAX && dist[u] + weight < dist[v])
+            {
                 dist[v] = dist[u] + weight;
                 pred[v] = u;
             }
@@ -73,13 +74,13 @@ int BellmanFord(Graph *graph, int pred[])
 void cycleCancelling(Graph *originGraph)
 {
     originGraph->fromMultipleToOne();
-    
+
     originGraph->removeLonelyNodes();
-    
+
     Graph noParallelGraph(originGraph->nbVertices);
 
     originGraph->switchOffParallel(&noParallelGraph);
-    
+
     shortestAugmentingPath(&noParallelGraph);
 
     originGraph->switchOnParallel(&noParallelGraph);
@@ -89,13 +90,12 @@ void cycleCancelling(Graph *originGraph)
     int pred[graph->vertices.size()];
     int probVertex = BellmanFord(graph, pred);
 
-    
     int a = 0;
     while (probVertex != -1)
     {
         int initialVertex = probVertex;
-        //std::cout << "nb rounds :" << a << std::endl;
-        a ++;
+        // std::cout << "nb rounds :" << a << std::endl;
+        a++;
         std::vector<int> edgesToChange;
 
         int idMinEdge = -1;
@@ -153,7 +153,6 @@ void cycleCancelling(Graph *originGraph)
     originGraph->fillGraphFromResidual(graph);
     std::cout << "wazai" << std::endl;
     std::cout << validFlow(originGraph) << std::endl;
-
 }
 
 void retreat(Graph *graph, int i, int dist[])
