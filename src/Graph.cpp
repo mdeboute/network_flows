@@ -144,7 +144,6 @@ void Graph::fillGraphFromResidual(Graph *residualGraph)
         }
     }
 }
-
 Graph *Graph::getResidualGraph()
 {
     return getResidualGraph(false);
@@ -210,6 +209,11 @@ Graph *Graph::getResidualGraph(bool fuseParallelEdges)
                 }
             }
         }
+    }
+    //Conservation de la priorité
+    for(int i = 0; i < nbVertices; i++)
+    {
+        residualGraph->vertices[i].height = vertices[i].height;
     }
     return residualGraph;
 }

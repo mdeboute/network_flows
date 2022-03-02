@@ -46,7 +46,7 @@ int BellmanFord(Graph *graph, int pred[], int startingVrt, bool toVisit[])
 
     count[startingVrt] ++;
     isInQueue[startingVrt] = true;
-    
+
     while(queue.size() != 0){
         int vertex = queue.front();
         isInQueue[vertex] = false;
@@ -189,7 +189,7 @@ void cycleCancelling(Graph *originGraph)
         probVertex = getNodeFromNegCycleInPath(graph, pred, probVertex);
     }
 
-    
+
     while (probVertex != -1)
     {
         int initialVertex = probVertex;
@@ -245,7 +245,7 @@ void cycleCancelling(Graph *originGraph)
             Edge e = graph->edges[edgesToChange[i]];
 
             std::cout << e.endId << "  " << e.startId << "  ";
-               
+
             graph->edges[edgesToChange[i]].increaseResidualCapacity(*graph, -minResCap);
         }
 
@@ -390,23 +390,27 @@ void distanceLabelling(Graph *graph)
     while (List.size() > 0)
     {
         bool hasAdmissibleArc = false;
-        for (int i = 0; i < graph->vertices[List.front()].leavingEdgesId.size(); i++)
+        for (int i = 0; i < graph->vertices[List.front()].enteringEdgesId.size(); i++)
         {
-            if (marks[graph->edges[graph->vertices[List.front()].leavingEdgesId[i]].endId] == false)
+            if (marks[graph->edges[graph->vertices[List.front()].enteringEdgesId[i]].startId] == false)
             {
                 hasAdmissibleArc = true;
-                marks[graph->edges[graph->vertices[List.front()].leavingEdgesId[i]].endId] = true;
-                graph->vertices[graph->edges[graph->vertices[List.front()].leavingEdgesId[i]].endId].height = graph->vertices[List.front()].height + 1;
-                List.push(graph->edges[graph->vertices[List.front()].leavingEdgesId[i]].endId);
+                marks[graph->edges[graph->vertices[List.front()].enteringEdgesId[i]].startId] = true;
+                graph->vertices[graph->edges[graph->vertices[List.front()].enteringEdgesId[i]].startId].height = graph->vertices[List.front()].height + 1;
+                List.push(graph->edges[graph->vertices[List.front()].enteringEdgesId[i]].startId);
             }
         }
         List.pop();
     }
+    graph->vertices[graph->src].height = graph->vertices[graph->src].height*2;
     return;
 }
 
 void preflowPush(Graph *original_graph)
 {
+    // distance
+    distanceLabelling(original_graph);
+
     Graph *graph = original_graph->getResidualGraph(true);
     std::queue<int> activeNodes;
 
@@ -415,8 +419,6 @@ void preflowPush(Graph *original_graph)
     {
         graph->vertices[i].exceedingFlow = 0;
     }
-    // distance
-    distanceLabelling(graph);
 
     for (int id : graph->vertices[graph->src].leavingEdgesId)
     {
@@ -464,4 +466,5 @@ void preflowPush(Graph *original_graph)
         }
     }
     original_graph->fillGraphFromResidual(graph);
+    std::cout << graph->vertices[graph->sink].exceedingFlow << std::endl;
 }
