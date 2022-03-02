@@ -11,7 +11,7 @@
 
 #Change header line or flag bad header
 
-($1 == "p") && ($2 == "max") {nodes = $3; arcs = $4 + 1;
+($1 == "p") && ($2 == "max") {nodes = $3; arcs = $4;
 	print "p", "min", nodes, arcs
  	print "c Transformed from a max-flow problem.";
 			}
