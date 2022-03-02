@@ -25,9 +25,10 @@ $1 == "c"	{print $0}
 ($1 == "n") && ($3 == "t") {sink = $2;}
 
 #Copy arcs with 0 cost and 0 lower bounds
-$1 == "a"	{print $1, "\t", $2 "\t" $3 "\t" 0  "\t" $4 "\t" 0}
+$1 == "a"	{print $1, " ", $2 " " $3 " " 0  " " $4 " " 0}
 
 #Make new arc from sink to source.
 #Uncapacitated value is represented as a negative number
 
-END	{print "a","\t" sink "\t" source "\t"  0 "\t" -1 ,"   \t"   -1 }
+END	{print "n"," " source " " 1
+print "n"," " sink, " " -1}
