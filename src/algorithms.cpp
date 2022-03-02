@@ -25,6 +25,11 @@ int BellmanFord(Graph *graph, int pred[], int startingVrt, bool toVisit[])
     int V = graph->nbVertices;
     int E = graph->nbEdges;
     int dist[V];
+    bool shouldVisit[V];
+
+    for(int i = 0; i < V; i++){
+        shouldVisit[i] = toVisit[i];
+    }
 
     for (int i = 0; i < V; i++)
         dist[i] = INT_MAX;
@@ -57,7 +62,7 @@ int BellmanFord(Graph *graph, int pred[], int startingVrt, bool toVisit[])
             if(dist[vertex2] > dist[vertex] + graph->edges[id].cost){
                 dist[vertex2] = dist[vertex] + graph->edges[id].cost;
                 pred[vertex2] = vertex;
-                if(!isInQueue[vertex2]){
+                if(!isInQueue[vertex2] && shouldVisit[vertex2] == true){
                     queue.push(vertex2);
                     isInQueue[vertex2] = true;
                     count[vertex2] ++;
@@ -234,12 +239,17 @@ void cycleCancelling(Graph *originGraph)
             probVertex = pred[probVertex];
         }
 
+        std::cout << -minResCap << "   ";
         for (int i = 0; i < edgesToChange.size(); i++)
         {
             Edge e = graph->edges[edgesToChange[i]];
+
+            std::cout << e.endId << "  " << e.startId << "  ";
                
             graph->edges[edgesToChange[i]].increaseResidualCapacity(*graph, -minResCap);
         }
+
+        std::cout << std::endl;
 
         probVertex = findNegativeCycle(graph, pred);
         if(probVertex != -1){
