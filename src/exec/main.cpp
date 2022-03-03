@@ -18,15 +18,9 @@ int main()
   
 
   Graph graphMin = minCost::parse("../data/mincost/gte/gte_bad.508829");
-  // for(int i = 0; i < graphMin.nbEdges; i++){
-  //   graphMin.edges[i].cost = rand() % 100;
-  //   graph.edges[i].cost = graphMin.edges[i].cost;
-  //   cout << graphMin.edges[i].cost << endl;
-  // }
 
   PL::minCost(graph, true);
   cycleCancelling(&graphMin);
   cout << graphMin.getValueObjMinCost() << endl;
-  cout << graphMin.getValueObjMaxFlow() << endl;
   return 0;
 }

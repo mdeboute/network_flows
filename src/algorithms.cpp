@@ -57,14 +57,14 @@ int BellmanFord(Graph *graph, int pred[], int startingVrt, bool toVisit[])
                     isInQueue[vertex2] = true;
                     count[vertex2] ++;
                     if(count[vertex2] >= V){
-                        std::cout << "contains a negative cycle" << std::endl;
+                        //std::cout << "contains a negative cycle" << std::endl;
                         return vertex2;
                     }
                 }
             }
         }
     }
-    std::cout << "!doesn't! contain a negative cycle" << std::endl;
+    //std::cout << "!doesn't! contain a negative cycle" << std::endl;
     return -1;
 }
 
@@ -244,7 +244,7 @@ void cycleCancelling(Graph *originGraph)
         }
     }
     originGraph->fillGraphFromResidual(graph);
-    std::cout << validFlow(originGraph) << std::endl;
+    //std::cout << validFlow(originGraph) << std::endl;
 }
 
 void retreat(Graph *graph, int i, int dist[])

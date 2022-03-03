@@ -324,10 +324,10 @@ long long Graph::getValueObjMinCost()
         term = term * e.cost;
         sumFlows += term;
         if(e.flow != 0 and e.endId != this->sink and e.startId != this->src){
-            std::cout << e.startId << "  " << e.endId << "   " << sumFlows << std::endl;
+            //std::cout << e.startId << "  " << e.endId << "   " << sumFlows << std::endl;
         }
     }
-    std::cout << sumFlows << std::endl;
+    //std::cout << sumFlows << std::endl;
     return sumFlows;
 }
 
