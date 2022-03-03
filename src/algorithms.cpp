@@ -9,7 +9,6 @@
 #include <string.h>
 #include <ctime>
 
-
 // The main function that finds shortest distances from a node
 // to all other vertices using Bellman-Ford algorithm. The
 // function also detects negative weight cycle
@@ -20,7 +19,8 @@ int BellmanFord(Graph *graph, int pred[], int startingVrt, bool toVisit[])
     int dist[V];
     bool shouldVisit[V];
 
-    for(int i = 0; i < V; i++){
+    for (int i = 0; i < V; i++)
+    {
         shouldVisit[i] = toVisit[i];
     }
 
@@ -32,58 +32,72 @@ int BellmanFord(Graph *graph, int pred[], int startingVrt, bool toVisit[])
     queue.push(startingVrt);
     int count[V];
     bool isInQueue[V];
-    for(int i = 0; i < V; i++){
+    for (int i = 0; i < V; i++)
+    {
         count[i] = 0;
         isInQueue[i] = false;
     }
 
-    count[startingVrt] ++;
+    count[startingVrt]++;
     isInQueue[startingVrt] = true;
 
-    while(queue.size() != 0){
+    while (queue.size() != 0)
+    {
         int vertex = queue.front();
         isInQueue[vertex] = false;
         queue.pop();
         toVisit[vertex] = false;
-        for(int id : graph->vertices[vertex].leavingEdgesId){
+        for (int id : graph->vertices[vertex].leavingEdgesId)
+        {
             Edge e = graph->edges[id];
-            if(graph->edges[id].residualCapacity == 0) continue;
+            if (graph->edges[id].residualCapacity == 0)
+                continue;
             int vertex2 = graph->edges[id].endId;
-            if(dist[vertex2] > dist[vertex] + graph->edges[id].cost){
+            if (dist[vertex2] > dist[vertex] + graph->edges[id].cost)
+            {
                 dist[vertex2] = dist[vertex] + graph->edges[id].cost;
                 pred[vertex2] = vertex;
-                if(!isInQueue[vertex2] && shouldVisit[vertex2]){
+                if (!isInQueue[vertex2] && shouldVisit[vertex2])
+                {
                     queue.push(vertex2);
                     isInQueue[vertex2] = true;
-                    count[vertex2] ++;
-                    if(count[vertex2] >= V){
-                        //std::cout << "contains a negative cycle" << std::endl;
+                    count[vertex2]++;
+                    if (count[vertex2] >= V)
+                    {
+                        // std::cout << "contains a negative cycle" << std::endl;
                         return vertex2;
                     }
                 }
             }
         }
     }
-    //std::cout << "!doesn't! contain a negative cycle" << std::endl;
+    // std::cout << "!doesn't! contain a negative cycle" << std::endl;
     return -1;
 }
 
-int findTheTruth(bool toVisit[], int size){
-    for(int i = 0; i < size; i++){
-        if(toVisit[i]) return i;
+int findTheTruth(bool toVisit[], int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        if (toVisit[i])
+            return i;
     }
     return -1;
 }
 
-int findNegativeCycle(Graph *graph, int pred[]){
+int findNegativeCycle(Graph *graph, int pred[])
+{
     bool toVisit[graph->nbVertices];
-    for(int i = 0; i < graph->nbVertices; i++){
+    for (int i = 0; i < graph->nbVertices; i++)
+    {
         toVisit[i] = true;
     }
     int u = graph->src;
-    while(u != -1){
+    while (u != -1)
+    {
         int probVertex = BellmanFord(graph, pred, u, toVisit);
-        if(probVertex != -1) return probVertex;
+        if (probVertex != -1)
+            return probVertex;
         u = findTheTruth(toVisit, graph->nbVertices);
     }
     return -1;
@@ -139,12 +153,15 @@ int findNegativeCycle(Graph *graph, int pred[]){
 //     return -1;
 // }
 
-int getNodeFromNegCycleInPath(Graph *graph, int pred[], int probVertex){
+int getNodeFromNegCycleInPath(Graph *graph, int pred[], int probVertex)
+{
     bool tab[graph->nbVertices];
-    for(int i = 0; i < graph->nbVertices; i++){
+    for (int i = 0; i < graph->nbVertices; i++)
+    {
         tab[i] = false;
     }
-    while(!tab[probVertex]){
+    while (!tab[probVertex])
+    {
         tab[probVertex] = true;
         probVertex = pred[probVertex];
     }
@@ -165,11 +182,12 @@ void cycleCancelling(Graph *originGraph)
 
     originGraph->switchOnParallel(&noParallelGraph);
 
-    //std::cout << "obj : " << originGraph->getValueObjMinCost() << std::endl;
+    // std::cout << "obj : " << originGraph->getValueObjMinCost() << std::endl;
 
     Graph *graph = originGraph->getResidualGraph(false);
 
-    for(int id : graph->vertices[graph->src].leavingEdgesId){
+    for (int id : graph->vertices[graph->src].leavingEdgesId)
+    {
         Edge e = graph->edges[id];
         int a = 0;
     }
@@ -177,10 +195,10 @@ void cycleCancelling(Graph *originGraph)
     int pred[graph->vertices.size()];
     int probVertex = findNegativeCycle(graph, pred);
 
-    if(probVertex != -1){
+    if (probVertex != -1)
+    {
         probVertex = getNodeFromNegCycleInPath(graph, pred, probVertex);
     }
-
 
     while (probVertex != -1)
     {
@@ -234,17 +252,18 @@ void cycleCancelling(Graph *originGraph)
         for (int i = 0; i < edgesToChange.size(); i++)
         {
             Edge e = graph->edges[edgesToChange[i]];
-               
+
             graph->edges[edgesToChange[i]].increaseResidualCapacity(*graph, -minResCap);
         }
 
         probVertex = findNegativeCycle(graph, pred);
-        if(probVertex != -1){
+        if (probVertex != -1)
+        {
             probVertex = getNodeFromNegCycleInPath(graph, pred, probVertex);
         }
     }
     originGraph->fillGraphFromResidual(graph);
-    //std::cout << validFlow(originGraph) << std::endl;
+    // std::cout << validFlow(originGraph) << std::endl;
 }
 
 void retreat(Graph *graph, int i, int dist[])
@@ -389,7 +408,7 @@ void distanceLabelling(Graph *graph)
         }
         List.pop();
     }
-    graph->vertices[graph->src].height = graph->vertices[graph->src].height*2;
+    graph->vertices[graph->src].height = graph->vertices[graph->src].height * 2;
     return;
 }
 
