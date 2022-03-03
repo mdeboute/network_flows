@@ -12,6 +12,16 @@ make
 ./a.out
 ```
 
+Solveurs:
+
+```shell
+./maxFlowSolver.out <PATH_TO_INSTANCE_FILE>
+```
+
+```shell
+./minCostFlowSolver.out <PATH_TO_INSTANCE_FILE>
+```
+
 ## Ressources
 
 Projet Netflow : [ici](http://archive.dimacs.rutgers.edu/pub/netflow/generators/network/)
@@ -25,17 +35,15 @@ La plupart sont au format DIMACS, [ceci](http://lpsolve.sourceforge.net/5.5/DIMA
 
 #### Deux de flots max
 
-- 1 avec chemins augmantants pour flot max : successive shortest path en O(n^2m) et/ou labeling algo en O(nmU), pseudo-polynomiale
-- 1 flot maximum avec pré-flots : FIFO pre-flow push algo en O(n^3)
+- 1 avec chemins augmantants pour flot max : successive shortest path en O(n^2m) et/ou labeling algo en O(nmU), pseudo-polynomiale --> successive shortest path -[X]
+- 1 flot maximum avec pré-flots : FIFO pre-flow push algo en O(n^3) -[X]
 
 #### Un de coup min
 
-- 1 flot de coût minimum : cycle cancelling en O(mCU), out-of-kilter en O(nu) (en priorité) et en complexité polynomiale on a le minimum mean-cycle cancelling algo en O(n^2m^3log(n)) (lui il est compliqué)
+- 1 flot de coût minimum : cycle cancelling en O(mCU), out-of-kilter en O(nu) (en priorité) et en complexité polynomiale on a le minimum mean-cycle cancelling algo en O(n^2m^3log(n)) (lui il est compliqué) --> cycle cancelling -[X]
 
-#### Faire un checker/evaluator
+#### Faire un checker/evaluator -[X]
 
-#### Modéliser les problèmes sous forme de PL avec Gurobi ou CPLEX ou OR-Tools
+#### Modéliser les problèmes sous forme de PL avec `Gurobi` ou CPLEX ou OR-Tools -[X]
 
-## Lien overleaf du rapport
-
-<https://www.overleaf.com/5234754873zyydkskvjsdn>
+## Lien overleaf du rapport: [ici](https://www.overleaf.com/5234754873zyydkskvjsdn)
