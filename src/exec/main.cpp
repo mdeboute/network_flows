@@ -11,8 +11,15 @@ using namespace std;
 
 int main()
 {
-  maxFlowComparison("../data/maxflow/instance_10_20_567.max", "instance_10_20_567.max", true);
-  // maxFlowBenchmarks(true);
+  // ligne suivante pour débugger prepush
+  // maxFlowComparison("../data/maxflow/instance_10_20_567.max", "instance_10_20_567.max", true);
+
+  Graph graph = minCost::parse("../data/mincost/gte/gte_bad.508829");
+  Graph graphMin = minCost::parse("../data/mincost/gte/gte_bad.508829");
+
+  PL::minCost(graph, true);
+  cycleCancelling(&graphMin);
+  cout << graphMin.getValueObjMinCost() << endl;
 
   return 0;
 }

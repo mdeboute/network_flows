@@ -40,7 +40,7 @@ public:
     Edge &getEdgeFromVerticesId(int vertexId1, int vertexId2);   // retourne l'arc associé à deux ID de sommets en paramètres
     bool parallelEdgesPresent(int vertexId1, int vertexId2);
     int getValueObjMaxFlow();
-    int getValueObjMinCost();
+    long long getValueObjMinCost();
     void fromMultipleToOne();
     void switchOffParallel(Graph *graph);
     void switchOnParallel(Graph *graph);

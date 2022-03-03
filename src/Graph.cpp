@@ -315,16 +315,19 @@ Edge &Graph::getEdgeFromVerticesId(int vertexId1, int vertexId2)
     return *e;
 }
 
-int Graph::getValueObjMinCost()
+long long Graph::getValueObjMinCost()
 {
-    long sumFlows = 0;
+    long long sumFlows = 0;
     for (Edge e : edges)
     {
-        long term = e.flow / 100* (e.cost / 100);
+        long long term = e.flow;
+        term = term * e.cost;
         sumFlows += term;
-        if(e.flow != 0)
-            std::cout << e.startId << "    " << e.endId << "   " << e.flow << std::endl;
+        if(e.flow != 0 and e.endId != this->sink and e.startId != this->src){
+            //std::cout << e.startId << "  " << e.endId << "   " << sumFlows << std::endl;
+        }
     }
+    //std::cout << sumFlows << std::endl;
     return sumFlows;
 }
 
@@ -354,9 +357,6 @@ void Graph::fromMultipleToOne()
             sinkNodes.push_back(i);
         }
     }
-
-    if (srcNodes.size() > 1)
-    {
         this->src = this->vertices.size();
         this->addVertex();
         for (int i = 0; i < srcNodes.size(); i++)
@@ -364,14 +364,7 @@ void Graph::fromMultipleToOne()
             Edge newEdge(this->edges.size(), this->src, srcNodes[i], this->vertices[srcNodes[i]].exceedingFlow);
             this->addEdge(newEdge);
         }
-    }
-    else
-    {
-        this->src = srcNodes[0];
-    }
 
-    if (sinkNodes.size() > 1)
-    {
         this->sink = this->vertices.size();
         this->addVertex();
         for (int i = 0; i < sinkNodes.size(); i++)
@@ -379,11 +372,6 @@ void Graph::fromMultipleToOne()
             Edge newEdge(this->edges.size(), sinkNodes[i], this->sink, -1 * this->vertices[sinkNodes[i]].exceedingFlow);
             this->addEdge(newEdge);
         }
-    }
-    else
-    {
-        this->sink = sinkNodes[0];
-    }
 }
 
 void Graph::switchOffParallel(Graph *graph)
