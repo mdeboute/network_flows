@@ -511,7 +511,7 @@ void cycleCancelling(Graph *originGraph)
             int idStartVertex = graph->edges[graph->vertices[probVertex].enteringEdgesId[i]].startId;
             int resCapEdge = graph->edges[graph->vertices[probVertex].enteringEdgesId[i]].residualCapacity;
             int costEdge = graph->edges[graph->vertices[probVertex].enteringEdgesId[i]].cost;
-            if (idStartVertex == pred[probVertex] && resCapEdge != 0 && (costEdge < graph->edges[idMinEdge].cost || idMinEdge == -1))
+            if (idStartVertex == pred[probVertex] && resCapEdge != 0 && (idMinEdge == -1 || costEdge < graph->edges[idMinEdge].cost))
             {
                 idMinEdge = graph->vertices[probVertex].enteringEdgesId[i];
             }
@@ -532,7 +532,7 @@ void cycleCancelling(Graph *originGraph)
                 int idStartVertex = graph->edges[graph->vertices[probVertex].enteringEdgesId[i]].startId;
                 int resCapEdge = graph->edges[graph->vertices[probVertex].enteringEdgesId[i]].residualCapacity;
                 int costEdge = graph->edges[graph->vertices[probVertex].enteringEdgesId[i]].cost;
-                if (idStartVertex == pred[probVertex] && resCapEdge != 0 && (costEdge < graph->edges[idMinEdge].cost || idMinEdge == -1))
+                if (idStartVertex == pred[probVertex] && resCapEdge != 0 && ( idMinEdge == -1  || costEdge < graph->edges[idMinEdge].cost))
                 {
                     idMinEdge = graph->vertices[probVertex].enteringEdgesId[i];
                 }

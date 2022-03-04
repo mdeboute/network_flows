@@ -34,7 +34,5 @@ int main()
   //   cycleCancelling(&graph);
   cout << graph.getValueObjMinCost() << endl;
 
-  //   cycleCancelling(&graph);
-  //   cout << graph.getValueObjMinCost() << endl;
   return 0;
 }
