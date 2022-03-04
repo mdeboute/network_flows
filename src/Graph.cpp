@@ -415,17 +415,23 @@ void Graph::switchOnParallel(Graph *graph)
 }
 
 void Graph::removeLonelyNodes()
-{
-    for (Vertex &vrt : vertices)
-    {
-        if (vrt.id != sink && vrt.nbLeavingEdges == 0)
+{   
+    bool deniedTerroristAttack = false;
+    do{
+        deniedTerroristAttack = false;
+        for (Vertex &vrt : vertices)
         {
-            while (vrt.nbEnteringEdges > 0)
+            if (vrt.id != sink && vrt.nbLeavingEdges == 0 && vrt.nbEnteringEdges > 0)
             {
-                removeEdge(vrt.enteringEdgesId[0]);
+                deniedTerroristAttack = true;
+                while (vrt.nbEnteringEdges > 0)
+                {
+                    removeEdge(vrt.enteringEdgesId[0]);
+                }
             }
         }
     }
+    while(deniedTerroristAttack);
 }
 
 // getters de la classe Graph
