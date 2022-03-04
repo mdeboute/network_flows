@@ -10,6 +10,6 @@ void cycleCancelling(Graph *graph);
 void shortestAugmentingPath(Graph *graph);
 void preflowPush(Graph *graph);
 void meanCycleCancelling(Graph *graph);
-int setMaxPossibleFlow(Graph *graph);
+void setMaxPossibleFlow(Graph *graphToChange,Graph *experimentGraph);
 
 #endif
