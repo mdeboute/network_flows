@@ -8,3 +8,4 @@ chmod u+x maxmin.sh
 ```
 
 PS: the maxmin.awk file is from the netflow project but we adapted it for our code.
+Make sure you have Python3 installed on your machine.
