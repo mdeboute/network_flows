@@ -25,13 +25,22 @@ int main()
 // }
 
 //   PL::minCost(graphMin, true);
-  
+
 //   meanCycleCancelling(&graph);
 //   cycleCancelling(&graph);
 //   cout << graph.getValueObjMinCost() << endl;
 
-  
+
 //   cycleCancelling(&graph);
 //   cout << graph.getValueObjMinCost() << endl;
+
+  //maxFlowComparison("../generator/maxflow/test3.max", "test3.max",false,true);
+  //Graph graph = maxFlow::parse("../generator/maxflow/test3.max", false);
+  //shortestAugmentingPath(&graph);
+
+  minCostComparison("../generator/mincost/test1.max.min", "test1.max.min",true);
+  //Graph graph = minCost::parse("../generator/mincost/test4.max.min", false);
+  //graph.print();
+
   return 0;
 }
