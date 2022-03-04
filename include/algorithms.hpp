@@ -10,5 +10,6 @@ void cycleCancelling(Graph *graph);
 void shortestAugmentingPath(Graph *graph);
 void preflowPush(Graph *graph);
 void meanCycleCancelling(Graph *graph);
+int setMaxPossibleFlow(Graph *graph);
 
 #endif
