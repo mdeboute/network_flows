@@ -9,17 +9,17 @@
 #include "saver.hpp"
 #include "PLFlows.hpp"
 
-bool maxFlowBenchmarks(bool checkWithLP)
+bool maxFlowBenchmarks(bool usePrepush,bool checkWithLP)
 {
   std::string fileList[0];
   for (int index = 0; index < 1000; index++)
   {
-    fileList[index] = "../data/maxflow/instance_10_20_" + std::to_string(index + 1) + ".max";
+    fileList[index] = "../data/generator/instance_10_20_" + std::to_string(index + 1) + ".max";
   }
 
   for (std::string filePath : fileList)
   {
-    if (not maxFlowComparison(filePath, filePath.substr(21), checkWithLP))
+    if (not maxFlowComparison(filePath, filePath.substr(21),usePrepush,checkWithLP))
     {
       return false;
     }
@@ -28,20 +28,25 @@ bool maxFlowBenchmarks(bool checkWithLP)
   return true;
 }
 
-bool maxFlowComparison(std::string filePath, std::string fileName, bool checkWithLP)
+bool maxFlowComparison(std::string filePath, std::string fileName,bool usePrepush, bool checkWithLP)
 {
   std::cout << "Maxflow comparison on " << fileName << "\n";
 
   Graph graph1 = maxFlow::parse(filePath, false);
   Graph graph2 = maxFlow::parse(filePath, false);
 
-  // Preflow Push
-  int startTime2 = time(NULL);
-  preflowPush(&graph2);
-  int duration2 = time(NULL) - startTime2;
 
-  std::cout << "Preflow Push duration: " << duration2 << " seconds\n";
+  int startTime2;
+  int duration2;
+  if(usePrepush)
+  {
+    // Preflow Push
+    startTime2 = time(NULL);
+    preflowPush(&graph2);
+    duration2 = time(NULL) - startTime2;
 
+    std::cout << "Preflow Push duration: " << duration2 << " seconds\n";
+  }
   // Shortest Augmenting Path
   int startTime1 = time(NULL);
   shortestAugmentingPath(&graph1);
@@ -70,13 +75,13 @@ bool maxFlowComparison(std::string filePath, std::string fileName, bool checkWit
     return false;
   }
 
-  if (not validFlow(&graph2))
+  if (usePrepush and not validFlow(&graph2))
   {
     std::cout << "Error: invalid flow from Preflow Push\n";
     return false;
   }
 
-  if (value1 != value2)
+  if (usePrepush and value1 != value2)
   {
     std::cout << "Shortest Augmenting Path: " << value1 << "\n";
     std::cout << "Preflow Push: " << value2 << "\n";
@@ -84,7 +89,7 @@ bool maxFlowComparison(std::string filePath, std::string fileName, bool checkWit
     return false;
   }
 
-  if (checkWithLP and (value3 != value1 or value3 != value2))
+  if (checkWithLP and (value3 != value1 or (usePrepush and value3 != value2)))
   {
     std::cout << "LP: " << value3 << "\n";
     std::cout << "Both algorithm: " << value1 << "\n";

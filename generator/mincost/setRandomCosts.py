@@ -1,8 +1,9 @@
 from random import randint
+import sys
 
 
 def setRandomCosts():
-    fileName = input()
+    fileName = str(sys.argv[1])
 
     file= open(fileName,"r")
     lines= file.readlines()
