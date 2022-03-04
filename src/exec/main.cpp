@@ -13,34 +13,8 @@ int main()
 {
   // ligne suivante pour débugger prepush
   //   maxFlowComparison("../data/maxflow/instance_10_20_39.max", "instance_10_20_39.max", true);
-  //   maxFlowBenchmarks(true);
-  //   Graph graphMin = minCost::parse("../data/mincost/gte/gte_bad.20");
-  //   Graph graph = minCost::parse("../data/mincost/gte/gte_bad.20");
 
-  // for(int i = 0; i < graph.nbEdges; i++){
-  //   int rndInt = rand() % 100;
-  //   graph.edges[i].cost = rndInt;
-  //   graphMin.edges[i].cost = rndInt;
-  //   cout << graph.edges[i].cost << endl;
-  // }
-
-//   PL::minCost(graphMin, true);
-
-//   meanCycleCancelling(&graph);
-//   cycleCancelling(&graph);
-//   cout << graph.getValueObjMinCost() << endl;
-
-
-//   cycleCancelling(&graph);
-//   cout << graph.getValueObjMinCost() << endl;
-
-  //maxFlowComparison("../generator/maxflow/test3.max", "test3.max",false,true);
-  //Graph graph = maxFlow::parse("../generator/maxflow/test3.max", false);
-  //shortestAugmentingPath(&graph);
-
-  minCostComparison("../generator/mincost/test1.max.min", "test1.max.min",true);
-  //Graph graph = minCost::parse("../generator/mincost/test4.max.min", false);
-  //graph.print();
+  maxFlowBenchmarks(false,true,10,"../generator/maxflow/4k8k/","inst_4000_8000_");
 
   return 0;
 }
