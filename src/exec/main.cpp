@@ -18,7 +18,6 @@ int main()
 
   Graph graphMinCobaye = minCost::parse("../data/mincost/small_instances/boop3.max.min");
 
-  graphMinCobaye&)
   Graph graph = minCost::parse("../data/mincost/small_instances/boop3.max.min");
 
   for(int i = 0; i < graph.nbEdges; i++){
