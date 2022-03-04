@@ -20,6 +20,13 @@ int main()
 
   Graph graph = minCost::parse("../data/mincost/small_instances/boop3.max.min");
 
+  int maxPossibleFlow = setMaxPossibleFlow(&graphMinCobaye);
+
+  graph.vertices[graph.src].exceedingFlow = maxPossibleFlow;
+  graph.vertices[graph.sink].exceedingFlow = -maxPossibleFlow;
+  graph.vertices[graph.src].exceedingFlow = maxPossibleFlow;
+  graph.vertices[graph.sink].exceedingFlow = -maxPossibleFlow;
+
   for(int i = 0; i < graph.nbEdges; i++){
     int rndInt = rand() % 100;
     graph.edges[i].cost = rndInt;
