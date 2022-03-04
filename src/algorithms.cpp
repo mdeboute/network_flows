@@ -202,8 +202,11 @@ int findCycle(Graph *graph, int pred[], long cost[], int idVrt)
     visited[idVrt] = true;
     for (int idEdge : graph->vertices[idVrt].leavingEdgesId)
     {
+        int a = graph->edges[idEdge].endId;
+        int b = cost[idEdge];
         if (cost[idEdge] == 0)
         {
+            
             int result = recFindCycle(graph, pred, cost, visited, idVrt, graph->edges[idEdge].endId);
             if (result != -1)
             {
@@ -233,7 +236,7 @@ int findMeanNegativeCycle(Graph *graph, int pred[])
     for (int i = 0; i < V; i++)
         for (int j = 0; j < V + 1; j++)
             dist[i][j] = INT_MAX;
-    dist[graph->src][0] = 0;
+    dist[0][0] = 0;
 
     for (int i = 1; i < V + 1; i++)
     {
@@ -349,48 +352,44 @@ int findMeanNegativeCycle(Graph *graph, int pred[])
             newCosts[i] += smallestDist[graph->edges[i].startId] - smallestDist[graph->edges[i].endId];
     }
 
-    // for (int i = 0; i < V; i++)
-    //     for(int j = 0; j < V+1; j++)
-    //         dist[i][j] = INT_MAX;
-    // dist[graph->src][0] = 0;
-
-    // for (int i = 1; i < V + 1; i++)
-    // {
-    //     for (int j = 0; j < E; j++)
-    //     {
-    //         long weight = newCosts[j];
-    //         int u = graph->edges[j].startId;
-    //         int v = graph->edges[j].endId;
-    //         if (dist[u][i-1] != INT_MAX && dist[u][i-1] + weight < dist[v][i]){
-    //             dist[v][i] = dist[u][i-1] + weight;
-    //         }
-    //     }
-    // }
-
-    // int idProbVertex = -1;
-    // for(int i = 0; i < V; i++){
-    //     if(dist[i][V] == INT_MAX) continue;
-    //     long max = -INT_MAX;
-    //     for(int j = 1; j < V; j++){
-    //         if(dist[i][j] == INT_MAX) continue;
-    //         if(dist[i][V] - dist[i][j] > max){
-    //             int n = dist[i][V];
-    //             int m = dist[i][j];
-    //             max = dist[i][V] - dist[i][j];
-    //         }
-    //     }
-    //     if(max == 0){
-    //         idProbVertex = i;
-    //         break;
-    //     }
-    // }
     for (int i = 0; i < V; i++)
+        for(int j = 0; j < V+1; j++)
+            dist[i][j] = INT_MAX;
+    dist[graph->src][0] = 0;
+
+    for (int i = 1; i < V + 1; i++)
     {
-        int a = findCycle(graph, pred, newCosts, i);
-        if (a != -1)
-            return a;
+        for (int j = 0; j < E; j++)
+        {
+            long weight = newCosts[j];
+            int u = graph->edges[j].startId;
+            int v = graph->edges[j].endId;
+            if (dist[u][i-1] != INT_MAX && dist[u][i-1] + weight < dist[v][i]){
+                dist[v][i] = dist[u][i-1] + weight;
+            }
+        }
     }
-    return -1;
+
+    int idProbVertex = -1;
+    for(int i = 0; i < V; i++){
+        if(dist[i][V] == INT_MAX) continue;
+        long max = -INT_MAX;
+        for(int j = 1; j < V; j++){
+            if(dist[i][j] == INT_MAX) continue;
+            if(dist[i][V] - dist[i][j] > max){
+                max = dist[i][V];
+                max -= dist[i][j];
+            }
+        }
+        if(max == 0){
+            idProbVertex = i;
+            break;
+        }
+    }
+    int a = 0;
+    return findCycle(graph, pred, newCosts, idProbVertex);
+
+    
 }
 
 void meanCycleCancelling(Graph *originGraph)
@@ -774,4 +773,20 @@ void preflowPush(Graph *original_graph)
     }
     original_graph->fillGraphFromResidual(graph);
     std::cout << graph->vertices[graph->sink].exceedingFlow << std::endl;
+}
+
+
+int setMaxPossibleFlow(Graph *originGraph){
+    originGraph->fromMultipleToOne();
+
+    originGraph->removeLonelyNodes();
+
+    Graph noParallelGraph(originGraph->nbVertices);
+
+    originGraph->switchOffParallel(&noParallelGraph);
+
+    shortestAugmentingPath(&noParallelGraph);
+
+    return noParallelGraph.getValueObjMaxFlow();
+
 }
