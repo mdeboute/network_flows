@@ -9,5 +9,6 @@ int BellmanFord(Graph graph, int src);
 void cycleCancelling(Graph *graph);
 void shortestAugmentingPath(Graph *graph);
 void preflowPush(Graph *graph);
+void meanCycleCancelling(Graph *graph);
 
 #endif

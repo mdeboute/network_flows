@@ -11,15 +11,27 @@ using namespace std;
 
 int main()
 {
-  // ligne suivante pour débugger prepush
-  // maxFlowComparison("../data/maxflow/instance_10_20_567.max", "instance_10_20_567.max", true);
+// ligne suivante pour débugger prepush
+//   maxFlowComparison("../data/maxflow/instance_10_20_39.max", "instance_10_20_39.max", true);
+//   maxFlowBenchmarks(true);
+//   Graph graphMin = minCost::parse("../data/mincost/gte/gte_bad.20");
+//   Graph graph = minCost::parse("../data/mincost/gte/gte_bad.20");
 
-  Graph graph = minCost::parse("../data/mincost/gte/gte_bad.508829");
-  Graph graphMin = minCost::parse("../data/mincost/gte/gte_bad.508829");
+// for(int i = 0; i < graph.nbEdges; i++){
+//   int rndInt = rand() % 100;
+//   graph.edges[i].cost = rndInt;
+//   graphMin.edges[i].cost = rndInt;
+//   cout << graph.edges[i].cost << endl;
+// }
 
-  PL::minCost(graph, true);
-  cycleCancelling(&graphMin);
-  cout << graphMin.getValueObjMinCost() << endl;
+//   PL::minCost(graphMin, true);
+  
+//   meanCycleCancelling(&graph);
+//   cycleCancelling(&graph);
+//   cout << graph.getValueObjMinCost() << endl;
 
+  
+//   cycleCancelling(&graph);
+//   cout << graph.getValueObjMinCost() << endl;
   return 0;
 }
