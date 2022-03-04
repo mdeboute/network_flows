@@ -13,8 +13,8 @@ int main()
 {
   // ligne suivante pour débugger prepush
   //   maxFlowComparison("../data/maxflow/instance_10_20_39.max", "instance_10_20_39.max", true);
-  //   maxFlowBenchmarks(true);
-  Graph graphMin = minCost::parse("../data/mincost/gte/gte_bad.40");
+
+  Graph graphMin = minCost::parse("../data/mincost/small_instances/boop3.max.min");
 
   // Graph graphMinCobaye = minCost::parse("../data/mincost/small_instances/boop3.max.min");
 
@@ -39,6 +39,7 @@ int main()
   meanCycleCancelling(&graph);
   //   cycleCancelling(&graph);
   // cout << graph.getValueObjMinCost() << endl;
+
 
   return 0;
 }
