@@ -9,7 +9,7 @@
 #include "saver.hpp"
 #include "PLFlows.hpp"
 
-bool maxFlowBenchmarks(bool usePrepush,bool checkWithLP)
+bool maxFlowBenchmarks(bool usePrepush, bool checkWithLP)
 {
   std::string fileList[0];
   for (int index = 0; index < 1000; index++)
@@ -19,7 +19,7 @@ bool maxFlowBenchmarks(bool usePrepush,bool checkWithLP)
 
   for (std::string filePath : fileList)
   {
-    if (not maxFlowComparison(filePath, filePath.substr(21),usePrepush,checkWithLP))
+    if (not maxFlowComparison(filePath, filePath.substr(21), usePrepush, checkWithLP))
     {
       return false;
     }
@@ -28,17 +28,16 @@ bool maxFlowBenchmarks(bool usePrepush,bool checkWithLP)
   return true;
 }
 
-bool maxFlowComparison(std::string filePath, std::string fileName,bool usePrepush, bool checkWithLP)
+bool maxFlowComparison(std::string filePath, std::string fileName, bool usePrepush, bool checkWithLP)
 {
   std::cout << "Maxflow comparison on " << fileName << "\n";
 
   Graph graph1 = maxFlow::parse(filePath, false);
   Graph graph2 = maxFlow::parse(filePath, false);
 
-
   int startTime2;
   int duration2;
-  if(usePrepush)
+  if (usePrepush)
   {
     // Preflow Push
     startTime2 = time(NULL);
