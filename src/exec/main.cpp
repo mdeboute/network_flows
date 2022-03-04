@@ -11,6 +11,7 @@ using namespace std;
 
 int main()
 {
+// ligne suivante pour débugger prepush
 //   maxFlowComparison("../data/maxflow/instance_10_20_39.max", "instance_10_20_39.max", true);
 //   maxFlowBenchmarks(true);
 //   Graph graphMin = minCost::parse("../data/mincost/gte/gte_bad.20");

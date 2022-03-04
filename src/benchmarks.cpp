@@ -11,10 +11,10 @@
 
 bool maxFlowBenchmarks(bool checkWithLP)
 {
-  std::string fileList[1000];
+  std::string fileList[0];
   for (int index = 0; index < 1000; index++)
   {
-    fileList[index] = "../generator/maxflow/instance_10_20_" + std::to_string(index + 1) + ".max";
+    fileList[index] = "../data/maxflow/instance_10_20_" + std::to_string(index + 1) + ".max";
   }
 
   for (std::string filePath : fileList)

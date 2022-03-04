@@ -138,7 +138,7 @@ void Graph::fillGraphFromResidual(Graph *residualGraph)
             if (parallelEdgesPresent(edges[edge.mirrorEdgeId].startId, edges[edge.mirrorEdgeId].endId))
             {
                 // si la quantité dépasse la capacité il faut chercher des arc parralèles dans le graphe d'origine et leur donner une partie du flot
-                //std::cout << "arêtes parralèles, si ce message est visible les résultats sont faux et il faut demander à pierre de modifier la fonction fillGraphFromResidual\n";
+                // std::cout << "arêtes parralèles, si ce message est visible les résultats sont faux et il faut demander à pierre de modifier la fonction fillGraphFromResidual\n";
             }
             edges[edge.mirrorEdgeId].setFlow(std::max(edges[edge.mirrorEdgeId].maxCapacity - edge.residualCapacity, 0));
         }
@@ -210,8 +210,8 @@ Graph *Graph::getResidualGraph(bool fuseParallelEdges)
             }
         }
     }
-    //Conservation de la priorité
-    for(int i = 0; i < nbVertices; i++)
+    // Conservation de la priorité
+    for (int i = 0; i < nbVertices; i++)
     {
         residualGraph->vertices[i].height = vertices[i].height;
     }
@@ -323,11 +323,12 @@ long long Graph::getValueObjMinCost()
         long long term = e.flow;
         term = term * e.cost;
         sumFlows += term;
-        if(e.flow != 0 and e.endId != this->sink and e.startId != this->src){
-            //std::cout << e.startId << "  " << e.endId << "   " << sumFlows << std::endl;
+        if (e.flow != 0 and e.endId != this->sink and e.startId != this->src)
+        {
+            // std::cout << e.startId << "  " << e.endId << "   " << sumFlows << std::endl;
         }
     }
-    //std::cout << sumFlows << std::endl;
+    // std::cout << sumFlows << std::endl;
     return sumFlows;
 }
 
@@ -357,21 +358,21 @@ void Graph::fromMultipleToOne()
             sinkNodes.push_back(i);
         }
     }
-        this->src = this->vertices.size();
-        this->addVertex();
-        for (int i = 0; i < srcNodes.size(); i++)
-        {
-            Edge newEdge(this->edges.size(), this->src, srcNodes[i], this->vertices[srcNodes[i]].exceedingFlow);
-            this->addEdge(newEdge);
-        }
+    this->src = this->vertices.size();
+    this->addVertex();
+    for (int i = 0; i < srcNodes.size(); i++)
+    {
+        Edge newEdge(this->edges.size(), this->src, srcNodes[i], this->vertices[srcNodes[i]].exceedingFlow);
+        this->addEdge(newEdge);
+    }
 
-        this->sink = this->vertices.size();
-        this->addVertex();
-        for (int i = 0; i < sinkNodes.size(); i++)
-        {
-            Edge newEdge(this->edges.size(), sinkNodes[i], this->sink, -1 * this->vertices[sinkNodes[i]].exceedingFlow);
-            this->addEdge(newEdge);
-        }
+    this->sink = this->vertices.size();
+    this->addVertex();
+    for (int i = 0; i < sinkNodes.size(); i++)
+    {
+        Edge newEdge(this->edges.size(), sinkNodes[i], this->sink, -1 * this->vertices[sinkNodes[i]].exceedingFlow);
+        this->addEdge(newEdge);
+    }
 }
 
 void Graph::switchOffParallel(Graph *graph)

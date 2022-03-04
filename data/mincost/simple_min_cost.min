@@ -1,4 +1,4 @@
-c Test pour le PL de cout min
+c Petit test pour le PL de cout min
 p min 5 9
 n 1 20
 n 2 0
