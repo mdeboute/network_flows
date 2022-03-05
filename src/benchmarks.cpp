@@ -13,21 +13,23 @@
 
 void doAllBenchmarks()
 {
-  maxFlowBenchmarks(false,true,10,"../generator/maxflow/4k8k/","inst_4000_8000_");
+  maxFlowBenchmarks(false,true,10,"../generator/maxflow/4k40k/","inst_4000_40000_");
   std::cout<<"\n";
-  maxFlowBenchmarks(false,true,10,"../generator/maxflow/6k12k/","inst_4000_8000_");
+  maxFlowBenchmarks(false,true,10,"../generator/maxflow/6k60k/","inst_6000_60000_");
   std::cout<<"\n";
-  maxFlowBenchmarks(false,true,10,"../generator/maxflow/8k16k/","inst_4000_8000_");
+  maxFlowBenchmarks(false,true,10,"../generator/maxflow/8k80k/","inst_8000_80000_");
   std::cout<<"\n";
-  maxFlowBenchmarks(false,true,10,"../generator/maxflow/10k20k/","inst_4000_8000_");
+  maxFlowBenchmarks(false,true,10,"../generator/maxflow/10k100k/","inst_10000_100000_");
 
-  minCostBenchmarks(true,10,"../generator/mincost/4k8k/","inst_4000_8000_");
   std::cout<<"\n";
-  minCostBenchmarks(true,10,"../generator/mincost/6k12k/","inst_4000_8000_");
+
+  minCostBenchmarks(true,10,"../generator/mincost/4k40k/","inst_4000_40000_");
   std::cout<<"\n";
-  minCostBenchmarks(true,10,"../generator/mincost/8k16k/","inst_4000_8000_");
+  minCostBenchmarks(true,10,"../generator/mincost/6k60k/","inst_6000_60000_");
   std::cout<<"\n";
-  minCostBenchmarks(true,10,"../generator/mincost/10k20k/","inst_4000_8000_");
+  minCostBenchmarks(true,10,"../generator/mincost/8k80k/","inst_8000_80000_");
+  std::cout<<"\n";
+  minCostBenchmarks(true,10,"../generator/mincost/10k100k/","inst_10000_100000_");
 }
 
 
@@ -43,7 +45,7 @@ bool minCostBenchmarks(bool checkWithLP,int fileAmount,std::string fileDirectory
     std::string fileName = fileFamily + std::to_string(index) + ".max.min";
     std::string filePath = fileDirectory + fileName;
 
-    if(minCostComparison(filePath,fileName,true,&timer1,&timer1))
+    if(minCostComparison(filePath,fileName,true,&timer1,&timer3))
     {
       validTestsAmount++;
     }
@@ -64,6 +66,8 @@ bool minCostComparison(std::string filePath, std::string fileName, bool checkWit
   if (checkWithLP)
   {
     Graph graph3 = minCost::parse(filePath, false);
+    Graph expGraph3 = minCost::parse(filePath, false);
+    setMaxPossibleFlow(&graph3,&expGraph3);
     int startTime3 = time(NULL);
     value3 = PL::minCost(graph3);
     duration3 = time(NULL) - startTime3;
@@ -75,6 +79,8 @@ bool minCostComparison(std::string filePath, std::string fileName, bool checkWit
   {
     std::cout << "Infeasible\n";
     Graph graph1 = minCost::parse(filePath, false);
+    Graph expGraph1 = minCost::parse(filePath, false);
+    setMaxPossibleFlow(&graph1,&expGraph1);
     cycleCancelling(&graph1);
     int value1 = graph1.getValueObjMinCost();
     if(value1 != 0)
@@ -85,6 +91,8 @@ bool minCostComparison(std::string filePath, std::string fileName, bool checkWit
   }
 
   Graph graph1 = minCost::parse(filePath, false);
+  Graph expGraph1 = minCost::parse(filePath, false);
+  setMaxPossibleFlow(&graph1,&expGraph1);
   // Cycle cancelling
   int startTime1 = time(NULL);
   cycleCancelling(&graph1);
@@ -147,11 +155,11 @@ bool maxFlowBenchmarks(bool usePrepush,bool checkWithLP,int fileAmount,std::stri
     std::string fileName = fileFamily + std::to_string(index) + ".max";
     std::string filePath = fileDirectory + fileName;
 
-    if(maxFlowComparison(filePath,fileName,usePrepush,true,&timer1,&timer2,&timer1))
+    if(maxFlowComparison(filePath,fileName,usePrepush,true,&timer1,&timer2,&timer3))
     {
       validTestsAmount++;
     }
-    std::cout << validTestsAmount << " valid tests, CC total time: " << timer1 << ", LP total time: " << timer3 << "\n";
+    std::cout << validTestsAmount << " valid tests, SAP total time: " << timer1 << ", LP total time: " << timer3 << "\n";
     if(usePrepush){std::cout << "PPF total time: " << timer2 <<"\n";}
   }
 

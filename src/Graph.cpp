@@ -415,7 +415,7 @@ void Graph::switchOnParallel(Graph *graph)
 }
 
 void Graph::removeLonelyNodes()
-{   
+{
     bool deniedTerroristAttack = false;
     do{
         deniedTerroristAttack = false;

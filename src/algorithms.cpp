@@ -208,7 +208,7 @@ int findCycle(Graph *graph, int pred[], long cost[], int idVrt)
         int b = cost[idEdge];
         if (cost[idEdge] == 0)
         {
-            
+
             int result = recFindCycle(graph, pred, cost, visited, idVrt, graph->edges[idEdge].endId);
             if (result != -1)
             {
@@ -511,7 +511,7 @@ int findMeanNegativeCycle(Graph *graph, int pred[])
     int a = 0;
     return findCycle(graph, pred, newCosts, graph->src);
 
-    
+
 }
 
 void meanCycleCancelling(Graph *originGraph)
@@ -897,17 +897,22 @@ void preflowPush(Graph *original_graph)
 }
 
 
-int setMaxPossibleFlow(Graph *originGraph){
-    originGraph->fromMultipleToOne();
+void setMaxPossibleFlow(Graph *graphToChange,Graph *experimentGraph){
 
-    originGraph->removeLonelyNodes();
+    graphToChange->fromMultipleToOne();
 
-    Graph noParallelGraph(originGraph->nbVertices);
+    experimentGraph->fromMultipleToOne();
 
-    originGraph->switchOffParallel(&noParallelGraph);
+    experimentGraph->removeLonelyNodes();
+
+    Graph noParallelGraph(experimentGraph->nbVertices);
+
+    experimentGraph->switchOffParallel(&noParallelGraph);
 
     shortestAugmentingPath(&noParallelGraph);
 
-    return noParallelGraph.getValueObjMaxFlow();
+    int maxPossibleFlow = noParallelGraph.getValueObjMaxFlow();
 
+    graphToChange->vertices[graphToChange->src].exceedingFlow = maxPossibleFlow;
+    graphToChange->vertices[graphToChange->sink].exceedingFlow = -maxPossibleFlow;
 }
