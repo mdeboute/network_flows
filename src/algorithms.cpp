@@ -224,24 +224,55 @@ int findMeanNegativeCycle(Graph *graph, int pred[])
 {
     int V = graph->nbVertices;
     int E = graph->nbEdges;
-    long dist[V][V + 1];
     long costMajoring = 0; // edges with resCap = 0 have huge cost instead
-    for (Edge e : graph->edges)
+    for (int i = 0; i < E; i++)
     {
-        if (e.cost > costMajoring)
+        if (graph->edges[i].cost > costMajoring)
         {
-            costMajoring = e.cost;
+            costMajoring = graph->edges[i].cost;
         }
     }
     costMajoring = costMajoring * V;
 
-    for (int i = 0; i < V; i++)
-        for (int j = 0; j < V + 1; j++)
-            dist[i][j] = INT_MAX;
+
+    // long dist1[V][V + 1];
+    // for (int i = 0; i < V; i++)
+    //     for (int j = 0; j < V + 1; j++)
+    //         dist1[i][j] = INT_MAX;
+    // dist1[graph->src][0] = 0;
+
+    // for (int i = 1; i < V + 1; i++)
+    // {
+    //     for (int j = 0; j < E; j++)
+    //     {
+    //         long weight;
+    //         if (graph->edges[j].residualCapacity > 0)
+    //             weight = graph->edges[j].cost;
+    //         else
+    //         {
+    //             weight = costMajoring;
+    //         }
+    //         int u = graph->edges[j].startId;
+    //         int v = graph->edges[j].endId;
+    //         if (dist1[u][i - 1] != INT_MAX && dist1[u][i - 1] + weight < dist1[v][i])
+    //         {
+    //             dist1[v][i] = dist1[u][i - 1] + weight;
+    //         }
+    //     }
+    // }
+
+    long dist[V][2];
+    for(int j = 0; j < V; j++){
+        for(int i = 0; i < 2; i++){
+            dist[j][i] = INT_MAX;
+        }
+    }
     dist[graph->src][0] = 0;
 
     for (int i = 1; i < V + 1; i++)
     {
+        int k = i%2;
+        int p = (i + 1)%2;
         for (int j = 0; j < E; j++)
         {
             long weight;
@@ -253,42 +284,104 @@ int findMeanNegativeCycle(Graph *graph, int pred[])
             }
             int u = graph->edges[j].startId;
             int v = graph->edges[j].endId;
-            if (dist[u][i - 1] != INT_MAX && dist[u][i - 1] + weight < dist[v][i])
+            if (dist[u][p] != INT_MAX && dist[u][p] + weight < dist[v][k])
             {
-                dist[v][i] = dist[u][i - 1] + weight;
+                dist[v][k] = dist[u][p] + weight;
+            }
+        }
+        
+        for(int j = 0; j < V; j++){
+            dist[j][p] = INT_MAX;
+        }
+    }
+
+
+    long distnEdges[V];
+    for(int i = 0; i < V; i++){
+        distnEdges[i] = dist[i][V%2];
+    }
+
+    float alpha[V];
+    int nominator[V];
+    int denominator[V];
+    for(int j = 0; j < V; j++){
+        for(int i = 0; i < 2; i++){
+            dist[j][i] = INT_MAX;
+        }
+        alpha[j] = -INT_MAX;
+    }
+    dist[graph->src][0] = 0;
+
+    for (int i = 1; i < V + 1; i++)
+    {
+        int k = i % 2;
+        int p = (i + 1) % 2;
+        for (int j = 0; j < E; j++)
+        {
+            long weight;
+            if (graph->edges[j].residualCapacity > 0)
+                weight = graph->edges[j].cost;
+            else
+            {
+                weight = costMajoring;
+            }
+            int u = graph->edges[j].startId;
+            int v = graph->edges[j].endId;
+            if (dist[u][p] != INT_MAX && dist[u][p] + weight < dist[v][k])
+            {
+                dist[v][k] = dist[u][p] + weight;
+            }
+        }
+        
+        for(int j = 0; j < V; j++){
+            dist[j][p] = INT_MAX;
+            if((distnEdges[j] - dist[j][k]) > alpha[j] * (V - i)){
+                alpha[j] = distnEdges[j] - dist[j][k];
+                alpha[j] = alpha[j] / (V - i);
+                nominator[j] = distnEdges[j] - dist[j][k];
+                denominator[j] = (V - i);
             }
         }
     }
 
-    float alpha = INT_MAX;
-    int bigNominator;
-    int bigDenominator;
-    for (int i = 0; i < V; i++)
-    {
-        if (dist[i][V] == INT_MAX)
-            continue;
-        float maxValue = -INT_MAX;
-        int nominator;
-        int denominator;
-        for (int j = 0; j < V; j++)
-        {
-            if (dist[i][j] == INT_MAX)
-                continue;
-            if ((dist[i][V] - dist[i][j]) > maxValue * (V - j))
-            {
-                maxValue = (dist[i][V] - dist[i][j]);
-                maxValue = maxValue / (V - j);
-                nominator = (dist[i][V] - dist[i][j]);
-                denominator = (V - j);
-            }
-        }
-        if (maxValue < alpha)
-        {
-            alpha = maxValue;
-            bigNominator = nominator;
-            bigDenominator = denominator;
-        }
+    
+    int indexMin = 0;
+    for(int i = 1; i < V; i++){
+        if(alpha[i] < alpha[indexMin])
+            indexMin = i;
     }
+    int bigDenominator = denominator[indexMin];
+    int bigNominator = nominator[indexMin];
+
+    // float alpha1 = INT_MAX;
+    // int bigNominator;
+    // int bigDenominator;
+    // for (int i = 0; i < V; i++)
+    // {
+    //     if (dist[i][V] == INT_MAX)
+    //         continue;
+    //     float maxValue = -INT_MAX;
+    //     int nominator1;
+    //     int denominator1;
+    //     for (int j = 0; j < V; j++)
+    //     {
+    //         if (dist[i][j] == INT_MAX)
+    //             continue;
+    //         if ((dist[i][V] - dist[i][j]) > maxValue * (V - j))
+    //         {
+    //             maxValue = (dist[i][V] - dist[i][j]);
+    //             maxValue = maxValue / (V - j);
+    //             nominator1 = (dist[i][V] - dist[i][j]);
+    //             denominator1 = (V - j);
+    //         }
+    //     }
+    //     if (maxValue < alpha1)
+    //     {
+    //         alpha1 = maxValue;
+    //         bigNominator = nominator1;
+    //         bigDenominator = denominator1;
+    //     }
+    // }
     if (bigNominator >= 0)
         return -1;
 
@@ -301,14 +394,36 @@ int findMeanNegativeCycle(Graph *graph, int pred[])
             newCosts[i] = costMajoring * bigDenominator - bigNominator;
     }
 
-    for (int i = 0; i < V; i++)
+    long shortestDist[V];
+    for(int j = 0; j < V; j++){
+        for(int i = 0; i < 2; i++){
+            dist[j][i] = INT_MAX;
+        }
+        shortestDist[j] = INT_MAX;
+    }
+    shortestDist[graph->src] = 0;
+    dist[graph->src][0] = 0;
+
+    for (int i = 1; i < V + 1; i++)
     {
-        for (int j = 1; j < V + 1; j++)
+        int k = i%2;
+        int p = (i + 1)%2;
+        for (int j = 0; j < E; j++)
         {
-            if (dist[i][j] != INT_MAX)
+            int weight = newCosts[j];
+            
+            int u = graph->edges[j].startId;
+            int v = graph->edges[j].endId;
+            if (dist[u][p] != INT_MAX && dist[u][p] + weight < dist[v][k])
             {
-                dist[i][j] = dist[i][j] * bigDenominator - j * bigNominator;
+                dist[v][k] = dist[u][p] + weight;
             }
+        }
+        
+        for(int j = 0; j < V; j++){
+            dist[j][p] = INT_MAX;
+            if(dist[j][k] < shortestDist[j])
+                shortestDist[j] = dist[j][k];
         }
     }
 
@@ -334,59 +449,59 @@ int findMeanNegativeCycle(Graph *graph, int pred[])
     //     }
     // }
 
-    long smallestDist[V];
-    for (int i = 0; i < V; i++)
-    {
-        long min = dist[i][0];
-        for (int j = 1; j < V + 1; j++)
-        {
-            if (dist[i][j] < min)
-            {
-                min = dist[i][j];
-            }
-        }
-        smallestDist[i] = min;
-    }
+    // long smallestDist[V];
+    // for (int i = 0; i < V; i++)
+    // {
+    //     long min = dist[i][0];
+    //     for (int j = 1; j < V + 1; j++)
+    //     {
+    //         if (dist[i][j] < min)
+    //         {
+    //             min = dist[i][j];
+    //         }
+    //     }
+    //     smallestDist[i] = min;
+    // }
 
     for (int i = 0; i < E; i++)
     {
-        newCosts[i] += smallestDist[graph->edges[i].startId] - smallestDist[graph->edges[i].endId];
+        newCosts[i] += shortestDist[graph->edges[i].startId] - shortestDist[graph->edges[i].endId];
     }
 
-    for (int i = 0; i < V; i++)
-        for(int j = 0; j < V+1; j++)
-            dist[i][j] = INT_MAX;
-    dist[graph->src][0] = 0;
+    // for (int i = 0; i < V; i++)
+    //     for(int j = 0; j < V+1; j++)
+    //         dist[i][j] = INT_MAX;
+    // dist[graph->src][0] = 0;
 
-    for (int i = 1; i < V + 1; i++)
-    {
-        for (int j = 0; j < E; j++)
-        {
-            long weight = newCosts[j];
-            int u = graph->edges[j].startId;
-            int v = graph->edges[j].endId;
-            if (dist[u][i-1] != INT_MAX && dist[u][i-1] + weight < dist[v][i]){
-                dist[v][i] = dist[u][i-1] + weight;
-            }
-        }
-    }
+    // for (int i = 1; i < V + 1; i++)
+    // {
+    //     for (int j = 0; j < E; j++)
+    //     {
+    //         long weight = newCosts[j];
+    //         int u = graph->edges[j].startId;
+    //         int v = graph->edges[j].endId;
+    //         if (dist[u][i-1] != INT_MAX && dist[u][i-1] + weight < dist[v][i]){
+    //             dist[v][i] = dist[u][i-1] + weight;
+    //         }
+    //     }
+    // }
 
-    int idProbVertex = -1;
-    for(int i = 0; i < V; i++){
-        if(dist[i][V] == INT_MAX) continue;
-        long max = -INT_MAX;
-        for(int j = 1; j < V; j++){
-            if(dist[i][j] == INT_MAX) continue;
-            if(dist[i][V] - dist[i][j] > max){
-                max = dist[i][V];
-                max -= dist[i][j];
-            }
-        }
-        if(max == 0){
-            idProbVertex = i;
-            break;
-        }
-    }
+    // int idProbVertex = -1;
+    // for(int i = 0; i < V; i++){
+    //     if(dist[i][V] == INT_MAX) continue;
+    //     long max = -INT_MAX;
+    //     for(int j = 1; j < V; j++){
+    //         if(dist[i][j] == INT_MAX) continue;
+    //         if(dist[i][V] - dist[i][j] > max){
+    //             max = dist[i][V];
+    //             max -= dist[i][j];
+    //         }
+    //     }
+    //     if(max == 0){
+    //         idProbVertex = i;
+    //         break;
+    //     }
+    // }
 
     // for(int i = 0; i < E; i++){
     //     if(newCosts[i] == 0){
@@ -415,7 +530,6 @@ void meanCycleCancelling(Graph *originGraph)
     //std::cout << originGraph->getValueObjMinCost() << std::endl;
 
     Graph *graph = originGraph->getResidualGraph(false);
-
     int pred[graph->vertices.size()];
     int probVertex = findMeanNegativeCycle(graph, pred);
 
