@@ -9,43 +9,39 @@
 #include "saver.hpp"
 #include "PLFlows.hpp"
 
-
-
 void doAllBenchmarks()
 {
-  maxFlowBenchmarks(false,true,10,"../generator/maxflow/4k40k/","inst_4000_40000_");
-  std::cout<<"\n";
-  maxFlowBenchmarks(false,true,10,"../generator/maxflow/6k60k/","inst_6000_60000_");
-  std::cout<<"\n";
-  maxFlowBenchmarks(false,true,10,"../generator/maxflow/8k80k/","inst_8000_80000_");
-  std::cout<<"\n";
-  maxFlowBenchmarks(false,true,10,"../generator/maxflow/10k100k/","inst_10000_100000_");
+  maxFlowBenchmarks(false, true, 10, "../data/maxflow/4k40k/", "inst_4000_40000_");
+  std::cout << "\n";
+  maxFlowBenchmarks(false, true, 10, "../data/maxflow/6k60k/", "inst_6000_60000_");
+  std::cout << "\n";
+  maxFlowBenchmarks(false, true, 10, "../data/maxflow/8k80k/", "inst_8000_80000_");
+  std::cout << "\n";
+  maxFlowBenchmarks(false, true, 10, "../data/maxflow/10k100k/", "inst_10000_100000_");
 
-  std::cout<<"\n";
+  std::cout << "\n";
 
-  minCostBenchmarks(true,10,"../generator/mincost/4k40k/","inst_4000_40000_");
-  std::cout<<"\n";
-  minCostBenchmarks(true,10,"../generator/mincost/6k60k/","inst_6000_60000_");
-  std::cout<<"\n";
-  minCostBenchmarks(true,10,"../generator/mincost/8k80k/","inst_8000_80000_");
-  std::cout<<"\n";
-  minCostBenchmarks(true,10,"../generator/mincost/10k100k/","inst_10000_100000_");
+  minCostBenchmarks(true, 10, "../data/mincost/4k40k/", "inst_4000_40000_");
+  std::cout << "\n";
+  minCostBenchmarks(true, 10, "../data/mincost/6k60k/", "inst_6000_60000_");
+  std::cout << "\n";
+  minCostBenchmarks(true, 10, "../data/mincost/8k80k/", "inst_8000_80000_");
+  std::cout << "\n";
+  minCostBenchmarks(true, 10, "../data/mincost/10k100k/", "inst_10000_100000_");
 }
 
-
-
-bool minCostBenchmarks(bool checkWithLP,int fileAmount,std::string fileDirectory,std::string fileFamily)
+bool minCostBenchmarks(bool checkWithLP, int fileAmount, std::string fileDirectory, std::string fileFamily)
 {
   int timer1 = 0;
   int timer3 = 0;
   int validTestsAmount = 0;
 
-  for(int index = 1; index <= fileAmount; index++)
+  for (int index = 1; index <= fileAmount; index++)
   {
     std::string fileName = fileFamily + std::to_string(index) + ".max.min";
     std::string filePath = fileDirectory + fileName;
 
-    if(minCostComparison(filePath,fileName,true,&timer1,&timer3))
+    if (minCostComparison(filePath, fileName, true, &timer1, &timer3))
     {
       validTestsAmount++;
     }
@@ -55,9 +51,7 @@ bool minCostBenchmarks(bool checkWithLP,int fileAmount,std::string fileDirectory
   return true;
 }
 
-
-
-bool minCostComparison(std::string filePath, std::string fileName, bool checkWithLP,int* timer1,int* timer3)
+bool minCostComparison(std::string filePath, std::string fileName, bool checkWithLP, int *timer1, int *timer3)
 {
   std::cout << "MinCost comparison on " << fileName << "\n";
 
@@ -67,37 +61,43 @@ bool minCostComparison(std::string filePath, std::string fileName, bool checkWit
   {
     Graph graph3 = minCost::parse(filePath, false);
     Graph expGraph3 = minCost::parse(filePath, false);
-    setMaxPossibleFlow(&graph3,&expGraph3);
+    setMaxPossibleFlow(&graph3, &expGraph3);
     int startTime3 = time(NULL);
     value3 = PL::minCost(graph3);
     duration3 = time(NULL) - startTime3;
-    if(timer3!=NULL and value3!=-1){*timer3 += duration3;}
+    if (timer3 != NULL and value3 != -1)
+    {
+      *timer3 += duration3;
+    }
     std::cout << "LP duration: " << duration3 << " seconds\n";
   }
 
-  if(value3 == -1)
+  if (value3 == -1)
   {
     std::cout << "Infeasible\n";
     Graph graph1 = minCost::parse(filePath, false);
     Graph expGraph1 = minCost::parse(filePath, false);
-    setMaxPossibleFlow(&graph1,&expGraph1);
+    setMaxPossibleFlow(&graph1, &expGraph1);
     cycleCancelling(&graph1);
     int value1 = graph1.getValueObjMinCost();
-    if(value1 != 0)
+    if (value1 != 0)
     {
-      std::cout << "Error: LP says infeasible but CC objective value is " <<  value1 <<"\n";
+      std::cerr << "Error: LP says infeasible but CC objective value is " << value1 << "\n";
     }
     return false;
   }
 
   Graph graph1 = minCost::parse(filePath, false);
   Graph expGraph1 = minCost::parse(filePath, false);
-  setMaxPossibleFlow(&graph1,&expGraph1);
+  setMaxPossibleFlow(&graph1, &expGraph1);
   // Cycle cancelling
   int startTime1 = time(NULL);
   cycleCancelling(&graph1);
   int duration1 = time(NULL) - startTime1;
-  if(timer1!=NULL){*timer1 += duration1;}
+  if (timer1 != NULL)
+  {
+    *timer1 += duration1;
+  }
   std::cout << "Cycle Cancelling: " << duration1 << " seconds\n";
 
   // on vérifie la validité des solutions
@@ -105,7 +105,7 @@ bool minCostComparison(std::string filePath, std::string fileName, bool checkWit
 
   if (not validFlow(&graph1))
   {
-    std::cout << "Error: invalid flow from Cycle Cancelling\n";
+    std::cerr << "Error: invalid flow from Cycle Cancelling\n";
     return false;
   }
 
@@ -113,7 +113,7 @@ bool minCostComparison(std::string filePath, std::string fileName, bool checkWit
   {
     std::cout << "LP: " << value3 << "\n";
     std::cout << "Cycle Cancelling: " << value1 << "\n";
-    std::cout << "Error: different objective values\n";
+    std::cerr << "Error: different objective values\n";
     return false;
   }
 
@@ -126,10 +126,11 @@ bool minCostComparison(std::string filePath, std::string fileName, bool checkWit
   timeFile.open(timeName);
   if (not timeFile.is_open())
   {
-    std::cout << "pas réussi à créer le fichier\n";
+    std::cout << "Failed to create file!\n";
   }
 
-  timeFile << std::to_string(graph1.nbVertices) << " vertices, " << std::to_string(graph1.nbEdges) << " edges" << "\n";
+  timeFile << std::to_string(graph1.nbVertices) << " vertices, " << std::to_string(graph1.nbEdges) << " edges"
+           << "\n";
   timeFile << "Value: " << std::to_string(value1) << "\n";
   timeFile << "Cycle Cancelling: " << std::to_string(duration1) << "\n";
   if (checkWithLP)
@@ -141,34 +142,33 @@ bool minCostComparison(std::string filePath, std::string fileName, bool checkWit
   return true;
 }
 
-
-
-bool maxFlowBenchmarks(bool usePrepush,bool checkWithLP,int fileAmount,std::string fileDirectory,std::string fileFamily)
+bool maxFlowBenchmarks(bool usePrepush, bool checkWithLP, int fileAmount, std::string fileDirectory, std::string fileFamily)
 {
   int timer1 = 0;
   int timer2 = 0;
   int timer3 = 0;
   int validTestsAmount = 0;
 
-  for(int index = 1; index <= fileAmount; index++)
+  for (int index = 1; index <= fileAmount; index++)
   {
     std::string fileName = fileFamily + std::to_string(index) + ".max";
     std::string filePath = fileDirectory + fileName;
 
-    if(maxFlowComparison(filePath,fileName,usePrepush,true,&timer1,&timer2,&timer3))
+    if (maxFlowComparison(filePath, fileName, usePrepush, true, &timer1, &timer2, &timer3))
     {
       validTestsAmount++;
     }
-    std::cout << validTestsAmount << " valid tests, SAP total time: " << timer1 << ", LP total time: " << timer3 << "\n";
-    if(usePrepush){std::cout << "PPF total time: " << timer2 <<"\n";}
+    std::cout << validTestsAmount << "Valid tests, SAP total time: " << timer1 << ", LP total time: " << timer3 << "\n";
+    if (usePrepush)
+    {
+      std::cout << "PPF total time: " << timer2 << "\n";
+    }
   }
 
   return true;
 }
 
-
-
-bool maxFlowComparison(std::string filePath, std::string fileName, bool usePrepush, bool checkWithLP,int* timer1,int* timer2,int* timer3)
+bool maxFlowComparison(std::string filePath, std::string fileName, bool usePrepush, bool checkWithLP, int *timer1, int *timer2, int *timer3)
 {
   std::cout << "Maxflow comparison on " << fileName << "\n";
 
@@ -185,7 +185,10 @@ bool maxFlowComparison(std::string filePath, std::string fileName, bool usePrepu
     preflowPush(&graph2);
     duration2 = time(NULL) - startTime2;
     value2 = graph2.getValueObjMaxFlow();
-    if(timer2!=NULL and value2!=0){*timer2 += duration2;}
+    if (timer2 != NULL and value2 != 0)
+    {
+      *timer2 += duration2;
+    }
 
     std::cout << "Preflow Push duration: " << duration2 << " seconds\n";
   }
@@ -195,7 +198,10 @@ bool maxFlowComparison(std::string filePath, std::string fileName, bool usePrepu
   shortestAugmentingPath(&graph1);
   int duration1 = time(NULL) - startTime1;
   int value1 = graph1.getValueObjMaxFlow();
-  if(timer1!=NULL and value1!=0){*timer1 += duration1;}
+  if (timer1 != NULL and value1 != 0)
+  {
+    *timer1 += duration1;
+  }
   std::cout << "Shortest Augmenting Path duration: " << duration1 << " seconds\n";
 
   int value3;
@@ -206,19 +212,22 @@ bool maxFlowComparison(std::string filePath, std::string fileName, bool usePrepu
     int startTime3 = time(NULL);
     value3 = PL::maxFlow(graph3);
     duration3 = time(NULL) - startTime3;
-    if(timer3!=NULL and value3!=0){*timer3 += duration3;}
+    if (timer3 != NULL and value3 != 0)
+    {
+      *timer3 += duration3;
+    }
     std::cout << "LP duration: " << duration3 << " seconds\n";
   }
 
   if (not validFlow(&graph1))
   {
-    std::cout << "Error: invalid flow from Shortest Augmenting Path\n";
+    std::cerr << "Error: invalid flow from Shortest Augmenting Path\n";
     return false;
   }
 
   if (usePrepush and not validFlow(&graph2))
   {
-    std::cout << "Error: invalid flow from Preflow Push\n";
+    std::cerr << "Error: invalid flow from Preflow Push\n";
     return false;
   }
 
@@ -226,7 +235,7 @@ bool maxFlowComparison(std::string filePath, std::string fileName, bool usePrepu
   {
     std::cout << "Shortest Augmenting Path: " << value1 << "\n";
     std::cout << "Preflow Push: " << value2 << "\n";
-    std::cout << "Error: different objective values\n";
+    std::cerr << "Error: different objective values\n";
     return false;
   }
 
@@ -234,11 +243,11 @@ bool maxFlowComparison(std::string filePath, std::string fileName, bool usePrepu
   {
     std::cout << "LP: " << value3 << "\n";
     std::cout << "Both algorithm: " << value1 << "\n";
-    std::cout << "Error: different objective values\n";
+    std::cerr << "Error: different objective values\n";
     return false;
   }
 
-  if(value1 == 0)
+  if (value1 == 0)
   {
     std::cout << "Infeasible\n";
     return false;
@@ -253,7 +262,7 @@ bool maxFlowComparison(std::string filePath, std::string fileName, bool usePrepu
   timeFile.open(timeName);
   if (not timeFile.is_open())
   {
-    std::cout << "pas réussi à créer le fichier\n";
+    std::cerr << "Failed to create file!\n";
   }
 
   timeFile << std::to_string(graph1.nbVertices) << " vertices, " << std::to_string(graph1.nbEdges) << " edges"
@@ -261,8 +270,14 @@ bool maxFlowComparison(std::string filePath, std::string fileName, bool usePrepu
   timeFile << "Value: " << std::to_string(value1) << "\n";
   timeFile << "Shortest Augmenting Path: " << std::to_string(duration1) << "\n";
 
-  if(usePrepush){timeFile << "Preflow Push: " << std::to_string(duration2) << "\n";}
-  if(checkWithLP){timeFile << "LP: " << std::to_string(duration3) << "\n";}
+  if (usePrepush)
+  {
+    timeFile << "Preflow Push: " << std::to_string(duration2) << "\n";
+  }
+  if (checkWithLP)
+  {
+    timeFile << "LP: " << std::to_string(duration3) << "\n";
+  }
   timeFile.close();
 
   return true;

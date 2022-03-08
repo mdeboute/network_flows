@@ -2,7 +2,7 @@
 
 ```shell
 chmod u+x random_instances.sh
-./random_instances <NB_VERTICES> <NB_EDGES> <UPPER_BOUND> <NB_OF_INSTANCES>
+./random_instances.sh <NB_VERTICES> <NB_EDGES> <UPPER_BOUND> <NB_OF_INSTANCES>
 ```
 
 PS: `NB_OF_INSTANCES >=2` and you must have Pascal installed on your machine.

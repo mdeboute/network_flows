@@ -325,7 +325,7 @@ long long Graph::getValueObjMinCost()
         sumFlows += term;
         if (e.flow != 0 and e.endId != this->sink and e.startId != this->src)
         {
-            //std::cout << e.startId << "  " << e.endId << "   " << sumFlows << std::endl;
+            // std::cout << e.startId << "  " << e.endId << "   " << sumFlows << std::endl;
         }
     }
     // std::cout << sumFlows << std::endl;
@@ -417,7 +417,8 @@ void Graph::switchOnParallel(Graph *graph)
 void Graph::removeLonelyNodes()
 {
     bool deniedTerroristAttack = false;
-    do{
+    do
+    {
         deniedTerroristAttack = false;
         for (Vertex &vrt : vertices)
         {
@@ -430,10 +431,8 @@ void Graph::removeLonelyNodes()
                 }
             }
         }
-    }
-    while(deniedTerroristAttack);
+    } while (deniedTerroristAttack);
 }
-
 
 // getters de la classe Graph
 Edge &Graph::getEnteringEdge(int vertexId, int edgeId) { return vertices[vertexId].getEnteringEdge(*this, edgeId); }
